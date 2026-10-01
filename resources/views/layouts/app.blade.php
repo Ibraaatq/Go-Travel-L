@@ -15,6 +15,8 @@
     
     <!-- Custom Style CSS -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    @yield('styles')
+    @stack('styles')
 </head>
 <body class="page-body">
     <!-- Main Full Background Wrapper with Blur and Overlay -->

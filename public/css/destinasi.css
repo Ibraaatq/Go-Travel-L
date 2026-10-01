@@ -1,0 +1,495 @@
+/* ==========================================================================
+   GO TRAVEL - DESTINASI WISATA STYLESHEET (destinasi.css)
+   Khusus Halaman Destinasi Wisata - Refactored for Equal Height & Alignment
+   ========================================================================== */
+
+/* --- Custom Variables Khusus Halaman Destinasi --- */
+:root {
+    --destinasi-orange: #ea580c;
+    --destinasi-orange-hover: #c2410c;
+    --destinasi-orange-light: #fff2eb;
+    --destinasi-orange-subtle: #ffefe5;
+    --destinasi-dark: #0f172a;
+    --destinasi-slate: #1e293b;
+    --destinasi-muted: #64748b;
+    --destinasi-border-glass: rgba(255, 255, 255, 0.28);
+    --destinasi-bg-glass: rgba(255, 255, 255, 0.16);
+    --destinasi-shadow-card: 0 4px 18px rgba(0, 0, 0, 0.07);
+    --destinasi-shadow-hover: 0 12px 28px rgba(0, 0, 0, 0.14);
+}
+
+/* ==========================================================================
+   1. NAVBAR ACTIVE STATE UNTUK DESTINASI
+   ========================================================================== */
+.navbar-nav-menu .nav-item .nav-link[href*="destinasi"].active,
+.navbar-nav-menu .nav-item .nav-link.active-destinasi,
+body.page-destinasi .navbar-nav-menu .nav-item:nth-child(3) .nav-link {
+    background-color: var(--destinasi-orange-subtle, #ffefe5);
+    color: var(--destinasi-orange, #ea580c);
+    font-weight: 700;
+}
+
+/* ==========================================================================
+   2. HERO DESTINASI SECTION
+   ========================================================================== */
+.hero-destinasi,
+.hero-section {
+    padding: 22px 0 28px 0;
+    position: relative;
+    width: 100%;
+}
+
+.hero-destinasi-content,
+.hero-content {
+    max-width: 780px;
+}
+
+/* Tombol Panah Kembali */
+.hero-back-btn,
+.destinasi-back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 16px;
+    margin-bottom: 12px;
+    text-decoration: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+
+.hero-back-btn:hover,
+.destinasi-back-btn:hover {
+    color: #ffffff;
+    background: var(--destinasi-orange, #ea580c);
+    border-color: var(--destinasi-orange, #ea580c);
+    transform: translateX(-3px);
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.35);
+}
+
+/* Judul Hero */
+.hero-destinasi-title,
+.hero-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.25;
+    letter-spacing: -0.4px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    margin-bottom: 8px;
+}
+
+/* Deskripsi Hero */
+.hero-destinasi-desc,
+.hero-description {
+    font-size: 13.5px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.92);
+    line-height: 1.55;
+    margin-bottom: 20px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    max-width: 660px;
+}
+
+/* ==========================================================================
+   3. SEARCH & FILTER BAR
+   ========================================================================== */
+.destinasi-filter-bar,
+.filter-pill-bar {
+    background: #ffffff;
+    border-radius: 9999px;
+    padding: 6px 14px 6px 22px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    margin: 4px 0 24px 0;
+    position: relative;
+    z-index: 40;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    width: 100%;
+}
+
+.destinasi-search-group,
+.filter-search-input-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    height: 100%;
+}
+
+.destinasi-search-group i,
+.filter-search-input-group i {
+    color: #94a3b8;
+    font-size: 15px;
+}
+
+.destinasi-search-input,
+.filter-search-input-group input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--destinasi-dark, #0f172a);
+    background: transparent;
+}
+
+.destinasi-search-input::placeholder,
+.filter-search-input-group input::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+/* Filter Dropdown */
+.destinasi-filter-dropdown,
+.filter-category-dropdown {
+    position: relative;
+}
+
+.btn-destinasi-filter,
+.btn-filter-category {
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--destinasi-dark, #0f172a);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-destinasi-filter i,
+.btn-filter-category i {
+    font-size: 12px;
+    color: #64748b;
+    transition: transform 0.2s ease;
+}
+
+.btn-destinasi-filter:hover,
+.btn-filter-category:hover {
+    background: #f1f5f9;
+    color: var(--destinasi-orange, #ea580c);
+}
+
+.destinasi-dropdown-menu,
+.category-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 8px;
+    min-width: 200px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.16);
+    z-index: 100;
+    border: 1px solid #e2e8f0;
+    list-style: none;
+}
+
+.destinasi-dropdown-menu.show,
+.category-dropdown-menu.show {
+    display: block;
+    animation: destinasiDropdownFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes destinasiDropdownFade {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.destinasi-dropdown-menu .dropdown-item,
+.category-dropdown-menu .dropdown-item {
+    display: block;
+    padding: 9px 16px;
+    font-size: 13px;
+    color: var(--destinasi-slate, #1e293b);
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.destinasi-dropdown-menu .dropdown-item:hover,
+.destinasi-dropdown-menu .dropdown-item.active,
+.category-dropdown-menu .dropdown-item:hover,
+.category-dropdown-menu .dropdown-item.active {
+    background: var(--destinasi-orange-light, #fff2eb);
+    color: var(--destinasi-orange, #ea580c);
+}
+
+/* ==========================================================================
+   4. FROSTED GLASS CONTAINER DAFTAR DESTINASI
+   ========================================================================== */
+.destinasi-frosted-container,
+.section-frosted-container.destinasi-section,
+.section-frosted-container {
+    background: var(--destinasi-bg-glass, rgba(255, 255, 255, 0.16));
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--destinasi-border-glass, rgba(255, 255, 255, 0.28));
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 36px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    width: 100%;
+}
+
+/* ==========================================================================
+   5. GRID DESTINASI (EQUAL SIZING, 4 KOLOM DESKTOP)
+   ========================================================================== */
+.destinasi-grid,
+.destination-grid,
+.destinasi-cards-grid,
+.packages-grid.destinasi-grid-layout {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    align-items: stretch; /* Memastikan semua card sama tinggi */
+    width: 100%;
+}
+
+/* ==========================================================================
+   6. CARD DESTINASI (EQUAL HEIGHT & ALIGNMENT)
+   ========================================================================== */
+.destinasi-card,
+.destination-card,
+.card-destinasi {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 12px;
+    box-shadow: var(--destinasi-shadow-card, 0 4px 18px rgba(0, 0, 0, 0.07));
+    border: 1px solid rgba(226, 232, 240, 0.85);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Menyusun konten atas dan tombol bawah secara rapi */
+    height: 100%; /* Memastikan tinggi kartu seragam */
+    position: relative;
+    overflow: hidden;
+}
+
+.destinasi-card:hover,
+.destination-card:hover,
+.card-destinasi:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--destinasi-shadow-hover, 0 12px 28px rgba(0, 0, 0, 0.14));
+}
+
+/* Gambar Destinasi */
+.destinasi-image-wrapper,
+.destinasi-card-img,
+.destination-image-box {
+    width: 100%;
+    height: 148px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    background-color: #f1f5f9;
+    flex-shrink: 0;
+}
+
+.destinasi-image,
+.destinasi-card-img img,
+.destinasi-image-wrapper img,
+.destination-image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+}
+
+.destinasi-card:hover .destinasi-image,
+.destinasi-card:hover .destinasi-image-wrapper img,
+.destinasi-card:hover .destinasi-card-img img {
+    transform: scale(1.05);
+}
+
+/* Konten / Body Card */
+.destinasi-content,
+.destinasi-card-body,
+.destination-content {
+    padding: 12px 2px 2px 2px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between; /* Menjamin footer tombol selalu sejajar di dasar kartu */
+}
+
+/* Nama Kota / Judul Destinasi */
+.destinasi-title,
+.destinasi-name,
+.destinasi-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--destinasi-dark, #0f172a);
+    line-height: 1.3;
+    margin-bottom: 4px;
+    letter-spacing: -0.2px;
+    min-height: 20px;
+}
+
+/* Deskripsi Singkat Destinasi */
+.destinasi-desc,
+.destinasi-description,
+.destinasi-card-desc {
+    font-size: 12px;
+    color: var(--destinasi-muted, #64748b);
+    line-height: 1.45;
+    margin-bottom: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 35px; /* Tinggi seragam untuk 2 baris teks */
+}
+
+/* Bagian Bawah Card (Footer Card & Tombol Arrow - SELALU SEJAJAR) */
+.destinasi-footer,
+.destinasi-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: auto; /* Mendorong tombol ke posisi paling bawah */
+    padding-top: 6px;
+    width: 100%;
+}
+
+/* Tombol Lingkaran Kecil Arrow */
+.btn-destinasi-arrow,
+.destinasi-arrow-btn,
+.destinasi-action-btn,
+.btn-arrow-circle {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background-color: var(--destinasi-orange-subtle, #ffefe5);
+    color: var(--destinasi-orange, #ea580c);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border: none;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 6px rgba(234, 88, 12, 0.12);
+}
+
+.btn-destinasi-arrow i,
+.destinasi-arrow-btn i,
+.destinasi-action-btn i,
+.btn-arrow-circle i {
+    color: var(--destinasi-orange, #ea580c);
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.destinasi-card:hover .btn-destinasi-arrow,
+.destinasi-card:hover .destinasi-arrow-btn,
+.destinasi-card:hover .destinasi-action-btn,
+.btn-destinasi-arrow:hover,
+.destinasi-arrow-btn:hover,
+.destinasi-action-btn:hover {
+    background-color: var(--destinasi-orange, #ea580c);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.35);
+    transform: translateX(2px);
+}
+
+.destinasi-card:hover .btn-destinasi-arrow i,
+.destinasi-card:hover .destinasi-arrow-btn i,
+.destinasi-card:hover .destinasi-action-btn i,
+.btn-destinasi-arrow:hover i,
+.destinasi-arrow-btn:hover i,
+.destinasi-action-btn:hover i {
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   7. RESPONSIVE DESIGN (BREAKPOINTS)
+   ========================================================================== */
+
+/* Tablet & Laptop Kecil (Max: 1024px) -> 2 Kolom */
+@media (max-width: 1024px) {
+    .destinasi-grid,
+    .destination-grid,
+    .destinasi-cards-grid,
+    .packages-grid.destinasi-grid-layout {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .hero-destinasi-title,
+    .hero-title {
+        font-size: 28px;
+    }
+}
+
+/* Mobile Devices (Max: 640px) -> 1 Kolom */
+@media (max-width: 640px) {
+    .destinasi-grid,
+    .destination-grid,
+    .destinasi-cards-grid,
+    .packages-grid.destinasi-grid-layout {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .hero-destinasi-title,
+    .hero-title {
+        font-size: 24px;
+    }
+
+    .hero-destinasi-desc,
+    .hero-description {
+        font-size: 12.5px;
+    }
+
+    .destinasi-frosted-container,
+    .section-frosted-container {
+        padding: 14px;
+        border-radius: 16px;
+    }
+
+    .destinasi-filter-bar,
+    .filter-pill-bar {
+        padding: 4px 10px 4px 16px;
+        height: 48px;
+    }
+
+    .btn-destinasi-filter,
+    .btn-filter-category {
+        font-size: 12.5px;
+        padding: 6px 10px;
+    }
+
+    .destinasi-image-wrapper,
+    .destinasi-card-img,
+    .destination-image-box {
+        height: 160px;
+    }
+}

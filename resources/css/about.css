@@ -1,0 +1,329 @@
+/* ==========================================================================
+   GO TRAVEL - ABOUT PAGE STYLESHEET (about.css)
+   Khusus Halaman Tentang Kami (About) - Refactored for Equal Height & Alignment
+   ========================================================================== */
+
+/* --- Custom Variables Khusus Halaman About --- */
+:root {
+    --about-orange: #ea580c;
+    --about-orange-subtle: #ffefe5;
+    --about-dark: #0f172a;
+    --about-slate: #1e293b;
+    --about-body-text: #334155;
+    --about-muted: #64748b;
+    --about-card-border: #e2e8f0;
+    --about-radius-lg: 24px;
+    --about-radius-md: 16px;
+    --about-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* ==========================================================================
+   1. NAVBAR ACTIVE STATE
+   ========================================================================== */
+.navbar-nav-menu .nav-item .nav-link[href*="about"].active,
+.navbar-nav-menu .nav-item .nav-link.active-about {
+    background-color: var(--about-orange-subtle, #ffefe5);
+    color: var(--about-orange, #ea580c);
+    font-weight: 700;
+}
+
+/* ==========================================================================
+   2. UPPER SECTION (HERO & TOP CARD - BALANCED PROPORTION)
+   ========================================================================== */
+.about-upper-section {
+    padding: 20px 0 28px 0;
+    width: 100%;
+}
+
+.about-top-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr;
+    gap: 32px;
+    align-items: stretch; /* Seimbang dan rapi */
+}
+
+/* Kolom Kiri: Hero Text */
+.about-hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.about-hero-subtitle {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.about-hero-title {
+    font-size: 46px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.1;
+    letter-spacing: -0.8px;
+    margin-bottom: 14px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.about-hero-tagline {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.3;
+    margin-bottom: 14px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.about-hero-desc {
+    font-size: 13.5px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.92);
+    line-height: 1.6;
+    max-width: 440px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* Kolom Kanan: Top White Card */
+.about-top-card {
+    background: #ffffff;
+    border-radius: var(--about-radius-lg, 24px);
+    padding: 26px 30px;
+    box-shadow: var(--about-shadow, 0 10px 30px rgba(0, 0, 0, 0.12));
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.about-top-card-header-row {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 18px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.about-top-card-title {
+    font-size: 21px;
+    font-weight: 800;
+    color: var(--about-dark, #0f172a);
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+}
+
+.about-top-card-desc {
+    font-size: 13px;
+    color: var(--about-body-text, #334155);
+    line-height: 1.55;
+}
+
+.about-top-card-image-box {
+    width: 100%;
+    height: 148px;
+    border-radius: var(--about-radius-md, 16px);
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.about-top-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Checklist Items */
+.about-checklist-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.about-checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.about-checklist-icon {
+    color: var(--about-orange, #ea580c);
+    font-size: 17px;
+    flex-shrink: 0;
+}
+
+.about-checklist-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--about-slate, #1e293b);
+    line-height: 1.4;
+}
+
+/* ==========================================================================
+   3. LOWER SECTION (VISI MISI & SYARAT KETENTUAN)
+   ========================================================================== */
+.about-bottom-panel {
+    background: #ffffff;
+    border-radius: var(--about-radius-lg, 24px);
+    padding: 32px 36px;
+    margin-bottom: 40px;
+    box-shadow: var(--about-shadow, 0 10px 30px rgba(0, 0, 0, 0.12));
+}
+
+.about-bottom-grid {
+    display: grid;
+    grid-template-columns: 0.9fr 2fr;
+    gap: 36px;
+    align-items: stretch;
+}
+
+/* Kolom Kiri Bawah: Visi & Misi */
+.about-visimisi-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.about-section-heading {
+    font-size: 21px;
+    font-weight: 800;
+    color: var(--about-dark, #0f172a);
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+}
+
+.about-visi-desc {
+    font-size: 13px;
+    color: var(--about-body-text, #334155);
+    line-height: 1.55;
+    margin-bottom: 22px;
+}
+
+.about-misi-list {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.about-misi-list li {
+    font-size: 13px;
+    color: var(--about-body-text, #334155);
+    line-height: 1.5;
+}
+
+/* Kolom Kanan Bawah: Syarat & Ketentuan (EQUAL HEIGHT GRID) */
+.about-terms-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.about-terms-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    align-items: stretch; /* Menjaga semua terms card berukuran sama */
+}
+
+.terms-card {
+    border: 1px solid var(--about-card-border, #e2e8f0);
+    border-radius: var(--about-radius-md, 16px);
+    padding: 16px 18px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100%; /* Menyamaratakan tinggi */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.terms-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+.terms-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.terms-card-icon {
+    color: var(--about-orange, #ea580c);
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.terms-card-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--about-orange, #ea580c);
+}
+
+.terms-card-desc {
+    font-size: 12px;
+    color: var(--about-body-text, #334155);
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   4. RESPONSIVE DESIGN (BREAKPOINTS)
+   ========================================================================== */
+
+/* Tablet (Max: 1024px) */
+@media (max-width: 1024px) {
+    .about-top-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .about-hero-desc {
+        max-width: 100%;
+    }
+
+    .about-bottom-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+}
+
+/* Mobile Devices (Max: 640px) */
+@media (max-width: 640px) {
+    .about-hero-title {
+        font-size: 34px;
+    }
+
+    .about-hero-tagline {
+        font-size: 17px;
+    }
+
+    .about-top-card {
+        padding: 20px 18px;
+    }
+
+    .about-top-card-header-row {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .about-top-card-image-box {
+        height: 160px;
+    }
+
+    .about-bottom-panel {
+        padding: 20px 16px;
+    }
+
+    .about-terms-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}

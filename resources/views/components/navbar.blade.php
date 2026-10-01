@@ -20,10 +20,10 @@
                 <a href="{{ url('/paket-wisata') }}" class="nav-link {{ request()->is('paket-wisata*') ? 'active' : '' }}">Paket Wisata</a>
             </li>
             <li class="nav-item">
-                <a href="{{ url('/#destinasi') }}" class="nav-link">Destinasi</a>
+                <a href="{{ url('/destinasi') }}" class="nav-link {{ request()->is('destinasi*') ? 'active' : '' }}">Destinasi</a>
             </li>
             <li class="nav-item">
-                <a href="{{ url('/#about') }}" class="nav-link">About</a>
+                <a href="{{ url('/about') }}" class="nav-link {{ request()->is('about*') ? 'active' : '' }}">About</a>
             </li>
             <li class="nav-item">
                 <a href="{{ url('/#contact') }}" class="nav-link">Contact</a>
@@ -32,7 +32,7 @@
 
         <!-- Profil Button -->
         <div class="navbar-action-group">
-            <a href="#profil" class="nav-profile-btn">
+            <a href="{{ url('/login') }}" class="nav-profile-btn {{ request()->is('login*') ? 'active' : '' }}">
                 <i class="fa-regular fa-user"></i>
                 <span>Profil</span>
             </a>
