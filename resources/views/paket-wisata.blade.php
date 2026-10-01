@@ -5,13 +5,6 @@
 
         <!-- ==================== HERO / HEADER SECTION ==================== -->
         <section class="hero-section">
-            <!-- Top Search Bar inside Hero -->
-            <div class="hero-top-bar">
-                <div class="hero-search-box">
-                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                    <input type="text" id="heroSearchInput" placeholder="Search" aria-label="Search">
-                </div>
-            </div>
 
             <!-- Hero Main Content with Back Button -->
             <div class="hero-content">
@@ -102,7 +95,7 @@
                             <i class="fa-solid fa-star"></i>
                         </div>
 
-                        <a href="{{ url('/#contact') }}" class="btn-detail-pill">Lihat Detail</a>
+                        <a href="{{ url('/paket-wisata/tangkuban-perahu') }}" class="btn-detail-pill">Lihat Detail</a>
                     </div>
                 </div>
 
@@ -146,7 +139,7 @@
                             <i class="fa-solid fa-star"></i>
                         </div>
 
-                        <a href="{{ url('/#contact') }}" class="btn-detail-pill">Lihat Detail</a>
+                        <a href="{{ url('/paket-wisata/jogja') }}" class="btn-detail-pill">Lihat Detail</a>
                     </div>
                 </div>
 
@@ -190,7 +183,7 @@
                             <i class="fa-solid fa-star"></i>
                         </div>
 
-                        <a href="{{ url('/#contact') }}" class="btn-detail-pill">Lihat Detail</a>
+                        <a href="{{ url('/paket-wisata/malioboro') }}" class="btn-detail-pill">Lihat Detail</a>
                     </div>
                 </div>
 
@@ -234,7 +227,7 @@
                             <i class="fa-solid fa-star"></i>
                         </div>
 
-                        <a href="{{ url('/#contact') }}" class="btn-detail-pill">Lihat Detail</a>
+                        <a href="{{ url('/paket-wisata/bromo') }}" class="btn-detail-pill">Lihat Detail</a>
                     </div>
                 </div>
 
@@ -278,7 +271,7 @@
                             <i class="fa-solid fa-star"></i>
                         </div>
 
-                        <a href="{{ url('/#contact') }}" class="btn-detail-pill">Lihat Detail</a>
+                        <a href="{{ url('/paket-wisata/pantai-pandawa') }}" class="btn-detail-pill">Lihat Detail</a>
                     </div>
                 </div>
 
@@ -322,7 +315,7 @@
                             <i class="fa-solid fa-star"></i>
                         </div>
 
-                        <a href="{{ url('/#contact') }}" class="btn-detail-pill">Lihat Detail</a>
+                        <a href="{{ url('/paket-wisata/bandung') }}" class="btn-detail-pill">Lihat Detail</a>
                     </div>
                 </div>
 
@@ -366,7 +359,7 @@
                             <i class="fa-solid fa-star"></i>
                         </div>
 
-                        <a href="{{ url('/#contact') }}" class="btn-detail-pill">Lihat Detail</a>
+                        <a href="{{ url('/paket-wisata/bali') }}" class="btn-detail-pill">Lihat Detail</a>
                     </div>
                 </div>
 
@@ -410,7 +403,7 @@
                             <i class="fa-solid fa-star"></i>
                         </div>
 
-                        <a href="{{ url('/#contact') }}" class="btn-detail-pill">Lihat Detail</a>
+                        <a href="{{ url('/paket-wisata/lampung') }}" class="btn-detail-pill">Lihat Detail</a>
                     </div>
                 </div>
 
