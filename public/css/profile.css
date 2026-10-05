@@ -1,0 +1,1478 @@
+/* ==========================================================================
+   GO TRAVEL - ADMIN PROFILE & DASHBOARD STYLESHEET
+   Accurately crafted to match reference UI designs
+   ========================================================================== */
+
+/* --- Profile Page Body & Background --- */
+.profile-page-body {
+    min-height: 100vh;
+    font-family: var(--font-family, 'Plus Jakarta Sans', sans-serif);
+    color: var(--text-dark, #0f172a);
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Background overlay with hero-bg.jpg blur & subtle dim */
+.profile-bg-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(180deg, rgba(15, 23, 42, 0.45) 0%, rgba(15, 23, 42, 0.55) 50%, rgba(15, 23, 42, 0.65) 100%),
+        url('../images/hero-bg.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    filter: blur(4px);
+    -webkit-filter: blur(4px);
+    transform: scale(1.03); /* Prevent blur edge artifacts */
+    z-index: -2;
+}
+
+/* Subtle warm ambient light */
+.profile-page-body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 80% 20%, rgba(234, 88, 12, 0.12) 0%, transparent 60%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* --- Admin Main Layout Wrapper --- */
+.admin-page-wrapper {
+    max-width: 1220px;
+    margin: 0 auto;
+    padding: 24px 20px 60px 20px;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+}
+
+/* Top Back Navigation Arrow */
+.admin-top-nav-row {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.admin-back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    color: #0f172a;
+    font-size: 16px;
+    text-decoration: none;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-back-btn:hover {
+    background: #ffffff;
+    color: #ea580c;
+    transform: translateX(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* ==========================================================================
+   MAIN GLASS CONTAINER (OUTER CARD)
+   ========================================================================== */
+.admin-glass-container {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: 32px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.14);
+    padding: 32px;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+/* ==========================================================================
+   LEFT COLUMN: SIDEBAR PROFILE (STICKY ON SCROLL)
+   ========================================================================== */
+.admin-sidebar-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 32px 20px 28px 20px;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 96px; /* Offset below sticky navbar */
+    z-index: 20;
+    transition: top 0.2s ease;
+}
+
+/* User Info Header */
+.sidebar-user-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.sidebar-avatar-circle {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+}
+
+.sidebar-avatar-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sidebar-user-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.3;
+    margin-bottom: 4px;
+}
+
+.sidebar-user-email {
+    font-size: 12px;
+    color: #64748b;
+    word-break: break-all;
+    max-width: 220px;
+}
+
+/* Sidebar Navigation Menu */
+.sidebar-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 100%;
+}
+
+.sidebar-nav-item {
+    width: 100%;
+}
+
+.sidebar-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 18px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+}
+
+.sidebar-nav-link i {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+    color: #64748b;
+    transition: color 0.2s ease;
+}
+
+.sidebar-nav-link:hover {
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+.sidebar-nav-link:hover i {
+    color: #ea580c;
+}
+
+/* Active Menu Item */
+.sidebar-nav-link.active {
+    background: #fff2eb;
+    color: #ea580c;
+    font-weight: 700;
+}
+
+.sidebar-nav-link.active i {
+    color: #ea580c;
+}
+
+/* Logout Button */
+.sidebar-nav-link.nav-logout {
+    color: #ef4444;
+    margin-top: 12px;
+}
+
+.sidebar-nav-link.nav-logout i {
+    color: #ef4444;
+}
+
+.sidebar-nav-link.nav-logout:hover {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.sidebar-nav-link.nav-logout:hover i {
+    color: #dc2626;
+}
+
+/* ==========================================================================
+   RIGHT COLUMN: MAIN CONTENT & TABS
+   ========================================================================== */
+.admin-main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0; /* Prevents grid breakout */
+}
+
+/* Tab panes visibility */
+.tab-content-pane {
+    display: none;
+    flex-direction: column;
+    gap: 24px;
+    animation: fadeInTab 0.3s ease;
+}
+
+.tab-content-pane.active {
+    display: flex;
+}
+
+@keyframes fadeInTab {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================================================
+   SUMMARY CARDS (TOP OF DASHBOARD)
+   ========================================================================== */
+.summary-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.summary-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 18px 20px;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+
+.summary-icon-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+}
+
+/* Orange for Total Pesanan */
+.summary-card.total-orders .summary-icon-circle {
+    background: #fff2eb;
+    color: #ea580c;
+}
+
+/* Green for Selesai */
+.summary-card.completed-orders .summary-icon-circle {
+    background: #ecfdf5;
+    color: #10b981;
+}
+
+/* Blue for Dikonfirmasi */
+.summary-card.confirmed-orders .summary-icon-circle {
+    background: #eff6ff;
+    color: #3b82f6;
+}
+
+.summary-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.summary-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #475569;
+    margin-bottom: 2px;
+}
+
+.summary-number {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 2px;
+}
+
+.summary-card.total-orders .summary-number {
+    color: #ea580c;
+}
+
+.summary-card.completed-orders .summary-number {
+    color: #10b981;
+}
+
+.summary-card.confirmed-orders .summary-number {
+    color: #3b82f6;
+}
+
+.summary-subtitle {
+    font-size: 11.5px;
+    color: #94a3b8;
+}
+
+/* ==========================================================================
+   WHITE CONTENT CARDS (Paket Wisata & Riwayat Pemesanan)
+   ========================================================================== */
+.admin-section-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 24px 26px;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+}
+
+.admin-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.admin-card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+/* Header Badge on Tab Paket Wisata */
+.header-badge-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff2eb;
+    color: #ea580c;
+    border: 1px solid #ffd8c4;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 700;
+}
+
+/* Controls Bar (Search + Add Button) */
+.admin-controls-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.admin-search-wrapper {
+    position: relative;
+    flex: 1;
+}
+
+.admin-search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.admin-search-input {
+    width: 100%;
+    padding: 11px 16px 11px 42px;
+    background: #f1f5f9;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    font-size: 13.5px;
+    font-family: inherit;
+    color: #0f172a;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.admin-search-input:focus {
+    background: #ffffff;
+    border-color: #ea580c;
+    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
+}
+
+.admin-search-input::placeholder {
+    color: #94a3b8;
+}
+
+/* Tambah Paket Button */
+.btn-add-package {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #ffffff;
+    color: #ea580c;
+    border: 1px solid #fed7aa;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.btn-add-package:hover {
+    background: #fff2eb;
+    border-color: #ea580c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.15);
+}
+
+/* ==========================================================================
+   PACKAGE ITEM HORIZONTAL CARD
+   ========================================================================== */
+.packages-horizontal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.package-item-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    border: 1px solid #f1f5f9;
+    border-radius: 18px;
+    background: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.package-item-card:hover {
+    border-color: #e2e8f0;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    transform: translateY(-1px);
+}
+
+/* Package Left Side (Image & Info) */
+.package-item-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+}
+
+.package-item-thumb {
+    width: 92px;
+    height: 58px;
+    border-radius: 12px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: #f1f5f9;
+}
+
+.package-item-meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.package-item-name {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.package-item-location {
+    font-size: 12.5px;
+    color: #64748b;
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Package Right Side (Price, Duration & Action Icons) */
+.package-item-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-shrink: 0;
+}
+
+.package-item-pricing {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.package-item-price {
+    font-size: 14.5px;
+    font-weight: 800;
+    color: #ea580c;
+    line-height: 1.3;
+}
+
+.package-item-duration {
+    font-size: 11.5px;
+    color: #64748b;
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.package-item-duration i {
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+.package-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-action-icon {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    padding: 6px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-action-icon.edit {
+    color: #1e293b;
+}
+
+.btn-action-icon.edit:hover {
+    color: #ea580c;
+    background: #fff2eb;
+}
+
+.btn-action-icon.delete {
+    color: #ef4444;
+}
+
+.btn-action-icon.delete:hover {
+    color: #dc2626;
+    background: #fee2e2;
+}
+
+/* ==========================================================================
+   RIWAYAT PEMESANAN TABLE
+   ========================================================================== */
+.table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.admin-orders-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 12.5px;
+}
+
+.admin-orders-table thead th {
+    background: #fff8f4;
+    color: #1e293b;
+    font-weight: 700;
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 12px;
+    border-top: 1px solid #fed7aa;
+    border-bottom: 1px solid #fed7aa;
+    white-space: nowrap;
+}
+
+.admin-orders-table thead th:first-child {
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    border-left: 1px solid #fed7aa;
+}
+
+.admin-orders-table thead th:last-child {
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border-right: 1px solid #fed7aa;
+}
+
+.admin-orders-table tbody td {
+    padding: 11px 12px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+    color: #334155;
+    font-size: 12px;
+}
+
+.admin-orders-table tbody tr:hover td {
+    background: #fafafa;
+}
+
+.table-text-main {
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.3;
+}
+
+.table-text-sub {
+    font-size: 11.5px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+/* Status Badges */
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.badge-status.confirmed {
+    background: #dbeafe;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+}
+
+.badge-status.completed {
+    background: #dcfce7;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.badge-status.cancelled {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+/* Action Button: Lihat Detail */
+.btn-detail-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 12px;
+    background: #ffffff;
+    color: #3b82f6;
+    border: 1px solid #93c5fd;
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-detail-outline:hover {
+    background: #eff6ff;
+    border-color: #3b82f6;
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   PENGATURAN / PROFILE SETTINGS FORM
+   ========================================================================== */
+.admin-settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 600px;
+}
+
+.form-group-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.form-input-control {
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-family: inherit;
+    color: #0f172a;
+    background: #ffffff;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input-control:focus {
+    border-color: #ea580c;
+    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
+}
+
+.btn-save-settings {
+    align-self: flex-start;
+    padding: 10px 24px;
+    background: #ea580c;
+    color: #ffffff;
+    border: none;
+    border-radius: 9999px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px rgba(234, 88, 12, 0.3);
+}
+
+.btn-save-settings:hover {
+    background: #c2410c;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(234, 88, 12, 0.4);
+}
+
+/* ==========================================================================
+   MODAL POPUP STYLES (Order Detail & Action feedback)
+   ========================================================================== */
+.admin-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.admin-modal-backdrop.show {
+    display: flex;
+    opacity: 1;
+}
+
+.admin-modal-box {
+    background: #ffffff;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 520px;
+    padding: 28px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    position: relative;
+    transform: scale(0.95);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-modal-backdrop.show .admin-modal-box {
+    transform: scale(1);
+}
+
+.admin-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 20px;
+}
+
+/* ==========================================================================
+   LOGOUT MODAL POPUP STYLING
+   ========================================================================== */
+.logout-modal-box {
+    max-width: 430px;
+    text-align: center;
+    padding: 36px 30px 30px 30px;
+    border-radius: 28px;
+}
+
+.logout-icon-wrapper {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: #fee2e2;
+    color: #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin: 0 auto 18px auto;
+    box-shadow: 0 6px 18px rgba(239, 68, 68, 0.18);
+    animation: pulseLogout 2s infinite;
+}
+
+@keyframes pulseLogout {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.logout-modal-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.logout-modal-desc {
+    font-size: 13.5px;
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 26px;
+}
+
+.logout-actions-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.btn-modal-cancel {
+    flex: 1;
+    padding: 12px 20px;
+    background: #f1f5f9;
+    color: #475569;
+    border-radius: 9999px;
+    font-size: 13.5px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-modal-cancel:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.btn-modal-confirm-logout {
+    flex: 1;
+    padding: 12px 20px;
+    background: #ef4444;
+    color: #ffffff;
+    border-radius: 9999px;
+    font-size: 13.5px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+    transition: all 0.2s ease;
+}
+
+.btn-modal-confirm-logout:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
+    color: #ffffff;
+}
+
+.admin-modal-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.admin-modal-close {
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: color 0.2s ease;
+}
+
+.admin-modal-close:hover {
+    color: #0f172a;
+}
+
+.admin-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-size: 13.5px;
+    color: #334155;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #e2e8f0;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.detail-label {
+    color: #64748b;
+    font-weight: 500;
+}
+
+.detail-value {
+    font-weight: 700;
+    color: #0f172a;
+    text-align: right;
+}
+
+/* ==========================================================================
+   DETAIL PEMESANAN VIEW (MATCHING REFERENCE DESIGN)
+   ========================================================================== */
+.detail-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    gap: 16px;
+}
+
+.detail-header-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.detail-subtitle {
+    font-size: 13.5px;
+    color: #64748b;
+    margin: 4px 0 10px 0;
+}
+
+.dt-status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 18px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    width: fit-content;
+}
+
+.dt-status-badge.pending {
+    background: #e0f2fe;
+    color: #0284c7;
+    border: 1px solid #bae6fd;
+}
+
+.dt-status-badge.confirmed {
+    background: #dbeafe;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+}
+
+.dt-status-badge.completed {
+    background: #dcfce7;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.detail-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-detail-approve {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 24px;
+    border-radius: 9999px;
+    font-size: 13.5px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.btn-detail-approve:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+.btn-detail-approve.completed {
+    background: #16a34a;
+    box-shadow: 0 4px 14px rgba(22, 163, 74, 0.25);
+}
+
+.btn-detail-approve.completed:hover {
+    background: #15803d;
+}
+
+.btn-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-back-link:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+/* Detail 2-Column Grid Layout */
+.detail-content-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+    align-items: start;
+}
+
+/* Left Sub-column Cards */
+.detail-left-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.detail-info-card {
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: 20px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.detail-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 14px;
+}
+
+/* Informasi Paket Box */
+.detail-pkg-box {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.detail-pkg-img {
+    width: 130px;
+    height: 80px;
+    border-radius: 12px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.detail-pkg-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.detail-pkg-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 2px;
+}
+
+.detail-pkg-feature {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #64748b;
+}
+
+.detail-pkg-feature i {
+    font-size: 13px;
+    color: #94a3b8;
+    width: 14px;
+    text-align: center;
+}
+
+/* Key Value Table in Cards */
+.detail-kv-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.detail-kv-table td {
+    padding: 5px 0;
+    font-size: 12.5px;
+    vertical-align: top;
+}
+
+.detail-kv-table td.label-col {
+    color: #64748b;
+    width: 175px;
+    font-weight: 500;
+}
+
+.detail-kv-table td.sep-col {
+    width: 15px;
+    color: #64748b;
+    text-align: center;
+}
+
+.detail-kv-table td.val-col {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+/* Right Sub-column Cards */
+.detail-right-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.receipt-screen-wrapper {
+    background: #0284c7;
+    border-radius: 18px;
+    padding: 16px;
+    color: #ffffff;
+    box-shadow: 0 8px 24px rgba(2, 132, 199, 0.2);
+}
+
+.receipt-screen-title {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #e0f2fe;
+    margin-bottom: 12px;
+}
+
+.receipt-card-slip {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 20px 16px;
+    color: #0f172a;
+    text-align: center;
+}
+
+.receipt-icon-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #22c55e;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin: 0 auto 10px auto;
+}
+
+.receipt-amount {
+    font-size: 19px;
+    font-weight: 800;
+    color: #ea580c;
+    line-height: 1.2;
+    margin-bottom: 3px;
+}
+
+.receipt-status-text {
+    font-size: 11px;
+    color: #64748b;
+    line-height: 1.3;
+}
+
+.receipt-id-num {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 10px;
+    font-family: monospace;
+}
+
+.receipt-badge-tag {
+    display: inline-block;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 9.5px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin: 8px 0 12px 0;
+    letter-spacing: 0.5px;
+}
+
+.receipt-dashed-line {
+    border-top: 1px dashed #e2e8f0;
+    margin: 12px 0;
+}
+
+.receipt-tx-info {
+    text-align: left;
+    font-size: 10.5px;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+.receipt-tx-info strong {
+    color: #0f172a;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.receipt-payment-method-row {
+    margin-top: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.receipt-watermark {
+    text-align: center;
+    font-size: 10.5px;
+    color: #e0f2fe;
+    margin-top: 12px;
+}
+
+/* Status Banner Bottom Right */
+.detail-status-banner {
+    background: #ecfdf5;
+    border: 1px solid #bbf7d0;
+    border-radius: 18px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.detail-status-banner.completed {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+}
+
+.detail-status-banner.confirmed {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.status-banner-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #dcfce7;
+    color: #16a34a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+}
+
+.detail-status-banner.confirmed .status-banner-icon {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.status-banner-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.status-banner-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #166534;
+}
+
+.detail-status-banner.confirmed .status-banner-title {
+    color: #1e40af;
+}
+
+.status-banner-subtitle {
+    font-size: 11.5px;
+    color: #15803d;
+}
+
+.detail-status-banner.confirmed .status-banner-subtitle {
+    color: #2563eb;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN (TABLETS & MOBILE)
+   ========================================================================== */
+@media (max-width: 1024px) {
+    .admin-glass-container {
+        grid-template-columns: 1fr;
+        padding: 24px;
+        gap: 20px;
+    }
+
+    .admin-sidebar-card {
+        padding: 24px;
+        position: static;
+        top: auto;
+    }
+
+    .summary-cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .detail-content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-page-wrapper {
+        padding: 16px 12px 40px 12px;
+    }
+
+    .admin-glass-container {
+        padding: 18px;
+        border-radius: 24px;
+    }
+
+    .summary-cards-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .package-item-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .package-item-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .package-item-pricing {
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .admin-controls-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-add-package {
+        justify-content: center;
+    }
+
+    .detail-pkg-box {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .detail-pkg-img {
+        width: 100%;
+        height: 140px;
+    }
+
+    .detail-header-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

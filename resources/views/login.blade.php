@@ -53,6 +53,13 @@
                 <a href="{{ url('/register') }}" class="auth-tab-btn" id="tabRegister">Register</a>
             </div>
 
+            @if(session('success'))
+                <div style="background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
+                    <span>{{ session('success') }}</span>
+                </div>
+            @endif
+
             <!-- Form Login -->
             <form action="{{ url('/login') }}" method="POST" id="loginForm">
                 @csrf

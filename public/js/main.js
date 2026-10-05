@@ -399,23 +399,25 @@ Mohon info ketersediaan armada & instruksi transfer selanjutnya. Terima kasih!`;
                 const waUrl = `https://wa.me/6283821382635?text=${encodeURIComponent(waMessage)}`;
                 window.open(waUrl, '_blank');
             });
-        // User Profile Dropdown Menu Toggle
-        const userMenuToggle = document.getElementById('userMenuToggle');
-        const userDropdownMenu = document.getElementById('userDropdownMenu');
-
-        if (userMenuToggle && userDropdownMenu) {
-            userMenuToggle.addEventListener('click', function (e) {
-                e.stopPropagation();
-                const isShown = userDropdownMenu.style.display === 'block';
-                userDropdownMenu.style.display = isShown ? 'none' : 'block';
-            });
-
-            document.addEventListener('click', function (e) {
-                if (!userMenuToggle.contains(e.target) && !userDropdownMenu.contains(e.target)) {
-                    userDropdownMenu.style.display = 'none';
-                }
-            });
         }
+    }
+
+    // User Profile Dropdown Menu Toggle
+    const userMenuToggle = document.getElementById('userMenuToggle');
+    const userDropdownMenu = document.getElementById('userDropdownMenu');
+
+    if (userMenuToggle && userDropdownMenu) {
+        userMenuToggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            const isShown = userDropdownMenu.style.display === 'block';
+            userDropdownMenu.style.display = isShown ? 'none' : 'block';
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!userMenuToggle.contains(e.target) && !userDropdownMenu.contains(e.target)) {
+                userDropdownMenu.style.display = 'none';
+            }
+        });
     }
 });
 

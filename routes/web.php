@@ -88,7 +88,7 @@ Route::get('/auth/facebook', function () {
 
 Route::get('/logout', function () {
     session()->forget('user');
-    return redirect('/');
+    return redirect('/login')->with('success', 'Anda telah berhasil keluar.');
 })->name('logout');
 
 Route::get('/paket-wisata', [PaketWisataController::class, 'index'])->name('paket-wisata.index');
@@ -97,3 +97,15 @@ Route::get('/paket-wisata/detail/{slug}', [PaketWisataController::class, 'show']
 
 Route::get('/checkout/{slug}', [PaketWisataController::class, 'checkout'])->name('paket-wisata.checkout');
 Route::get('/paket-wisata/checkout/{slug}', [PaketWisataController::class, 'checkout']);
+
+Route::get('/profile', function () {
+    return view('profile');
+})->name('profile');
+
+Route::get('/dashboard', function () {
+    return view('profile');
+})->name('dashboard');
+
+Route::get('/admin', function () {
+    return view('profile');
+})->name('admin');

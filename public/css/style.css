@@ -216,6 +216,12 @@ body.page-body::before {
     background: #f8fafc;
 }
 
+.nav-profile-btn.active {
+    background-color: var(--primary-orange-light, #fff2eb);
+    color: var(--primary-orange, #ea580c);
+    font-weight: 700;
+}
+
 .mobile-toggle-btn {
     display: none;
     background: transparent;
