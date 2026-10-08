@@ -7,11 +7,12 @@ use Illuminate\Http\Request;
 class PaketWisataController extends Controller
 {
     /**
-     * Data master paket wisata
+     * Data master paket wisata lengkap (24 Paket: Halaman 1, 2, dan 3)
      */
     public static function getPaketData()
     {
         return [
+            // ==================== HALAMAN 1 ====================
             'tangkuban-perahu' => [
                 'slug' => 'tangkuban-perahu',
                 'name' => 'Tangkuban Perahu Tour 1 Hari',
@@ -24,6 +25,7 @@ class PaketWisataController extends Controller
                 'reviews_count' => 124,
                 'image' => 'images/tangkuban.jpg',
                 'category' => 'jawa 1hari',
+                'page' => 1,
                 'description' => 'Nikmati keindahan kawah Gunung Tangkuban Perahu yang melegenda dan udara sejuk pegunungan Lembang. Paket ini dirancang khusus untuk liburan singkat yang menyegarkan bersama keluarga, teman, atau rekan kantor dengan armada bus pariwisata yang nyaman.',
                 'highlights' => [
                     'Kawah Ratu Tangkuban Perahu',
@@ -86,6 +88,7 @@ class PaketWisataController extends Controller
                 'reviews_count' => 218,
                 'image' => 'images/jogja.jpg',
                 'category' => 'jawa menginap',
+                'page' => 1,
                 'description' => 'Jelajahi keindahan budaya, sejarah, dan pesona alam kota Yogyakarta. Mengunjungi Candi Prambanan, Pantai Parangtritis, Tebing Breksi, hingga suasana malam syahdu di kawasan Malioboro dengan fasilitas hotel berbintang.',
                 'highlights' => [
                     'Candi Prambanan & Tebing Breksi',
@@ -159,6 +162,7 @@ class PaketWisataController extends Controller
                 'reviews_count' => 96,
                 'image' => 'images/malioboro.jpg',
                 'category' => 'jawa 1hari',
+                'page' => 1,
                 'description' => 'Paket city tour seru satu hari di jantung kebudayaan Yogyakarta. Mengitari kawasan bersejarah Malioboro, Titik Nol Kilometer, Pasar Beringharjo, hingga Museum Benteng Vredeburg.',
                 'highlights' => [
                     'Jalan Malioboro & Titik Nol KM',
@@ -211,13 +215,14 @@ class PaketWisataController extends Controller
                 'name' => 'Bromo Tour 1 Hari',
                 'price' => 'Rp.499.000',
                 'price_raw' => 499000,
-                'duration' => '1 Hari (Midnight Tour)',
+                'duration' => '1 Hari',
                 'max_people' => 'Max 40 Orang',
                 'location' => 'Taman Nasional Bromo Tengger Semeru, Jawa Timur',
                 'rating' => 5.0,
                 'reviews_count' => 342,
                 'image' => 'images/bromo.jpg',
                 'category' => 'jawa 1hari',
+                'page' => 1,
                 'description' => 'Saksikan matahari terbit spektakuler paling ikonik di Indonesia berlatar belakang Gunung Bromo, Batok, dan Semeru. Termasuk petualangan seru naik Jeep Hardtop 4x4 di Lautan Pasir dan Kawah Bromo.',
                 'highlights' => [
                     'Sunrise View Point Penanjakan / Kingkong Hill',
@@ -280,6 +285,7 @@ class PaketWisataController extends Controller
                 'reviews_count' => 189,
                 'image' => 'images/pandawa.jpg',
                 'category' => 'bali 1hari',
+                'page' => 1,
                 'description' => 'Nikmati pesona pantai pasir putih tersembunyi di balik tebing kapur megah dengan patung Panca Pandawa. Dilengkapi dengan watersport seru dan pemandangan sunset di Bali Selatan.',
                 'highlights' => [
                     'Tebing Kapur & Patung Panca Pandawa',
@@ -332,13 +338,14 @@ class PaketWisataController extends Controller
                 'name' => 'Bandung Tour 4 Hari',
                 'price' => 'Rp.1.800.000',
                 'price_raw' => 1800000,
-                'duration' => '4 Hari 3 Malam',
+                'duration' => '4 Hari',
                 'max_people' => 'Max 40 Orang',
                 'location' => 'Bandung, Jawa Barat',
                 'rating' => 4.9,
                 'reviews_count' => 175,
                 'image' => 'images/bandung.jpg',
                 'category' => 'jawa menginap',
+                'page' => 1,
                 'description' => 'Paket liburan komprehensif 4 hari keliling Paris van Java. Menikmati eksotisme Kawah Putih Ciwidey, pesona alam Lembang, wisata kuliner legendaris Bandung, dan belanja factory outlet.',
                 'highlights' => [
                     'Kawah Putih & Glamping Lakeside Ciwidey',
@@ -423,13 +430,14 @@ class PaketWisataController extends Controller
                 'name' => 'Bali Tour 5 Hari',
                 'price' => 'Rp.2.750.000',
                 'price_raw' => 2750000,
-                'duration' => '5 Hari 4 Malam',
+                'duration' => '5 Hari',
                 'max_people' => 'Max 40 Orang',
                 'location' => 'Denpasar & Seluruh Bali',
                 'rating' => 4.9,
                 'reviews_count' => 310,
                 'image' => 'images/bali.jpg',
                 'category' => 'bali menginap',
+                'page' => 1,
                 'description' => 'Petualangan impian di Pulau Dewata selama 5 hari. Mengunjungi Tanah Lot, Garuda Wisnu Kencana (GWK), Pura Uluwatu, Desa Penglipuran, Kintamani, hingga makan malam romantis di Pantai Jimbaran.',
                 'highlights' => [
                     'Pura Tanah Lot & Pura Ulun Danu Beratan',
@@ -525,13 +533,14 @@ class PaketWisataController extends Controller
                 'name' => 'Lampung Tour 3 Hari',
                 'price' => 'Rp.975.000',
                 'price_raw' => 975000,
-                'duration' => '3 Hari 2 Malam',
+                'duration' => '3 Hari',
                 'max_people' => 'Max 40 Orang',
                 'location' => 'Bandar Lampung & Pesawaran, Lampung',
                 'rating' => 4.8,
                 'reviews_count' => 112,
                 'image' => 'images/lampung.jpg',
                 'category' => 'sumatera menginap',
+                'page' => 1,
                 'description' => 'Jelajahi surga bahari di Teluk Lampung. Snorkeling di pulau eksotis Pahawang, bermain dengan lumba-lumba di Teluk Kiluan, mengunjungi Taman Nasional Way Kambas, dan menikmati kuliner lezat khas Lampung.',
                 'highlights' => [
                     'Pulau Pahawang Besar & Pahawang Kecil',
@@ -601,16 +610,1098 @@ class PaketWisataController extends Controller
                         ]
                     ]
                 ]
-            ]
+            ],
+
+            // ==================== HALAMAN 2 ====================
+            'kayla-hills' => [
+                'slug' => 'kayla-hills',
+                'name' => 'Kayla Hills Batang Tour 2 Hari',
+                'price' => 'Rp.500.000',
+                'price_raw' => 500000,
+                'duration' => '2 Hari',
+                'max_people' => 'Max 40 Orang',
+                'location' => 'Batang, Jawa Tengah',
+                'rating' => 5.0,
+                'reviews_count' => 145,
+                'image' => 'images/kayla-hills.jpg',
+                'category' => 'jawa menginap',
+                'page' => 2,
+                'description' => 'Nikmati keseruan wahana rainbow slide spektakuler, panorama kebun teh pegunungan yang asri, serta beragam spot foto kekinian di Kayla Hills Batang bersama rombongan.',
+                'highlights' => [
+                    'Wahana Rainbow Slide Raksasa',
+                    'Ferris Wheel & Kereta Mini Pegunungan',
+                    'Gardu Pandang Kebun Teh Pagilaran',
+                    'Pusat Oleh-oleh Khas Batang & Pekalongan'
+                ],
+                'facilities' => [
+                    ['icon' => 'fa-solid fa-bus', 'title' => 'Bus Pariwisata AC', 'desc' => 'Armada nyaman & full fasilitas'],
+                    ['icon' => 'fa-solid fa-hotel', 'title' => 'Hotel Bintang 3', 'desc' => '1 Malam twin share'],
+                    ['icon' => 'fa-solid fa-ticket', 'title' => 'Tiket Masuk & Wahana', 'desc' => 'Akses terusan Kayla Hills'],
+                    ['icon' => 'fa-solid fa-utensils', 'title' => 'Makan 3x', 'desc' => 'Termasuk kuliner lokal']
+                ],
+                'inclusions' => [
+                    'Bus Pariwisata AC Executive selama 2 hari',
+                    'Akomodasi Hotel Bintang 3 (1 Malam)',
+                    'Tiket masuk Kayla Hills & wahana utama',
+                    '3x Makan & Air Mineral botol',
+                    'BBM, Tol, Retribusi & Parkir',
+                    'Tour Leader profesional'
+                ],
+                'exclusions' => [
+                    'Pengeluaran belanja pribadi',
+                    'Tiket wahana tambahan berbayar opsional',
+                    'Tips driver & crew'
+                ],
+                'important_info' => [
+                    'Kenakan pakaian yang nyaman untuk aktivitas outdoor dan bermain wahana.',
+                    'Bawa jaket ringan karena udara perbukitan sejuk di sore/malam hari.'
+                ],
+                'itinerary' => [
+                    [
+                        'day' => 'Hari 1',
+                        'title' => 'Eksplorasi Kayla Hills & Wahana Seru',
+                        'schedules' => [
+                            ['time' => '07:00 - 09:30', 'activity' => 'Penjemputan & perjalanan menuju Kayla Hills Batang'],
+                            ['time' => '10:00 - 13:00', 'activity' => 'Tiba di Kayla Hills, main Rainbow Slide & sesi foto'],
+                            ['time' => '13:00 - 14:30', 'activity' => 'Makan siang di resto lokal khas Batang'],
+                            ['time' => '15:00 - 17:30', 'activity' => 'Jelajah agrowisata kebun teh & sunset view'],
+                            ['time' => '18:30 - 20:30', 'activity' => 'Makan malam & Check-in hotel']
+                        ]
+                    ],
+                    [
+                        'day' => 'Hari 2',
+                        'title' => 'Wisata Batik Pekalongan & Kepulangan',
+                        'schedules' => [
+                            ['time' => '07:00 - 08:30', 'activity' => 'Sarapan pagi & check-out hotel'],
+                            ['time' => '09:00 - 12:00', 'activity' => 'Wisata belanja ke Pasar Grosir Batik Setono'],
+                            ['time' => '12:30 - 14:00', 'activity' => 'Makan siang kuliner Megono & Garang Asem'],
+                            ['time' => '14:30 - Selesai', 'activity' => 'Perjalanan kembali menuju meeting point asal.']
+                        ]
+                    ]
+                ]
+            ],
+
+            'saloka' => [
+                'slug' => 'saloka',
+                'name' => 'Saloka Tour 3 Hari',
+                'price' => 'Rp.600.000',
+                'price_raw' => 600000,
+                'duration' => '3 Hari',
+                'max_people' => 'Max 40 Orang',
+                'location' => 'Tuntang, Semarang, Jawa Tengah',
+                'rating' => 5.0,
+                'reviews_count' => 198,
+                'image' => 'images/saloka.jpg',
+                'category' => 'jawa menginap',
+                'page' => 2,
+                'description' => 'Jelajahi taman rekreasi tematik terbesar di Jawa Tengah dengan lebih dari 25 wahana seru terbagi dalam 5 zona petualangan, pertunjukan spektakuler Baru Klinthing, dan kuliner khas Semarang.',
+                'highlights' => [
+                    'Saloka Theme Park 5 Zona Petualangan',
+                    'Wahana Bianglala Raksasa Cakrawala',
+                    'Lawang Sewu & Kota Lama Semarang',
+                    'Pusat Lumpia & Bandeng Juwana'
+                ],
+                'facilities' => [
+                    ['icon' => 'fa-solid fa-bus', 'title' => 'Bus Pariwisata AC', 'desc' => 'Reclining seat, audio, USB'],
+                    ['icon' => 'fa-solid fa-hotel', 'title' => 'Hotel Bintang 3', 'desc' => '2 Malam di Semarang'],
+                    ['icon' => 'fa-solid fa-ticket', 'title' => 'Tiket Terusan Saloka', 'desc' => 'Bebas naik semua wahana'],
+                    ['icon' => 'fa-solid fa-utensils', 'title' => 'Makan Terjadwal', 'desc' => 'Sarapan hotel & makan resto']
+                ],
+                'inclusions' => [
+                    'Bus Pariwisata Executive AC selama 3 hari',
+                    'Akomodasi Hotel Bintang 3 (2 Malam)',
+                    'Tiket terusan Saloka Theme Park',
+                    'Tiket Lawang Sewu & Objek Wisata',
+                    '5x Makan & Air Mineral harian',
+                    'Tour Leader & Driver berpengalaman'
+                ],
+                'exclusions' => [
+                    'Belanja pribadi dan oleh-oleh',
+                    'Tips supir dan crew'
+                ],
+                'important_info' => [
+                    'Tiket terusan Saloka berlaku untuk semua wahana permainan sepuasnya tanpa batas.',
+                    'Dianjurkan membawa baju ganti bila ingin mencoba wahana air.'
+                ],
+                'itinerary' => [
+                    [
+                        'day' => 'Hari 1',
+                        'title' => 'Kedatangan & Heritage Kota Lama Semarang',
+                        'schedules' => [
+                            ['time' => '08:00 - 11:30', 'activity' => 'Penjemputan rombongan & perjalanan ke Semarang'],
+                            ['time' => '12:00 - 13:30', 'activity' => 'Makan siang resto khas Semarangan'],
+                            ['time' => '14:00 - 17:00', 'activity' => 'Wisata Kota Lama Semarang & Gereja Blenduk'],
+                            ['time' => '18:00 - 20:00', 'activity' => 'Makan malam & Check-in hotel']
+                        ]
+                    ],
+                    [
+                        'day' => 'Hari 2',
+                        'title' => 'Full Day Petualangan di Saloka Theme Park',
+                        'schedules' => [
+                            ['time' => '07:30 - 08:30', 'activity' => 'Sarapan pagi di hotel'],
+                            ['time' => '09:00 - 16:30', 'activity' => 'Eksplorasi wahana Saloka Theme Park, show & atraksi'],
+                            ['time' => '17:00 - 19:30', 'activity' => 'Makan malam kuliner malam Semarang & kembali ke hotel']
+                        ]
+                    ],
+                    [
+                        'day' => 'Hari 3',
+                        'title' => 'Lawang Sewu, Oleh-Oleh & Kepulangan',
+                        'schedules' => [
+                            ['time' => '07:30 - 08:30', 'activity' => 'Sarapan pagi & check-out hotel'],
+                            ['time' => '09:00 - 11:30', 'activity' => 'Wisata sejarah ke Lawang Sewu'],
+                            ['time' => '12:00 - 14:00', 'activity' => 'Makan siang & belanja Bandeng Presto Juwana / Lumpia'],
+                            ['time' => '14:30 - Selesai', 'activity' => 'Pengantaran peserta ke titik drop-off. Selesai.']
+                        ]
+                    ]
+                ]
+            ],
+
+            'kebun-raya-bogor' => [
+                'slug' => 'kebun-raya-bogor',
+                'name' => 'Kebun Raya Bogor Tour 1 Hari',
+                'price' => 'Rp.300.000',
+                'price_raw' => 300000,
+                'duration' => '1 Hari',
+                'max_people' => 'Max 40 Orang',
+                'location' => 'Kota Bogor, Jawa Barat',
+                'rating' => 5.0,
+                'reviews_count' => 167,
+                'image' => 'images/kebun-raya-bogor.jpg',
+                'category' => 'jawa 1hari',
+                'page' => 2,
+                'description' => 'Eksplorasi keasrian hutan tropis di tengah kota Bogor, melihat ribuan spesies flora langka, memberi makan rusa tutul di halaman Istana Bogor, dan museum zoologi.',
+                'highlights' => [
+                    'Taman Meksiko & Griya Anggrek',
+                    'Kolam Teratai Raksasa & Jembatan Merah',
+                    'Museum Zoologi Bogor',
+                    'Rusa Tutul Istana Kepresidenan Bogor'
+                ],
+                'facilities' => [
+                    ['icon' => 'fa-solid fa-bus', 'title' => 'Bus Pariwisata AC', 'desc' => 'Armada bersih & dingin'],
+                    ['icon' => 'fa-solid fa-ticket', 'title' => 'Tiket Masuk KRB', 'desc' => 'Tiket terusan kebun raya'],
+                    ['icon' => 'fa-solid fa-utensils', 'title' => 'Makan Siang Khas Sunda', 'desc' => 'Restoran ternama di Bogor'],
+                    ['icon' => 'fa-solid fa-user-tie', 'title' => 'Tour Leader Ramah', 'desc' => 'Pemandu edukatif']
+                ],
+                'inclusions' => [
+                    'Transportasi Bus Pariwisata AC Full Day',
+                    'Tiket masuk Kebun Raya Bogor & Museum Zoologi',
+                    '1x Makan Siang masakan Sunda',
+                    'Snack & Air Mineral botol',
+                    'BBM, Tol Jagorawi, dan Parkir bus'
+                ],
+                'exclusions' => [
+                    'Sewa sepeda / golf cart di dalam kebun raya',
+                    'Pengeluaran belanja pribadi (Asinan Bogor, Roti Unyil)'
+                ],
+                'important_info' => [
+                    'Kenakan sepatu sneakers yang nyaman untuk berjalan santai di area taman.',
+                    'Dianjurkan membawa payung lipat atau topi pelindung matahari.'
+                ],
+                'itinerary' => [
+                    [
+                        'day' => 'Hari 1',
+                        'title' => 'Piknik Edukasi Kebun Raya Bogor & Wisata Kuliner',
+                        'schedules' => [
+                            ['time' => '07:00 - 08:30', 'activity' => 'Kumpul di meeting point & berangkat ke Bogor via Tol Jagorawi'],
+                            ['time' => '09:00 - 12:00', 'activity' => 'Jelajah Kebun Raya Bogor, Griya Anggrek, & Museum Zoologi'],
+                            ['time' => '12:30 - 14:00', 'activity' => 'Makan siang bersama di restoran khas Sunda Gurih 7 Bogor'],
+                            ['time' => '14:30 - 16:30', 'activity' => 'Wisata belanja oleh-oleh Roti Unyil Venus & Asinan Gedung Dalam'],
+                            ['time' => '17:00 - 18:30', 'activity' => 'Perjalanan kembali menuju meeting point. Tour selesai.']
+                        ]
+                    ]
+                ]
+            ],
+
+            'nicoles-river-park' => [
+                'slug' => 'nicoles-river-park',
+                'name' => "Nicole's River Park Tour 2 Hari",
+                'price' => 'Rp.450.000',
+                'price_raw' => 450000,
+                'duration' => '2 Hari',
+                'max_people' => 'Max 40 Orang',
+                'location' => 'Puncak, Bogor, Jawa Barat',
+                'rating' => 5.0,
+                'reviews_count' => 132,
+                'image' => 'images/nicoles-river-park.jpg',
+                'category' => 'jawa menginap',
+                'page' => 2,
+                'description' => "Wisata keliling negeri dongeng ala kastil Eropa megah di Nicole's River Park Puncak, wahana mini zoo, spot foto ikonik dunia, dan udara sejuk pegunungan.",
+                'highlights' => [
+                    'Kastil Megah Medieval Nicole\'s Castle',
+                    'Spot Foto Ikonik Jepang, Korea, Santorini & China',
+                    'Mini Zoo & Feeding Satwa Lucu',
+                    'Chocolaterie & Resto Nicole\'s'
+                ],
+                'facilities' => [
+                    ['icon' => 'fa-solid fa-bus', 'title' => 'Bus Pariwisata AC', 'desc' => 'Armada nyaman & driver handal'],
+                    ['icon' => 'fa-solid fa-hotel', 'title' => 'Hotel Resort Puncak', 'desc' => '1 Malam view perbukitan'],
+                    ['icon' => 'fa-solid fa-ticket', 'title' => 'Tiket Masuk Terusan', 'desc' => 'Akses seluruh spot foto'],
+                    ['icon' => 'fa-solid fa-utensils', 'title' => 'Makan Lengkap', 'desc' => '3x Makan + Snack']
+                ],
+                'inclusions' => [
+                    'Bus Pariwisata AC Executive 2 hari',
+                    'Akomodasi Hotel 1 Malam di kawasan Puncak',
+                    'Tiket masuk terusan Nicole\'s River Park',
+                    '3x Makan & Air Mineral',
+                    'BBM, Tol, dan Biaya Parkir',
+                    'Tour Leader ramah'
+                ],
+                'exclusions' => [
+                    'Sewa kostum tradisional (Hanbok/Kimono)',
+                    'Pengeluaran pribadi'
+                ],
+                'important_info' => [
+                    'Bawa jaket atau sweater untuk udara dingin di kawasan Puncak pada malam hari.'
+                ],
+                'itinerary' => [
+                    [
+                        'day' => 'Hari 1',
+                        'title' => "Petualangan Kastil Nicole's River Park",
+                        'schedules' => [
+                            ['time' => '07:00 - 09:30', 'activity' => 'Berangkat dari meeting point menuju kawasan Puncak'],
+                            ['time' => '10:00 - 13:00', 'activity' => 'Eksplorasi spot kastil & wahana mini zoo di Nicole\'s River Park'],
+                            ['time' => '13:00 - 14:30', 'activity' => 'Makan siang di restoran lokal Puncak'],
+                            ['time' => '15:00 - 17:30', 'activity' => 'Wisata santai di Agrowisata Gunung Mas Puncak'],
+                            ['time' => '18:30 - 20:30', 'activity' => 'Makan malam & Check-in hotel resort']
+                        ]
+                    ],
+                    [
+                        'day' => 'Hari 2',
+                        'title' => 'Wisata Belanja Oleh-oleh & Kepulangan',
+                        'schedules' => [
+                            ['time' => '07:30 - 08:30', 'activity' => 'Sarapan pagi di hotel dan check-out'],
+                            ['time' => '09:00 - 11:30', 'activity' => 'Belanja susu Cimory & oleh-oleh khas Puncak'],
+                            ['time' => '12:00 - 13:30', 'activity' => 'Makan siang penutupan'],
+                            ['time' => '14:00 - Selesai', 'activity' => 'Perjalanan kembali menuju meeting point. Tour selesai.']
+                        ]
+                    ]
+                ]
+            ],
+
+            'dcastello' => [
+                'slug' => 'dcastello',
+                'name' => "D'Castello Tour 1 Hari",
+                'price' => 'Rp.250.000',
+                'price_raw' => 250000,
+                'duration' => '1 Hari',
+                'max_people' => 'Max 40 Orang',
+                'location' => 'Ciater, Subang, Jawa Barat',
+                'rating' => 5.0,
+                'reviews_count' => 220,
+                'image' => 'images/dcastello.jpg',
+                'category' => 'jawa 1hari',
+                'page' => 2,
+                'description' => "Kunjungi Florawisata D'Castello Ciater Subang dengan kastil megah warna-warni bak negeri dongeng berlatar kebun teh hijau luas serta taman bunga aneka warna.",
+                'highlights' => [
+                    'Kastil Negeri Dongeng Warna-Warni D\'Castello',
+                    'Jembatan Tangan Raksasa Berlatar Kebun Teh',
+                    'Taman Bunga Kastil Terbuka',
+                    'Wisata Pemandian Air Panas Ciater'
+                ],
+                'facilities' => [
+                    ['icon' => 'fa-solid fa-bus', 'title' => 'Bus Pariwisata AC', 'desc' => 'Nyaman & full entertainment'],
+                    ['icon' => 'fa-solid fa-ticket', 'title' => 'Tiket Masuk D\'Castello', 'desc' => 'Semua area taman & kastil'],
+                    ['icon' => 'fa-solid fa-utensils', 'title' => 'Makan Siang Prasmanan', 'desc' => 'Restoran masakan khas Sunda'],
+                    ['icon' => 'fa-solid fa-user-tie', 'title' => 'Tour Leader', 'desc' => 'Pemandu perjalanan ramah']
+                ],
+                'inclusions' => [
+                    'Transportasi Bus Pariwisata AC',
+                    'Tiket masuk Florawisata D\'Castello Ciater',
+                    '1x Makan Siang Lezat',
+                    'Air mineral botol & Snack',
+                    'BBM, Tol, dan Parkir bus'
+                ],
+                'exclusions' => [
+                    'Wahana trampolin, istana balon, dan buggy car',
+                    'Belanja Nanas Simadu & oleh-oleh Subang'
+                ],
+                'important_info' => [
+                    'Siapkan kamera / smartphone dengan baterai penuh untuk berfoto di ratusan spot instagramable.'
+                ],
+                'itinerary' => [
+                    [
+                        'day' => 'Hari 1',
+                        'title' => "Pesona Kastil Bunga D'Castello Ciater",
+                        'schedules' => [
+                            ['time' => '06:30 - 07:00', 'activity' => 'Berkumpul di meeting point dan berangkat menuju Ciater Subang'],
+                            ['time' => '09:30 - 12:30', 'activity' => 'Eksplorasi spot foto Kastil D\'Castello & jembatan kanopi kebun teh'],
+                            ['time' => '12:30 - 14:00', 'activity' => 'Makan siang prasmanan masakan Sunda di resto lokal'],
+                            ['time' => '14:30 - 16:30', 'activity' => 'Relaksasi di Air Panas Sari Ater Subang'],
+                            ['time' => '16:30 - 17:30', 'activity' => 'Belanja buah nanas simadu & dodol khas Subang'],
+                            ['time' => '17:30 - 20:00', 'activity' => 'Perjalanan kembali menuju meeting point. Selesai.']
+                        ]
+                    ]
+                ]
+            ],
+
+            'sea-world' => [
+                'slug' => 'sea-world',
+                'name' => 'Sea World Tour 1 Hari',
+                'price' => 'Rp.1.200.000',
+                'price_raw' => 1200000,
+                'duration' => '3 Hari',
+                'max_people' => 'Max 40 Orang',
+                'location' => 'Ancol, Jakarta Utara',
+                'rating' => 5.0,
+                'reviews_count' => 284,
+                'image' => 'images/sea-world.jpg',
+                'category' => 'jawa menginap',
+                'page' => 2,
+                'description' => 'Petualangan bawah laut menakjubkan di Sea World Ancol. Menyusuri terowongan kaca bawah air Antasena, melihat ribuan biota laut, atraksi feeding show hiu, dan touch pool edukatif.',
+                'highlights' => [
+                    'Terowongan Kaca Bawah Laut Antasena',
+                    'Akuarium Utama & Live Feeding Show Hiu',
+                    'Touch Pool Bintang Laut & Penyu',
+                    'Wisata Pantai Karnaval Ancol'
+                ],
+                'facilities' => [
+                    ['icon' => 'fa-solid fa-bus', 'title' => 'Bus Pariwisata AC', 'desc' => 'Armada pariwisata eksekutif'],
+                    ['icon' => 'fa-solid fa-hotel', 'title' => 'Hotel Bintang 3', 'desc' => '2 Malam menginap di Jakarta'],
+                    ['icon' => 'fa-solid fa-ticket', 'title' => 'Tiket Masuk Ancol & Sea World', 'desc' => 'Tiket resmi terusan'],
+                    ['icon' => 'fa-solid fa-utensils', 'title' => 'Makan Terjadwal', 'desc' => '5x Makan & Air mineral']
+                ],
+                'inclusions' => [
+                    'Bus Pariwisata AC selama program 3 hari',
+                    'Akomodasi Hotel Bintang 3 (2 Malam)',
+                    'Tiket masuk gerbang Ancol & Sea World Jakarta',
+                    '5x Makan sesuai jadwal program',
+                    'BBM, Tol, dan Biaya Parkir',
+                    'Tour Guide bersertifikat'
+                ],
+                'exclusions' => [
+                    'Wahana tambahan di kawasan Ancol (Dufan/Atlantis)',
+                    'Pengeluaran belanja pribadi'
+                ],
+                'important_info' => [
+                    'Patuhi tata tertib saat berada di area Touch Pool (tidak mengangkat biota keluar dari air).'
+                ],
+                'itinerary' => [
+                    [
+                        'day' => 'Hari 1',
+                        'title' => 'Kedatangan & Pantai Ancol Sunset',
+                        'schedules' => [
+                            ['time' => '09:00 - 12:00', 'activity' => 'Penjemputan rombongan & perjalanan ke Jakarta'],
+                            ['time' => '12:30 - 14:00', 'activity' => 'Makan siang di restoran kuliner khas Betawi'],
+                            ['time' => '14:30 - 17:30', 'activity' => 'Santai sore di Promenade Pantai Lagoon Ancol'],
+                            ['time' => '18:30 - 20:30', 'activity' => 'Makan malam & Check-in hotel']
+                        ]
+                    ],
+                    [
+                        'day' => 'Hari 2',
+                        'title' => 'Eksplorasi Menakjubkan Sea World & Oceanarium',
+                        'schedules' => [
+                            ['time' => '07:30 - 08:30', 'activity' => 'Sarapan pagi di hotel'],
+                            ['time' => '09:00 - 13:00', 'activity' => 'Jelajah Sea World, Terowongan Antasena & Nonton Feeding Show'],
+                            ['time' => '13:00 - 14:30', 'activity' => 'Makan siang di kawasan resto Ancol'],
+                            ['time' => '15:00 - 17:30', 'activity' => 'Wisata gondola / kereta gantung Ancol'],
+                            ['time' => '18:30 - 20:30', 'activity' => 'Makan malam seafood di Bandar Djakarta & kembali ke hotel']
+                        ]
+                    ],
+                    [
+                        'day' => 'Hari 3',
+                        'title' => 'Monas, Wisata Belanja & Kepulangan',
+                        'schedules' => [
+                            ['time' => '07:30 - 08:30', 'activity' => 'Sarapan di hotel dan check-out'],
+                            ['time' => '09:00 - 11:30', 'activity' => 'Kunjungan ke Monumen Nasional (Monas)'],
+                            ['time' => '12:00 - 13:30', 'activity' => 'Makan siang & belanja oleh-oleh khas Jakarta'],
+                            ['time' => '14:00 - Selesai', 'activity' => 'Pengantaran peserta ke titik kepulangan. Selesai.']
+                        ]
+                    ]
+                ]
+            ],
+
+            'atlantis' => [
+                'slug' => 'atlantis',
+                'name' => 'Atlantis Water Adventure',
+                'price' => 'Rp.2.100.000',
+                'price_raw' => 2100000,
+                'duration' => '4 Hari',
+                'max_people' => 'Max 40 Orang',
+                'location' => 'Ancol, Jakarta Utara',
+                'rating' => 5.0,
+                'reviews_count' => 176,
+                'image' => 'images/atlantis.jpg',
+                'category' => 'jawa menginap',
+                'page' => 2,
+                'description' => 'Rasakan sensasi liburan air penuh petualangan di taman rekreasi air tematik peradaban kuno Mediterania Atlantis Water Adventure dengan 8 kolam utama dan berbagai seluncuran ekstrem.',
+                'highlights' => [
+                    'Seluncuran Ekstrem Dragon Slide & Skybox',
+                    'Kolam Ombak Poseidon Wave Pool',
+                    'Kolam Arus Antila River',
+                    'Wahana Air Anak Elephant Pool'
+                ],
+                'facilities' => [
+                    ['icon' => 'fa-solid fa-bus', 'title' => 'Bus Pariwisata VIP', 'desc' => 'Fasilitas mewah & full audio'],
+                    ['icon' => 'fa-solid fa-hotel', 'title' => 'Hotel Bintang 4', 'desc' => '3 Malam di Jakarta Pusat'],
+                    ['icon' => 'fa-solid fa-ticket', 'title' => 'Tiket Masuk Terusan Atlantis', 'desc' => 'Akses seluruh wahana air'],
+                    ['icon' => 'fa-solid fa-utensils', 'title' => 'Makan Lengkap 4 Hari', 'desc' => 'Sarapan hotel & resto lokal']
+                ],
+                'inclusions' => [
+                    'Bus Pariwisata AC 4 Hari',
+                    'Hotel Bintang 4 (3 Malam Twin/Triple Share)',
+                    'Tiket masuk Ancol & Atlantis Water Adventure',
+                    'Makan lengkap selama program tour',
+                    'BBM, Tol, dan Parkir',
+                    'Tour Guide handal'
+                ],
+                'exclusions' => [
+                    'Sewa ban pelampung & loker pribadi',
+                    'Keperluan pribadi dan belanja'
+                ],
+                'important_info' => [
+                    'Wajib mengenakan pakaian renang berbahan polyester / nilon.',
+                    'Dilarang membawa makanan dan minuman dari luar ke dalam area kolam renang.'
+                ],
+                'itinerary' => [
+                    [
+                        'day' => 'Hari 1',
+                        'title' => 'Kedatangan & City Tour Jakarta Heritage',
+                        'schedules' => [
+                            ['time' => '10:00 - 12:00', 'activity' => 'Penjemputan rombongan di titik temu'],
+                            ['time' => '12:30 - 14:00', 'activity' => 'Makan siang kuliner Betawi'],
+                            ['time' => '14:30 - 17:00', 'activity' => 'Wisata Kota Tua Jakarta & Museum Fatahillah'],
+                            ['time' => '18:00 - 20:00', 'activity' => 'Check-in hotel & makan malam']
+                        ]
+                    ],
+                    [
+                        'day' => 'Hari 2',
+                        'title' => 'Full Day Water Adventure di Atlantis Ancol',
+                        'schedules' => [
+                            ['time' => '07:30 - 08:30', 'activity' => 'Sarapan pagi di hotel'],
+                            ['time' => '09:00 - 16:30', 'activity' => 'Bermain air seru di Dragon Slide, Skybox & Kolam Ombak Atlantis'],
+                            ['time' => '17:30 - 20:30', 'activity' => 'Makan malam kuliner dan istirahat di hotel']
+                        ]
+                    ],
+                    [
+                        'day' => 'Hari 3',
+                        'title' => 'Wisata Belanja & Kuliner Metropolitan',
+                        'schedules' => [
+                            ['time' => '08:00 - 09:00', 'activity' => 'Sarapan di hotel'],
+                            ['time' => '09:30 - 13:00', 'activity' => 'Wisata belanja Grand Indonesia / Pasar Tanah Abang'],
+                            ['time' => '13:00 - 14:30', 'activity' => 'Makan siang resto populer'],
+                            ['time' => '15:00 - 18:00', 'activity' => 'Kawasan Senayan Park & Danau Romantis'],
+                            ['time' => '19:00 - 21:00', 'activity' => 'Makan malam penutupan']
+                        ]
+                    ],
+                    [
+                        'day' => 'Hari 4',
+                        'title' => 'Check-out & Kepulangan',
+                        'schedules' => [
+                            ['time' => '07:30 - 09:00', 'activity' => 'Sarapan & proses check-out hotel'],
+                            ['time' => '09:30 - 11:30', 'activity' => 'Pusat oleh-oleh khas Jakarta'],
+                            ['time' => '12:00 - Selesai', 'activity' => 'Pengantaran rombongan ke titik akhir. Tour berakhir.']
+                        ]
+                    ]
+                ]
+            ],
+
+            'bird-land' => [
+                'slug' => 'bird-land',
+                'name' => 'Bird Land Tour',
+                'price' => 'Rp.850.000',
+                'price_raw' => 850000,
+                'duration' => '2 Hari',
+                'max_people' => 'Max 40 Orang',
+                'location' => 'Ancol, Jakarta Utara',
+                'rating' => 5.0,
+                'reviews_count' => 154,
+                'image' => 'images/bird-land.jpg',
+                'category' => 'jawa menginap',
+                'page' => 2,
+                'description' => 'Jelajahi suaka burung interaktif modern di Jakarta Bird Land Ancol, berinteraksi langsung dengan aneka burung eksotis Indonesia dan mancanegara di aviary raksasa.',
+                'highlights' => [
+                    'Aviary Kubah Raksasa dengan Ratusan Burung Bebas Terbang',
+                    'Atraksi Free Flight Bird Show & Feeding Kakatua',
+                    'Spot Foto Bersama Flamingo & Makau Warna-warni',
+                    'Pemandangan Tepi Danau Ancol'
+                ],
+                'facilities' => [
+                    ['icon' => 'fa-solid fa-bus', 'title' => 'Bus Pariwisata AC', 'desc' => 'Armada nyaman & bersih'],
+                    ['icon' => 'fa-solid fa-hotel', 'title' => 'Hotel Bintang 3', 'desc' => '1 Malam di Jakarta'],
+                    ['icon' => 'fa-solid fa-ticket', 'title' => 'Tiket Masuk Terusan Bird Land', 'desc' => 'Termasuk tiket masuk Ancol'],
+                    ['icon' => 'fa-solid fa-utensils', 'title' => 'Makan 3x', 'desc' => 'Menu lezat resto pilihan']
+                ],
+                'inclusions' => [
+                    'Transportasi Bus Pariwisata AC 2 Hari',
+                    'Akomodasi Hotel Bintang 3 (1 Malam)',
+                    'Tiket masuk Jakarta Bird Land & Kawasan Ancol',
+                    '3x Makan & Air Mineral harian',
+                    'BBM, Tol, dan Biaya Parkir',
+                    'Tour Leader bersertifikat'
+                ],
+                'exclusions' => [
+                    'Pakan burung khusus feeding show berbayar pribadi',
+                    'Pengeluaran belanja pribadi'
+                ],
+                'important_info' => [
+                    'Ikuti petunjuk keeper satwa saat melakukan feeding pada burung.'
+                ],
+                'itinerary' => [
+                    [
+                        'day' => 'Hari 1',
+                        'title' => 'Eksplorasi Seru Jakarta Bird Land',
+                        'schedules' => [
+                            ['time' => '07:30 - 09:30', 'activity' => 'Penjemputan peserta & perjalanan menuju kawasan Ancol'],
+                            ['time' => '10:00 - 13:00', 'activity' => 'Jelajah Jakarta Bird Land: Aviary, Feeding Show, & Foto Burung Makau'],
+                            ['time' => '13:00 - 14:30', 'activity' => 'Makan siang di restoran kawasan Ancol'],
+                            ['time' => '15:00 - 17:30', 'activity' => 'Santai sore di Symphony of the Sea Ancol'],
+                            ['time' => '18:30 - 20:30', 'activity' => 'Makan malam & Check-in hotel']
+                        ]
+                    ],
+                    [
+                        'day' => 'Hari 2',
+                        'title' => 'Wisata Budaya Betawi & Kepulangan',
+                        'schedules' => [
+                            ['time' => '07:30 - 08:30', 'activity' => 'Sarapan pagi di hotel & check-out'],
+                            ['time' => '09:00 - 11:30', 'activity' => 'Kunjungan ke Perkampungan Budaya Betawi Setu Babakan'],
+                            ['time' => '12:00 - 13:30', 'activity' => 'Makan siang kuliner khas Kerak Telor & Bir Pletok'],
+                            ['time' => '14:00 - Selesai', 'activity' => 'Perjalanan kembali menuju meeting point. Tour selesai.']
+                        ]
+                    ]
+                ]
+            ],
+
+            // ==================== HALAMAN 3 ====================
+            'dufan' => [
+                'slug' => 'dufan',
+                'name' => 'Dufan Tour 1 Hari',
+                'price' => 'Rp.310.000',
+                'price_raw' => 310000,
+                'duration' => '1 Hari',
+                'max_people' => 'Max 40 Orang',
+                'location' => 'Taman Impian Jaya Ancol, Jakarta Utara',
+                'rating' => 5.0,
+                'reviews_count' => 450,
+                'image' => 'images/dufan.jpg',
+                'category' => 'jawa 1hari',
+                'page' => 3,
+                'description' => 'Pusat hiburan outdoor theme park terbesar di Indonesia Dunia Fantasi (Dufan). Nikmati wahana pemacu adrenalin seperti Halilintar, Tornado, Kora-Kora, Niagara-Gara, dan Istana Boneka.',
+                'highlights' => [
+                    'Wahana Ekstrem Halilintar, Tornado & Hysteria',
+                    'Wahana Klasik Istana Boneka & Bianglala',
+                    'Petualangan Air Niagara-Gara & Arung Jeram',
+                    'Parade Dufan & Magic House Show'
+                ],
+                'facilities' => [
+                    ['icon' => 'fa-solid fa-bus', 'title' => 'Bus Pariwisata AC', 'desc' => 'Armada nyaman & ber-AC dingin'],
+                    ['icon' => 'fa-solid fa-ticket', 'title' => 'Tiket Terusan Dufan', 'desc' => 'Bebas naik seluruh wahana'],
+                    ['icon' => 'fa-solid fa-utensils', 'title' => 'Makan Siang & Snack', 'desc' => 'Voucher makan resto / bento box'],
+                    ['icon' => 'fa-solid fa-user-tie', 'title' => 'Tour Leader Handal', 'desc' => 'Siap mendampingi rombongan']
+                ],
+                'inclusions' => [
+                    'Transportasi Bus Pariwisata AC Full Day',
+                    'Tiket masuk Gerbang Ancol & Tiket Terusan Dufan (All Wahana)',
+                    '1x Makan Siang & Air Mineral botol',
+                    'BBM, Tol, dan Biaya Parkir Bus',
+                    'Tour Leader ramah'
+                ],
+                'exclusions' => [
+                    'Tiket Fast Track Dufan (opsional antrean cepat)',
+                    'Pengeluaran pribadi & belanja merchandise Dufan'
+                ],
+                'important_info' => [
+                    'Kenakan pakaian dan alas kaki yang nyaman untuk berjalan santai di area theme park.',
+                    'Bawa jas hujan plastik tipis / baju ganti untuk wahana basah seperti Arung Jeram & Niagara-Gara.'
+                ],
+                'itinerary' => [
+                    [
+                        'day' => 'Hari 1',
+                        'title' => 'Sehari Penuh Petualangan di Dunia Fantasi',
+                        'schedules' => [
+                            ['time' => '07:00 - 08:30', 'activity' => 'Berkumpul di meeting point & perjalanan menuju kawasan Ancol'],
+                            ['time' => '09:00 - 12:30', 'activity' => 'Tiba di Dufan, bermain wahana outdoor favorit'],
+                            ['time' => '12:30 - 13:30', 'activity' => 'Makan siang & istirahat ibadah'],
+                            ['time' => '13:30 - 17:00', 'activity' => 'Lanjut bermain wahana & menyaksikan parade spektakuler Dufan'],
+                            ['time' => '17:30 - 19:30', 'activity' => 'Perjalanan kembali menuju meeting point awal. Tour selesai.']
+                        ]
+                    ]
+                ]
+            ],
+
+            'hutan-mycelia' => [
+                'slug' => 'hutan-mycelia',
+                'name' => 'Hutan Mycelia Tour 2 Hari',
+                'price' => 'Rp.750.000',
+                'price_raw' => 750000,
+                'duration' => '2 Hari',
+                'max_people' => 'Max 40 Orang',
+                'location' => 'Cikole, Lembang, Jawa Barat',
+                'rating' => 5.0,
+                'reviews_count' => 187,
+                'image' => 'images/hutan-mycelia.jpg',
+                'category' => 'jawa menginap',
+                'page' => 3,
+                'description' => 'Sensasi magis wisata malam di Hutan Mycelia Grafika Cikole Lembang. Jelajah hutan pinus dengan instalasi seni cahaya lampu artistik bertema kerajaan jamur bercahaya (bioluminescent).',
+                'highlights' => [
+                    'Instalasi Seni Lampu Hutan Mycelia Lembang',
+                    'Wisata Alam Grafika Cikole & Hutan Pinus',
+                    'Tangkuban Perahu / Orchid Forest Cikole',
+                    'Pusat Kuliner Hangat & Susu Murni Lembang'
+                ],
+                'facilities' => [
+                    ['icon' => 'fa-solid fa-bus', 'title' => 'Bus Pariwisata AC', 'desc' => 'Armada nyaman & suspensi empuk'],
+                    ['icon' => 'fa-solid fa-hotel', 'title' => 'Glamping / Hotel Cikole', 'desc' => '1 Malam suasana hutan pinus'],
+                    ['icon' => 'fa-solid fa-ticket', 'title' => 'Tiket Masuk Hutan Mycelia', 'desc' => 'Akses night tour hutan lampu'],
+                    ['icon' => 'fa-solid fa-utensils', 'title' => 'Makan & BBQ Malam', 'desc' => '3x Makan + Api Unggun']
+                ],
+                'inclusions' => [
+                    'Bus Pariwisata AC selama 2 hari',
+                    'Akomodasi Glamping / Hotel Bintang 3 di Lembang (1 Malam)',
+                    'Tiket masuk Hutan Mycelia Night Tour & Orchid Forest',
+                    '3x Makan (termasuk BBQ Dinner)',
+                    'BBM, Tol, dan Parkir bus',
+                    'Tour Leader profesional'
+                ],
+                'exclusions' => [
+                    'Pengeluaran belanja pribadi',
+                    'Wahana outbound opsional (Flying Fox, ATV)'
+                ],
+                'important_info' => [
+                    'Suhu udara di Cikole Lembang pada malam hari dingin (14°C - 18°C), wajib membawa jaket tebal atau sweater hangat.'
+                ],
+                'itinerary' => [
+                    [
+                        'day' => 'Hari 1',
+                        'title' => 'Orchid Forest & Keajaiban Hutan Mycelia',
+                        'schedules' => [
+                            ['time' => '07:30 - 10:30', 'activity' => 'Perjalanan menuju kawasan Lembang Cikole'],
+                            ['time' => '11:00 - 13:00', 'activity' => 'Eksplorasi Orchid Forest Cikole & Jembatan Gantung Kayu'],
+                            ['time' => '13:00 - 14:30', 'activity' => 'Makan siang di resto lokal khas Sunda'],
+                            ['time' => '15:00 - 17:30', 'activity' => 'Check-in glamping/hotel & santai di hutan pinus'],
+                            ['time' => '18:30 - 21:00', 'activity' => 'Night Tour ke Hutan Mycelia yang bercahaya magis & BBQ Dinner']
+                        ]
+                    ],
+                    [
+                        'day' => 'Hari 2',
+                        'title' => 'Floating Market & Kepulangan',
+                        'schedules' => [
+                            ['time' => '07:30 - 08:30', 'activity' => 'Sarapan pagi & check-out penginapan'],
+                            ['time' => '09:00 - 12:00', 'activity' => 'Wisata santai di Floating Market Lembang'],
+                            ['time' => '12:30 - 14:00', 'activity' => 'Makan siang & belanja oleh-oleh Bolu Susu Lembang'],
+                            ['time' => '14:30 - Selesai', 'activity' => 'Perjalanan kembali ke kota asal. Tour selesai.']
+                        ]
+                    ]
+                ]
+            ],
+
+            'mikutopia' => [
+                'slug' => 'mikutopia',
+                'name' => 'Mikutopia Tour 1 Hari',
+                'price' => 'Rp.280.000',
+                'price_raw' => 280000,
+                'duration' => '1 Hari',
+                'max_people' => 'Max 40 Orang',
+                'location' => 'Berastagi, Sumatera Utara',
+                'rating' => 5.0,
+                'reviews_count' => 139,
+                'image' => 'images/mikutopia.jpg',
+                'category' => 'sumatera 1hari',
+                'page' => 3,
+                'description' => 'Nikmati keseruan aneka wahana petualangan dan rekreasi keluarga di kawasan sejuk pegunungan Berastagi dengan fasilitas lengkap dan panorama alam memukau.',
+                'highlights' => [
+                    'Wahana Permainan Theme Park Mikutopia',
+                    'Pemandangan Dataran Tinggi Berastagi & Gunung Sibayak',
+                    'Pasar Buah Berastagi & Petik Stroberi',
+                    'Bukit Gundaling View Point'
+                ],
+                'facilities' => [
+                    ['icon' => 'fa-solid fa-bus', 'title' => 'Bus Pariwisata AC', 'desc' => 'Armada nyaman & aman'],
+                    ['icon' => 'fa-solid fa-ticket', 'title' => 'Tiket Masuk Terusan', 'desc' => 'Akses seluruh wahana permainan'],
+                    ['icon' => 'fa-solid fa-utensils', 'title' => 'Makan Siang Resto', 'desc' => '1x Makan siang khas Berastagi'],
+                    ['icon' => 'fa-solid fa-user-tie', 'title' => 'Tour Guide Lokal', 'desc' => 'Pemandu berpengalaman']
+                ],
+                'inclusions' => [
+                    'Transportasi Bus Pariwisata AC Full Day',
+                    'Tiket masuk terusan wahana Mikutopia',
+                    '1x Makan Siang Lezat',
+                    'Air mineral botol & Snack',
+                    'BBM, Retribusi, dan Biaya Parkir'
+                ],
+                'exclusions' => [
+                    'Belanja buah-buahan segar dan souvenir',
+                    'Pengeluaran pribadi'
+                ],
+                'important_info' => [
+                    'Bawa jaket karena suhu udara di Berastagi cukup dingin.'
+                ],
+                'itinerary' => [
+                    [
+                        'day' => 'Hari 1',
+                        'title' => 'Petualangan Seru Mikutopia Berastagi',
+                        'schedules' => [
+                            ['time' => '07:00 - 09:30', 'activity' => 'Penjemputan di meeting point Medan & perjalanan ke Berastagi'],
+                            ['time' => '10:00 - 13:00', 'activity' => 'Bermain wahana seru di taman hiburan Mikutopia'],
+                            ['time' => '13:00 - 14:30', 'activity' => 'Makan siang di restoran lokal Berastagi'],
+                            ['time' => '15:00 - 16:30', 'activity' => 'Wisata ke Pasar Buah Berastagi & Bukit Gundaling'],
+                            ['time' => '17:00 - 19:30', 'activity' => 'Perjalanan kembali menuju meeting point. Tour selesai.']
+                        ]
+                    ]
+                ]
+            ],
+
+            'famoso-garden' => [
+                'slug' => 'famoso-garden',
+                'name' => 'Famoso Garden Bandung Tour 2 Hari',
+                'price' => 'Rp.480.000',
+                'price_raw' => 480000,
+                'duration' => '2 Hari',
+                'max_people' => 'Max 40 Orang',
+                'location' => 'Dago Atas, Bandung, Jawa Barat',
+                'rating' => 5.0,
+                'reviews_count' => 165,
+                'image' => 'images/famoso-garden.jpg',
+                'category' => 'jawa menginap',
+                'page' => 3,
+                'description' => 'Wisata tematik negeri dongeng Famoso Garden di Dago Bandung. Menyajikan suasana perkampungan fantasi dengan kastil-kastil mungil, kafe estetik, dan spot foto yang sangat instagramable.',
+                'highlights' => [
+                    'Perkampungan Dongeng Fantasi Famoso Garden',
+                    'Kastil Miniatur Bergaya Eropa Klasik',
+                    'Tebing Keraton / Dago Dreampark',
+                    'Wisata Kuliner Malam Punclut'
+                ],
+                'facilities' => [
+                    ['icon' => 'fa-solid fa-bus', 'title' => 'Bus Pariwisata AC', 'desc' => 'Armada eksekutif full musik'],
+                    ['icon' => 'fa-solid fa-hotel', 'title' => 'Hotel Bintang 3', 'desc' => '1 Malam di pusat kota Bandung'],
+                    ['icon' => 'fa-solid fa-ticket', 'title' => 'Tiket Masuk Famoso Garden', 'desc' => 'Akses seluruh spot foto'],
+                    ['icon' => 'fa-solid fa-utensils', 'title' => 'Makan Terjadwal', 'desc' => '3x Makan + Snack']
+                ],
+                'inclusions' => [
+                    'Bus Pariwisata AC selama 2 hari',
+                    'Akomodasi Hotel Bintang 3 (1 Malam)',
+                    'Tiket masuk Famoso Garden & Dago Dreampark',
+                    '3x Makan & Air Mineral harian',
+                    'BBM, Tol Cipularang, dan Biaya Parkir',
+                    'Tour Leader ramah'
+                ],
+                'exclusions' => [
+                    'Kuliner kafe tambahan di dalam Famoso Garden',
+                    'Belanja factory outlet pribadi'
+                ],
+                'important_info' => [
+                    'Gunakan outfit kekinian untuk berfoto di berbagai sudut desa dongeng.'
+                ],
+                'itinerary' => [
+                    [
+                        'day' => 'Hari 1',
+                        'title' => 'Pesona Negeri Dongeng Famoso Garden',
+                        'schedules' => [
+                            ['time' => '07:00 - 10:00', 'activity' => 'Perjalanan menuju Bandung via Tol Cipularang'],
+                            ['time' => '10:30 - 13:00', 'activity' => 'Eksplorasi spot foto negeri dongeng di Famoso Garden'],
+                            ['time' => '13:00 - 14:30', 'activity' => 'Makan siang di restoran khas Sunda Dago'],
+                            ['time' => '15:00 - 17:30', 'activity' => 'Wisata ke Tebing Keraton menikmati sunset Bandung'],
+                            ['time' => '18:30 - 20:30', 'activity' => 'Makan malam di Punclut & Check-in hotel']
+                        ]
+                    ],
+                    [
+                        'day' => 'Hari 2',
+                        'title' => 'Jalan Braga & Belanja Oleh-Oleh',
+                        'schedules' => [
+                            ['time' => '07:30 - 08:30', 'activity' => 'Sarapan pagi di hotel dan check-out'],
+                            ['time' => '09:00 - 11:30', 'activity' => 'Jalan santai foto di kawasan heritage Braga'],
+                            ['time' => '12:00 - 13:30', 'activity' => 'Makan siang & belanja oleh-oleh Kartika Sari'],
+                            ['time' => '14:00 - Selesai', 'activity' => 'Perjalanan pulang menuju titik kumpul asal. Selesai.']
+                        ]
+                    ]
+                ]
+            ],
+
+            'samudera-ancol' => [
+                'slug' => 'samudera-ancol',
+                'name' => 'Samudera Ancol Tour 1 Hari',
+                'price' => 'Rp.190.000',
+                'price_raw' => 190000,
+                'duration' => '1 Hari',
+                'max_people' => 'Max 40 Orang',
+                'location' => 'Taman Impian Jaya Ancol, Jakarta Utara',
+                'rating' => 5.0,
+                'reviews_count' => 215,
+                'image' => 'images/samudera-ancol.jpg',
+                'category' => 'jawa 1hari',
+                'page' => 3,
+                'description' => 'Wisata edukasi dan konservasi satwa laut di Ocean Dream Samudra Ancol. Menyaksikan atraksi cerdas lumba-lumba, singa laut yang lucu, sinema 5D, serta wahana rekreasi seru.',
+                'highlights' => [
+                    'Pertunjukan Cerdas Lumba-lumba & Singa Laut',
+                    'Atraksi Satwa Burung Pintar & Berang-berang',
+                    'Wahana Cinema 5D & Underwater Theater',
+                    'Wahana Carousel & Bumper Car Anak'
+                ],
+                'facilities' => [
+                    ['icon' => 'fa-solid fa-bus', 'title' => 'Bus Pariwisata AC', 'desc' => 'Armada nyaman & driver ramah'],
+                    ['icon' => 'fa-solid fa-ticket', 'title' => 'Tiket Masuk Samudra', 'desc' => 'Termasuk tiket gerbang Ancol'],
+                    ['icon' => 'fa-solid fa-utensils', 'title' => 'Makan Siang & Snack', 'desc' => '1x Makan siang di resto lokal'],
+                    ['icon' => 'fa-solid fa-user-tie', 'title' => 'Tour Leader', 'desc' => 'Memandu rombongan']
+                ],
+                'inclusions' => [
+                    'Transportasi Bus Pariwisata AC Full Day',
+                    'Tiket masuk Gerbang Ancol & Ocean Dream Samudra',
+                    '1x Makan Siang & Air Mineral botol',
+                    'BBM, Tol, dan Biaya Parkir',
+                    'Tour Leader berdedikasi'
+                ],
+                'exclusions' => [
+                    'Sesi foto khusus bersama lumba-lumba (opsional)',
+                    'Pengeluaran belanja pribadi'
+                ],
+                'important_info' => [
+                    'Perhatikan jadwal showtime lumba-lumba dan singa laut agar tidak terlewat.'
+                ],
+                'itinerary' => [
+                    [
+                        'day' => 'Hari 1',
+                        'title' => 'Edukasi Seru di Ocean Dream Samudra Ancol',
+                        'schedules' => [
+                            ['time' => '07:30 - 09:00', 'activity' => 'Kumpul di meeting point dan berangkat menuju Ancol'],
+                            ['time' => '09:30 - 12:30', 'activity' => 'Menonton show lumba-lumba, atraksi singa laut, & Cinema 5D'],
+                            ['time' => '12:30 - 13:30', 'activity' => 'Makan siang bersama rombongan'],
+                            ['time' => '14:00 - 16:30', 'activity' => 'Bermain wahana seru dan santai di tepi Pantai Ancol'],
+                            ['time' => '17:00 - 18:30', 'activity' => 'Perjalanan kembali ke titik temu. Tour berakhir.']
+                        ]
+                    ]
+                ]
+            ],
+
+            'surabaya' => [
+                'slug' => 'surabaya',
+                'name' => 'Surabaya Tour 3 Hari',
+                'price' => 'Rp.1.350.000',
+                'price_raw' => 1350000,
+                'duration' => '3 Hari',
+                'max_people' => 'Max 40 Orang',
+                'location' => 'Surabaya, Jawa Timur',
+                'rating' => 5.0,
+                'reviews_count' => 178,
+                'image' => 'images/surabaya-tour.jpg',
+                'category' => 'jawa menginap',
+                'page' => 3,
+                'description' => 'Eksplorasi Kota Pahlawan Surabaya selama 3 hari. Mengunjungi Monumen Sura & Baya, Jembatan Suramadu, Museum Kapal Selam, House of Sampoerna, dan jelajah kuliner Rawon Kalkulator serta Bebek Sinjay.',
+                'highlights' => [
+                    'Patung Ikonik Sura dan Baya & Monkasel',
+                    'Jembatan Megah Suramadu & Wisata Madura',
+                    'Kawasan Heritage Tunjungan Street',
+                    'Pusat Oleh-Oleh Spikoe Resep Kuno & Almond Crispy'
+                ],
+                'facilities' => [
+                    ['icon' => 'fa-solid fa-bus', 'title' => 'Bus Pariwisata AC', 'desc' => 'Executive bus reclining seat'],
+                    ['icon' => 'fa-solid fa-hotel', 'title' => 'Hotel Bintang 3', 'desc' => '2 Malam di pusat kota Surabaya'],
+                    ['icon' => 'fa-solid fa-ticket', 'title' => 'Tiket Masuk Destinasi', 'desc' => 'Semua museum & objek wisata'],
+                    ['icon' => 'fa-solid fa-utensils', 'title' => 'Makan Terjadwal', 'desc' => '5x Makan kuliner khas Surabaya']
+                ],
+                'inclusions' => [
+                    'Bus Pariwisata Executive AC selama 3 hari',
+                    'Akomodasi Hotel Bintang 3 (2 Malam)',
+                    'Tiket masuk seluruh objek wisata dalam program',
+                    '5x Makan (termasuk sarapan hotel & kuliner legendaris)',
+                    'BBM, Tol Trans Jawa, dan Parkir bus',
+                    'Tour Guide lokal profesional'
+                ],
+                'exclusions' => [
+                    'Tiket perjalanan asal ke Surabaya (jika di luar rute bus)',
+                    'Pengeluaran belanja pribadi'
+                ],
+                'important_info' => [
+                    'Siapkan pakaian katun santai yang menyerap keringat untuk cuaca tropis hangat kota Surabaya.'
+                ],
+                'itinerary' => [
+                    [
+                        'day' => 'Hari 1',
+                        'title' => 'City Tour Kota Pahlawan & Tunjungan',
+                        'schedules' => [
+                            ['time' => '09:00 - 11:30', 'activity' => 'Penjemputan peserta di Surabaya & Monumen Kapal Selam'],
+                            ['time' => '12:00 - 13:30', 'activity' => 'Makan siang Rawon Setan legendaris'],
+                            ['time' => '14:00 - 17:00', 'activity' => 'Foto di Patung Sura Baya & Jelajah Jalan Tunjungan Heritage'],
+                            ['time' => '18:00 - 20:00', 'activity' => 'Makan malam Bebek Sinjay & Check-in hotel']
+                        ]
+                    ],
+                    [
+                        'day' => 'Hari 2',
+                        'title' => 'Sensasi Jembatan Suramadu & Wisata Madura',
+                        'schedules' => [
+                            ['time' => '07:30 - 08:30', 'activity' => 'Sarapan pagi di hotel'],
+                            ['time' => '09:00 - 12:30', 'activity' => 'Melintasi Jembatan Suramadu & Sentra Batik Madura'],
+                            ['time' => '13:00 - 14:30', 'activity' => 'Makan siang bebek khas Madura'],
+                            ['time' => '15:30 - 17:30', 'activity' => 'Wisata Ekowisata Mangrove Wonorejo Surabaya'],
+                            ['time' => '18:30 - 20:30', 'activity' => 'Makan malam kuliner dan kembali ke hotel']
+                        ]
+                    ],
+                    [
+                        'day' => 'Hari 3',
+                        'title' => 'Wisata Belanja Oleh-Oleh & Kepulangan',
+                        'schedules' => [
+                            ['time' => '07:30 - 08:30', 'activity' => 'Sarapan pagi & check-out hotel'],
+                            ['time' => '09:00 - 12:00', 'activity' => 'Belanja Spikoe Resep Kuno & Pusat Grosir Pasar Turi'],
+                            ['time' => '12:30 - 14:00', 'activity' => 'Makan siang penutupan'],
+                            ['time' => '14:30 - Selesai', 'activity' => 'Pengantaran peserta ke titik drop-off. Tour selesai.']
+                        ]
+                    ]
+                ]
+            ],
+
+            'taman-mini' => [
+                'slug' => 'taman-mini',
+                'name' => 'Taman Mini Indonesia Tour 4 Hari',
+                'price' => 'Rp.2.300.000',
+                'price_raw' => 2300000,
+                'duration' => '4 Hari',
+                'max_people' => 'Max 40 Orang',
+                'location' => 'Jakarta Timur, DKI Jakarta',
+                'rating' => 5.0,
+                'reviews_count' => 312,
+                'image' => 'images/taman-mini.jpg',
+                'category' => 'jawa menginap',
+                'page' => 3,
+                'description' => 'Wisata budaya terakbar di Taman Mini Indonesia Indah (TMII) yang telah direvitalisasi modern. Menjelajahi anjungan 38 provinsi di Nusantara, Danau Kepulauan Indonesia, Kereta Gantung, dan Museum Indonesia.',
+                'highlights' => [
+                    'Danau Archipelago dengan Miniatur Kepulauan Indonesia',
+                    'Anjungan Daerah Tradisional Rumah Adat 38 Provinsi',
+                    'Kereta Gantung TMII & Istana Anak-Anak',
+                    'Taman Burung & Museum Pusaka TMII'
+                ],
+                'facilities' => [
+                    ['icon' => 'fa-solid fa-bus', 'title' => 'Bus Pariwisata VIP', 'desc' => 'Armada mewah, AC & TV LED'],
+                    ['icon' => 'fa-solid fa-hotel', 'title' => 'Hotel Bintang 4', 'desc' => '3 Malam menginap di Jakarta'],
+                    ['icon' => 'fa-solid fa-ticket', 'title' => 'Tiket Masuk TMII & Wahana', 'desc' => 'Termasuk tiket kereta gantung'],
+                    ['icon' => 'fa-solid fa-utensils', 'title' => 'Makan Lengkap', 'desc' => 'Sarapan hotel & restoran nusantara']
+                ],
+                'inclusions' => [
+                    'Bus Pariwisata Executive AC 4 Hari',
+                    'Akomodasi Hotel Bintang 4 (3 Malam)',
+                    'Tiket masuk gerbang TMII & Wahana Kereta Gantung',
+                    'Makan lengkap selama 4 hari (Breakfast, Lunch, Dinner)',
+                    'BBM, Tol, dan Biaya Parkir Bus',
+                    'Tour Leader berpengalaman'
+                ],
+                'exclusions' => [
+                    'Sewa skuter listrik / sepeda di dalam area TMII',
+                    'Belanja cinderamata kerajinan daerah'
+                ],
+                'important_info' => [
+                    'Kawasan TMII kini mengusung konsep ramah lingkungan (green zone), gunakan kendaraan ramah lingkungan atau shuttle bus gratis di dalam area.'
+                ],
+                'itinerary' => [
+                    [
+                        'day' => 'Hari 1',
+                        'title' => 'Kedatangan & Wisata Monas Heritage',
+                        'schedules' => [
+                            ['time' => '10:00 - 12:00', 'activity' => 'Penjemputan rombongan di meeting point Jakarta'],
+                            ['time' => '12:30 - 14:00', 'activity' => 'Makan siang di restoran kuliner khas Nusantara'],
+                            ['time' => '14:30 - 17:00', 'activity' => 'Kunjungan ke Monumen Nasional & Museum Nasional'],
+                            ['time' => '18:00 - 20:00', 'activity' => 'Check-in Hotel Bintang 4 & makan malam']
+                        ]
+                    ],
+                    [
+                        'day' => 'Hari 2',
+                        'title' => 'Eksplorasi Budaya Nusantara di TMII',
+                        'schedules' => [
+                            ['time' => '07:30 - 08:30', 'activity' => 'Sarapan pagi di hotel'],
+                            ['time' => '09:00 - 12:30', 'activity' => 'Jelajah Anjungan Rumah Adat Daerah & Naik Kereta Gantung TMII'],
+                            ['time' => '12:30 - 14:00', 'activity' => 'Makan siang di Restoran Danau Archipelago TMII'],
+                            ['time' => '14:30 - 17:00', 'activity' => 'Wisata ke Istana Anak-Anak & Taman Burung TMII'],
+                            ['time' => '18:30 - 20:30', 'activity' => 'Makan malam kuliner malam Jakarta & istirahat di hotel']
+                        ]
+                    ],
+                    [
+                        'day' => 'Hari 3',
+                        'title' => 'Wisata Belanja & Hiburan Ibu Kota',
+                        'schedules' => [
+                            ['time' => '08:00 - 09:00', 'activity' => 'Sarapan di hotel'],
+                            ['time' => '09:30 - 13:00', 'activity' => 'Wisata belanja cinderamata Sarinah Mall Thamrin'],
+                            ['time' => '13:00 - 14:30', 'activity' => 'Makan siang resto populer'],
+                            ['time' => '15:00 - 18:00', 'activity' => 'Kawasan Senayan & Gelora Bung Karno'],
+                            ['time' => '19:00 - 21:00', 'activity' => 'Makan malam penutupan']
+                        ]
+                    ],
+                    [
+                        'day' => 'Hari 4',
+                        'title' => 'Check-out & Kepulangan Rombongan',
+                        'schedules' => [
+                            ['time' => '07:30 - 09:00', 'activity' => 'Sarapan pagi & proses check-out kamar hotel'],
+                            ['time' => '09:30 - 11:30', 'activity' => 'Pusat oleh-oleh khas Betawi & Nusantara'],
+                            ['time' => '12:00 - Selesai', 'activity' => 'Pengantaran peserta ke titik akhir perjalanan. Selesai.']
+                        ]
+                    ]
+                ]
+            ],
+
+            'fairy-garden' => [
+                'slug' => 'fairy-garden',
+                'name' => 'Fairy Garden Bandung Tour 2 Hari',
+                'price' => 'Rp.900.000',
+                'price_raw' => 900000,
+                'duration' => '2 Hari',
+                'max_people' => 'Max 40 Orang',
+                'location' => 'Lembang, Bandung Barat, Jawa Barat',
+                'rating' => 5.0,
+                'reviews_count' => 194,
+                'image' => 'images/fairy-garden.jpg',
+                'category' => 'jawa menginap',
+                'page' => 3,
+                'description' => 'Masuki dunia peri ajaib di Fairy Garden Lembang Bandung. Kastil peri megah dengan kostum peri bersayap, taman bunga labirin, parade teatrikal peri, dan aktivitas edukasi seni untuk keluarga.',
+                'highlights' => [
+                    'Kastil Megah Istana Peri Fairy Castle',
+                    'Parade Teatrikal Kostum Peri Cantik Bersayap',
+                    'Taman Bunga Labirin & Rumah Pohon Ajaib',
+                    'The Lodge Maribaya & Wisata Alam Pinus'
+                ],
+                'facilities' => [
+                    ['icon' => 'fa-solid fa-bus', 'title' => 'Bus Pariwisata AC', 'desc' => 'Armada mewah & berfasilitas lengkap'],
+                    ['icon' => 'fa-solid fa-hotel', 'title' => 'Hotel Resort Lembang', 'desc' => '1 Malam di perbukitan sejuk'],
+                    ['icon' => 'fa-solid fa-ticket', 'title' => 'Tiket Masuk Fairy Garden', 'desc' => 'Akses terusan seluruh taman'],
+                    ['icon' => 'fa-solid fa-utensils', 'title' => 'Makan 3x', 'desc' => 'Menu lezat resto khas Sunda']
+                ],
+                'inclusions' => [
+                    'Transportasi Bus Pariwisata AC 2 Hari',
+                    'Akomodasi Hotel Resort Lembang (1 Malam)',
+                    'Tiket masuk Fairy Garden & The Lodge Maribaya',
+                    '3x Makan & Air Mineral harian',
+                    'BBM, Tol Cipularang, dan Biaya Parkir',
+                    'Tour Leader ramah'
+                ],
+                'exclusions' => [
+                    'Sewa kostum peri & wahana sky tree berbayar di The Lodge',
+                    'Pengeluaran belanja pribadi'
+                ],
+                'important_info' => [
+                    'Bawa jaket atau pakaian hangat untuk suasana malam Lembang yang sejuk.'
+                ],
+                'itinerary' => [
+                    [
+                        'day' => 'Hari 1',
+                        'title' => 'Keajaiban Istana Peri Fairy Garden',
+                        'schedules' => [
+                            ['time' => '07:00 - 10:00', 'activity' => 'Perjalanan rombongan menuju kawasan Lembang Bandung'],
+                            ['time' => '10:30 - 13:00', 'activity' => 'Eksplorasi taman peri Fairy Garden & nonton pertunjukan peri'],
+                            ['time' => '13:00 - 14:30', 'activity' => 'Makan siang di resto lokal khas Sunda'],
+                            ['time' => '15:00 - 17:30', 'activity' => 'Wisata alam pinus di The Lodge Maribaya'],
+                            ['time' => '18:30 - 20:30', 'activity' => 'Makan malam rombongan & Check-in hotel resort']
+                        ]
+                    ],
+                    [
+                        'day' => 'Hari 2',
+                        'title' => 'Wisata Belanja & Kepulangan',
+                        'schedules' => [
+                            ['time' => '07:30 - 08:30', 'activity' => 'Sarapan di hotel dan check-out'],
+                            ['time' => '09:00 - 11:30', 'activity' => 'Wisata belanja factory outlet Rumah Mode Bandung'],
+                            ['time' => '12:00 - 13:30', 'activity' => 'Makan siang & belanja oleh-oleh Prima Rasa'],
+                            ['time' => '14:00 - Selesai', 'activity' => 'Perjalanan kembali menuju titik asal. Tour selesai.']
+                        ]
+                    ]
+                ]
+            ],
         ];
     }
 
     /**
-     * Halaman index paket wisata
+     * Halaman index paket wisata (Mendukung query ?page=1, ?page=2, ?page=3 atau paginasi dynamic)
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('paket-wisata');
+        $allPackages = self::getPaketData();
+        $currentPage = (int) $request->query('page', 1);
+        if ($currentPage < 1 || $currentPage > 3) {
+            $currentPage = 1;
+        }
+
+        return view('paket-wisata', compact('allPackages', 'currentPage'));
     }
 
     /**
@@ -620,11 +1711,9 @@ class PaketWisataController extends Controller
     {
         $allPackages = self::getPaketData();
 
-        // Cari paket berdasarkan slug atau default ke jogja jika tidak ditemukan
         $paket = $allPackages[$slug] ?? null;
 
         if (!$paket) {
-            // Coba cari substring jika slug variatif
             foreach ($allPackages as $key => $data) {
                 if (str_contains($slug, $key) || str_contains($key, $slug)) {
                     $paket = $data;
@@ -689,6 +1778,22 @@ class PaketWisataController extends Controller
             'bandung' => 'Hotel Bintang 3 (3 Malam)',
             'bali' => 'Hotel Bintang 4 (4 Malam)',
             'lampung' => 'Hotel Bintang 3 (2 Malam)',
+            'kayla-hills' => 'Hotel Bintang 3 (1 Malam)',
+            'saloka' => 'Hotel Bintang 3 (2 Malam)',
+            'kebun-raya-bogor' => 'Tanpa Menginap (1 Hari)',
+            'nicoles-river-park' => 'Hotel Resort Puncak (1 Malam)',
+            'dcastello' => 'Tanpa Menginap (1 Hari)',
+            'sea-world' => 'Hotel Bintang 3 (2 Malam)',
+            'atlantis' => 'Hotel Bintang 4 (3 Malam)',
+            'bird-land' => 'Hotel Bintang 3 (1 Malam)',
+            'dufan' => 'Tanpa Menginap (1 Hari)',
+            'hutan-mycelia' => 'Glamping / Hotel Cikole (1 Malam)',
+            'mikutopia' => 'Tanpa Menginap (1 Hari)',
+            'famoso-garden' => 'Hotel Bintang 3 (1 Malam)',
+            'samudera-ancol' => 'Tanpa Menginap (1 Hari)',
+            'surabaya' => 'Hotel Bintang 3 (2 Malam)',
+            'taman-mini' => 'Hotel Bintang 4 (3 Malam)',
+            'fairy-garden' => 'Hotel Resort Lembang (1 Malam)',
         ];
 
         $mealDetails = [
@@ -700,6 +1805,22 @@ class PaketWisataController extends Controller
             'bandung' => '7x Makan Lengkap',
             'bali' => 'Makan Lengkap & Seafood Jimbaran',
             'lampung' => 'Makan Lengkap & Ikan Bakar',
+            'kayla-hills' => '3x Makan & Air Mineral',
+            'saloka' => '5x Makan & Sarapan Hotel',
+            'kebun-raya-bogor' => '1x Makan Siang Sunda & Snack',
+            'nicoles-river-park' => '3x Makan + Snack',
+            'dcastello' => '1x Makan Siang Prasmanan',
+            'sea-world' => '5x Makan & Seafood',
+            'atlantis' => 'Makan Lengkap 4 Hari',
+            'bird-land' => '3x Makan & Snack',
+            'dufan' => '1x Makan Siang & Snack',
+            'hutan-mycelia' => '3x Makan + BBQ Dinner',
+            'mikutopia' => '1x Makan Siang Khas Berastagi',
+            'famoso-garden' => '3x Makan & Air Mineral',
+            'samudera-ancol' => '1x Makan Siang & Snack',
+            'surabaya' => '5x Makan Kuliner Khas Surabaya',
+            'taman-mini' => 'Makan Lengkap 4 Hari',
+            'fairy-garden' => '3x Makan & Air Mineral',
         ];
 
         $paket['hotel_info'] = $hotelDetails[$paket['slug']] ?? 'Hotel Bintang 3';

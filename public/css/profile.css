@@ -94,12 +94,12 @@
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.65);
-    border-radius: 32px;
+    border-radius: 28px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.14);
-    padding: 32px;
+    padding: 24px;
     display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 28px;
+    grid-template-columns: 240px 1fr;
+    gap: 20px;
     align-items: start;
 }
 
@@ -108,8 +108,8 @@
    ========================================================================== */
 .admin-sidebar-card {
     background: #ffffff;
-    border-radius: 24px;
-    padding: 32px 20px 28px 20px;
+    border-radius: 20px;
+    padding: 24px 16px 20px 16px;
     border: 1px solid rgba(226, 232, 240, 0.8);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
     display: flex;
@@ -184,10 +184,10 @@
 .sidebar-nav-link {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 12px 18px;
+    gap: 12px;
+    padding: 10.5px 16px;
     border-radius: 14px;
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 600;
     color: #475569;
     text-decoration: none;
@@ -328,8 +328,9 @@
     color: #10b981;
 }
 
-/* Blue for Dikonfirmasi */
-.summary-card.confirmed-orders .summary-icon-circle {
+/* Blue for Dikonfirmasi / Dipending */
+.summary-card.confirmed-orders .summary-icon-circle,
+.summary-card.pending-orders .summary-icon-circle {
     background: #eff6ff;
     color: #3b82f6;
 }
@@ -351,6 +352,7 @@
     font-weight: 800;
     line-height: 1.2;
     margin-bottom: 2px;
+    transition: all 0.3s ease;
 }
 
 .summary-card.total-orders .summary-number {
@@ -361,7 +363,8 @@
     color: #10b981;
 }
 
-.summary-card.confirmed-orders .summary-number {
+.summary-card.confirmed-orders .summary-number,
+.summary-card.pending-orders .summary-number {
     color: #3b82f6;
 }
 
@@ -389,9 +392,10 @@
 }
 
 .admin-card-title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     color: #0f172a;
+    letter-spacing: -0.15px;
 }
 
 /* Header Badge on Tab Paket Wisata */
@@ -402,9 +406,9 @@
     background: #fff2eb;
     color: #ea580c;
     border: 1px solid #ffd8c4;
-    padding: 6px 14px;
+    padding: 5px 12px;
     border-radius: 12px;
-    font-size: 13.5px;
+    font-size: 13px;
     font-weight: 700;
 }
 
@@ -413,7 +417,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    margin-bottom: 22px;
+    margin-bottom: 20px;
 }
 
 .admin-search-wrapper {
@@ -433,11 +437,11 @@
 
 .admin-search-input {
     width: 100%;
-    padding: 11px 16px 11px 42px;
+    padding: 10px 16px 10px 42px;
     background: #f1f5f9;
     border: 1px solid transparent;
     border-radius: 9999px;
-    font-size: 13.5px;
+    font-size: 13px;
     font-family: inherit;
     color: #0f172a;
     outline: none;
@@ -459,12 +463,12 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 20px;
+    padding: 9px 18px;
     background: #ffffff;
     color: #ea580c;
     border: 1px solid #fed7aa;
     border-radius: 9999px;
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 700;
     cursor: pointer;
     text-decoration: none;
@@ -509,14 +513,14 @@
 .package-item-left {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
     min-width: 0;
 }
 
 .package-item-thumb {
-    width: 92px;
-    height: 58px;
-    border-radius: 12px;
+    width: 80px;
+    height: 52px;
+    border-radius: 10px;
     object-fit: cover;
     flex-shrink: 0;
     background: #f1f5f9;
@@ -526,22 +530,24 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+    gap: 1px;
 }
 
 .package-item-name {
-    font-size: 14.5px;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 600; /* Atas agak tebal */
     color: #0f172a;
-    line-height: 1.3;
+    line-height: 1.25;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .package-item-location {
-    font-size: 12.5px;
+    font-size: 10.5px;
+    font-weight: 400; /* Bawah tipis */
     color: #64748b;
-    margin-top: 3px;
+    margin-top: 1px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -551,7 +557,7 @@
 .package-item-right {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 20px;
     flex-shrink: 0;
 }
 
@@ -560,41 +566,45 @@
     flex-direction: column;
     align-items: flex-end;
     text-align: right;
+    gap: 1px;
 }
 
 .package-item-price {
-    font-size: 14.5px;
-    font-weight: 800;
+    font-size: 12px;
+    font-weight: 700;
     color: #ea580c;
-    line-height: 1.3;
+    line-height: 1.25;
+    white-space: nowrap;
 }
 
 .package-item-duration {
-    font-size: 11.5px;
+    font-size: 10.5px;
+    font-weight: 400;
     color: #64748b;
-    margin-top: 3px;
+    margin-top: 1px;
     display: flex;
     align-items: center;
     gap: 4px;
+    white-space: nowrap;
 }
 
 .package-item-duration i {
-    font-size: 11px;
+    font-size: 10px;
     color: #94a3b8;
 }
 
 .package-item-actions {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .btn-action-icon {
     background: transparent;
     border: none;
     cursor: pointer;
-    font-size: 15px;
-    padding: 6px;
+    font-size: 14px;
+    padding: 5px;
     border-radius: 8px;
     transition: all 0.2s ease;
     display: inline-flex;
@@ -621,7 +631,7 @@
 }
 
 /* ==========================================================================
-   RIWAYAT PEMESANAN TABLE
+   RIWAYAT PEMESANAN TABLE (2-LEVEL TEXT STRUCTURE)
    ========================================================================== */
 .table-responsive-wrapper {
     width: 100%;
@@ -633,7 +643,7 @@
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    font-size: 12.5px;
+    font-size: 11.5px;
 }
 
 .admin-orders-table thead th {
@@ -641,8 +651,8 @@
     color: #1e293b;
     font-weight: 700;
     text-align: left;
-    padding: 10px 12px;
-    font-size: 12px;
+    padding: 8px 10px;
+    font-size: 11px;
     border-top: 1px solid #fed7aa;
     border-bottom: 1px solid #fed7aa;
     white-space: nowrap;
@@ -661,27 +671,34 @@
 }
 
 .admin-orders-table tbody td {
-    padding: 11px 12px;
+    padding: 8px 10px;
     border-bottom: 1px solid #f1f5f9;
     vertical-align: middle;
     color: #334155;
-    font-size: 12px;
+    font-size: 11.5px;
+    white-space: nowrap;
 }
 
 .admin-orders-table tbody tr:hover td {
     background: #fafafa;
 }
 
+/* 2 Tingkat Teks: Atas Agak Tebal, Bawah Tipis */
 .table-text-main {
-    font-weight: 700;
+    font-size: 11.5px;
+    font-weight: 600; /* Atas agak tebal */
     color: #0f172a;
-    line-height: 1.3;
+    line-height: 1.25;
+    white-space: nowrap;
 }
 
 .table-text-sub {
-    font-size: 11.5px;
+    font-size: 10.5px;
+    font-weight: 400; /* Bawah tipis */
     color: #64748b;
-    margin-top: 2px;
+    margin-top: 1.5px;
+    line-height: 1.2;
+    white-space: nowrap;
 }
 
 /* Status Badges */
@@ -689,11 +706,12 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 4px 12px;
+    padding: 3px 10px;
     border-radius: 9999px;
-    font-size: 11.5px;
+    font-size: 10.5px;
     font-weight: 700;
     white-space: nowrap;
+    transition: all 0.25s ease;
 }
 
 .badge-status.confirmed {
@@ -702,7 +720,14 @@
     border: 1px solid #bfdbfe;
 }
 
-.badge-status.completed {
+.badge-status.pending {
+    background: #e0f2fe;
+    color: #0284c7;
+    border: 1px solid #bae6fd;
+}
+
+.badge-status.completed,
+.badge-status.approved {
     background: #dcfce7;
     color: #16a34a;
     border: 1px solid #bbf7d0;
@@ -719,12 +744,12 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 4px 12px;
+    padding: 3px 11px;
     background: #ffffff;
     color: #3b82f6;
     border: 1px solid #93c5fd;
     border-radius: 9999px;
-    font-size: 11.5px;
+    font-size: 11px;
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
@@ -1421,6 +1446,380 @@
     }
 }
 
+/* ==========================================================================
+   TAMBAH / EDIT PAKET WISATA FULL FORM STYLES (MATCHING SCREENSHOT)
+   ========================================================================== */
+.package-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.package-form-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 22px 24px;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.form-section-heading {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 14px;
+    letter-spacing: -0.15px;
+}
+
+/* 1. Upload Dropzone */
+.upload-dropzone {
+    background: #ffffff;
+    border: 1.5px solid #fed7aa;
+    border-radius: 16px;
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-dropzone:hover,
+.upload-dropzone.dragover {
+    border-color: #ea580c;
+    background: #fffaf5;
+    box-shadow: 0 4px 16px rgba(234, 88, 12, 0.08);
+}
+
+.upload-icon-circle {
+    font-size: 32px;
+    color: #ea580c;
+    margin-bottom: 8px;
+    transition: transform 0.25s ease;
+}
+
+.upload-dropzone:hover .upload-icon-circle {
+    transform: translateY(-3px);
+}
+
+.upload-main-text {
+    font-size: 13px;
+    color: #475569;
+    font-weight: 500;
+}
+
+.upload-link-text {
+    color: #ea580c;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+
+.upload-hint-text {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 5px;
+}
+
+.image-preview-wrapper {
+    display: none;
+    position: relative;
+    width: 100%;
+    max-width: 280px;
+    margin: 10px auto 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid #ea580c;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+.image-preview-wrapper img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+}
+
+.btn-remove-preview {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: rgba(15, 23, 42, 0.75);
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.btn-remove-preview:hover {
+    background: #ef4444;
+    transform: scale(1.1);
+}
+
+/* 2. Informasi Paket 2-Column Form */
+.form-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 20px;
+}
+
+.form-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-field-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.form-text-input,
+.form-select-control,
+.form-textarea-control {
+    width: 100%;
+    padding: 10px 14px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 12.5px;
+    color: #0f172a;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.form-text-input:focus,
+.form-select-control:focus,
+.form-textarea-control:focus {
+    border-color: #ea580c;
+    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
+}
+
+.form-text-input::placeholder,
+.form-textarea-control::placeholder {
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.custom-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.form-select-control {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 36px;
+    cursor: pointer;
+}
+
+.select-chevron {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 11px;
+    pointer-events: none;
+}
+
+.form-textarea-control {
+    resize: vertical;
+    min-height: 90px;
+}
+
+/* 3. Rencana Perjalanan Section */
+.itinerary-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.btn-add-itinerary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 18px;
+    border-radius: 9999px;
+    background: #ffffff;
+    color: #ea580c;
+    border: 1px solid #fed7aa;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-add-itinerary:hover {
+    background: #fff2eb;
+    border-color: #ea580c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.12);
+}
+
+.itinerary-empty-alert {
+    background: #fff7ed;
+    border: 1px solid #ffedd5;
+    border-radius: 14px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.itinerary-empty-alert .alert-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #ea580c;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.itinerary-empty-alert .alert-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.itinerary-empty-alert .alert-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 2px;
+}
+
+.itinerary-empty-alert .alert-desc {
+    font-size: 11.5px;
+    color: #64748b;
+    line-height: 1.3;
+}
+
+/* Dynamic Itinerary Cards when added */
+.itinerary-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.itinerary-day-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: fadeInTab 0.25s ease;
+}
+
+.itinerary-day-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.itinerary-day-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff2eb;
+    color: #ea580c;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 9999px;
+}
+
+.btn-remove-day {
+    background: transparent;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 4px;
+    transition: transform 0.2s ease;
+}
+
+.btn-remove-day:hover {
+    transform: scale(1.15);
+}
+
+/* Form Action Buttons Bottom */
+.form-actions-bottom-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    gap: 16px;
+}
+
+.btn-form-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: 9999px;
+    background: #ffffff;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-form-back:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+    transform: translateX(-2px);
+}
+
+.btn-form-save {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 48px;
+    border-radius: 9999px;
+    background: #ea580c;
+    color: #ffffff;
+    border: none;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(234, 88, 12, 0.3);
+    transition: all 0.2s ease;
+}
+
+.btn-form-save:hover {
+    background: #c2410c;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(234, 88, 12, 0.45);
+}
+
 @media (max-width: 768px) {
     .admin-page-wrapper {
         padding: 16px 12px 40px 12px;
@@ -1475,4 +1874,246 @@
         flex-direction: column;
         align-items: stretch;
     }
+
+    .form-grid-2col {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .form-actions-bottom-row {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .btn-form-back,
+    .btn-form-save {
+        width: 100%;
+        justify-content: center;
+    }
 }
+
+/* ==========================================================================
+   MODAL STYLES (EDIT PAKET WISATA & LOGOUT)
+   ========================================================================== */
+.admin-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    padding: 20px;
+}
+
+.admin-modal-backdrop.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.admin-modal-box {
+    background: #ffffff;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 440px;
+    padding: 24px 28px 28px 28px;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.04);
+    transform: scale(0.92) translateY(10px);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+    position: relative;
+}
+
+.admin-modal-backdrop.show .admin-modal-box {
+    transform: scale(1) translateY(0);
+}
+
+.admin-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.admin-modal-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    letter-spacing: -0.2px;
+}
+
+.btn-modal-close {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 16px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-modal-close:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.modal-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.modal-form-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.modal-form-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 14px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 13px;
+    color: #0f172a;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.modal-form-input:focus {
+    border-color: #ea580c;
+    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
+}
+
+.modal-form-input::placeholder {
+    color: #94a3b8;
+    font-size: 12.5px;
+}
+
+.btn-modal-submit-orange {
+    width: 100%;
+    margin-top: 8px;
+    padding: 12px 20px;
+    border-radius: 9999px;
+    background: #ea580c;
+    color: #ffffff;
+    font-size: 13.5px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-modal-submit-orange:hover {
+    background: #c2410c;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(234, 88, 12, 0.45);
+}
+
+.btn-modal-submit-orange:active {
+    transform: translateY(0);
+}
+
+/* Logout Modal Styling */
+.logout-modal-box {
+    text-align: center;
+    max-width: 380px;
+    padding: 28px 24px;
+}
+
+.logout-icon-wrapper {
+    width: 54px;
+    height: 54px;
+    background: #fee2e2;
+    color: #ef4444;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin: 0 auto 16px auto;
+}
+
+.logout-modal-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.logout-modal-desc {
+    font-size: 12.5px;
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 22px;
+}
+
+.logout-actions-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-modal-cancel {
+    flex: 1;
+    padding: 10px 16px;
+    border-radius: 9999px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-modal-cancel:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.btn-modal-confirm-logout {
+    flex: 1.2;
+    padding: 10px 16px;
+    border-radius: 9999px;
+    background: #ef4444;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-modal-confirm-logout:hover {
+    background: #dc2626;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+}
+

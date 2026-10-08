@@ -2,6 +2,73 @@
 
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
+    <style>
+        /* Toast notification styling */
+        .admin-toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .admin-toast {
+            min-width: 300px;
+            max-width: 420px;
+            background: #ffffff;
+            color: #0f172a;
+            border-radius: 16px;
+            padding: 14px 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 5px solid #16a34a;
+            font-size: 13.5px;
+            font-weight: 600;
+            pointer-events: auto;
+            transform: translateX(120%);
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+        }
+        .admin-toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        .admin-toast.toast-success {
+            border-left-color: #16a34a;
+        }
+        .admin-toast.toast-info {
+            border-left-color: #0284c7;
+        }
+        .admin-toast-icon {
+            font-size: 18px;
+            color: #16a34a;
+        }
+        .admin-toast.toast-info .admin-toast-icon {
+            color: #0284c7;
+        }
+        .badge-status {
+            transition: all 0.25s ease;
+        }
+        .btn-detail-approve {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+        .btn-detail-approve.completed,
+        .btn-detail-approve.approved {
+            background: #16a34a !important;
+            box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35) !important;
+            color: #ffffff !important;
+        }
+        .btn-detail-approve.completed:hover,
+        .btn-detail-approve.approved:hover {
+            background: #15803d !important;
+            box-shadow: 0 6px 18px rgba(22, 163, 74, 0.45) !important;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -77,7 +144,7 @@
         <main class="admin-main-content">
 
             <!-- ---------------------------------------------------- -->
-            <!-- TAB 1: DASHBOARD OVERVIEW (REFERENCE IMAGE 1)        -->
+            <!-- TAB 1: DASHBOARD OVERVIEW                            -->
             <!-- ---------------------------------------------------- -->
             <div class="tab-content-pane active" id="tab-dashboard">
 
@@ -90,7 +157,7 @@
                         </div>
                         <div class="summary-info">
                             <span class="summary-title">Total Pesanan</span>
-                            <span class="summary-number">0</span>
+                            <span class="summary-number" id="summaryTotalCount">5</span>
                             <span class="summary-subtitle">Semua waktu</span>
                         </div>
                     </div>
@@ -102,20 +169,20 @@
                         </div>
                         <div class="summary-info">
                             <span class="summary-title">Selesai</span>
-                            <span class="summary-number">0</span>
+                            <span class="summary-number" id="summaryCompletedCount">4</span>
                             <span class="summary-subtitle">Perjalanan selesai</span>
                         </div>
                     </div>
 
-                    <!-- Dikonfirmasi Card -->
-                    <div class="summary-card confirmed-orders">
+                    <!-- Dipending Card (Diperbarui dari Dikonfirmasi) -->
+                    <div class="summary-card pending-orders">
                         <div class="summary-icon-circle">
-                            <i class="fa-regular fa-calendar-check"></i>
+                            <i class="fa-regular fa-clock"></i>
                         </div>
                         <div class="summary-info">
-                            <span class="summary-title">Dikonfirmasi</span>
-                            <span class="summary-number">0</span>
-                            <span class="summary-subtitle">Perjalanan mendatang</span>
+                            <span class="summary-title">Dipending</span>
+                            <span class="summary-number" id="summaryPendingCount">1</span>
+                            <span class="summary-subtitle">Menunggu konfirmasi</span>
                         </div>
                     </div>
                 </div>
@@ -224,7 +291,7 @@
                                     </td>
                                     <td>6 Orang</td>
                                     <td><strong>Rp. 13.200.000</strong></td>
-                                    <td><span class="badge-status confirmed">Dikonfirmasi</span></td>
+                                    <td><span class="badge-status pending" data-order-badge="alexa">Dipending</span></td>
                                     <td>
                                         <button type="button" class="btn-detail-outline" onclick="showOrderDetail('alexa')">
                                             Lihat Detail
@@ -246,7 +313,7 @@
                                     </td>
                                     <td>8 Orang</td>
                                     <td><strong>Rp. 14.400.000</strong></td>
-                                    <td><span class="badge-status completed">Selesai</span></td>
+                                    <td><span class="badge-status completed" data-order-badge="nadia">Selesai</span></td>
                                     <td>
                                         <button type="button" class="btn-detail-outline" onclick="showOrderDetail('nadia')">
                                             Lihat Detail
@@ -268,7 +335,7 @@
                                     </td>
                                     <td>4 Orang</td>
                                     <td><strong>Rp. 11.000.000</strong></td>
-                                    <td><span class="badge-status completed">Selesai</span></td>
+                                    <td><span class="badge-status completed" data-order-badge="raka">Selesai</span></td>
                                     <td>
                                         <button type="button" class="btn-detail-outline" onclick="showOrderDetail('raka')">
                                             Lihat Detail
@@ -290,7 +357,7 @@
                                     </td>
                                     <td>7 Orang</td>
                                     <td><strong>Rp. 6.825.000</strong></td>
-                                    <td><span class="badge-status completed">Selesai</span></td>
+                                    <td><span class="badge-status completed" data-order-badge="alya">Selesai</span></td>
                                     <td>
                                         <button type="button" class="btn-detail-outline" onclick="showOrderDetail('alya')">
                                             Lihat Detail
@@ -312,7 +379,7 @@
                                     </td>
                                     <td>10 Orang</td>
                                     <td><strong>Rp. 4.990.000</strong></td>
-                                    <td><span class="badge-status completed">Selesai</span></td>
+                                    <td><span class="badge-status completed" data-order-badge="fajar">Selesai</span></td>
                                     <td>
                                         <button type="button" class="btn-detail-outline" onclick="showOrderDetail('fajar')">
                                             Lihat Detail
@@ -327,13 +394,13 @@
             </div>
 
             <!-- ---------------------------------------------------- -->
-            <!-- TAB 2: DAFTAR PAKET WISATA (REFERENCE IMAGE 2)       -->
+            <!-- TAB 2: DAFTAR PAKET WISATA                           -->
             <!-- ---------------------------------------------------- -->
             <div class="tab-content-pane" id="tab-paket-wisata">
                 <div class="admin-section-card">
                     <!-- Header with Title & Badge Count -->
                     <div class="admin-card-header">
-                        <h2 class="admin-card-title" style="font-size: 20px;">Daftar Paket Wisata</h2>
+                        <h2 class="admin-card-title">Daftar Paket Wisata</h2>
                         <div class="header-badge-count">
                             <i class="fa-solid fa-briefcase"></i>
                             <span id="packageBadgeCount">8</span>
@@ -346,7 +413,7 @@
                             <i class="fa-solid fa-magnifying-glass admin-search-icon"></i>
                             <input type="text" id="packageFilterInput" class="admin-search-input" placeholder="Search paket wisata atau lokasi...">
                         </div>
-                        <button type="button" class="btn-add-package" onclick="openAddPackageModal()">
+                        <button type="button" class="btn-add-package" onclick="openAddPackageView()">
                             <i class="fa-solid fa-plus"></i>
                             <span>Tambah Paket</span>
                         </button>
@@ -455,12 +522,156 @@
             </div>
 
             <!-- ---------------------------------------------------- -->
+            <!-- TAB: TAMBAH PAKET WISATA (MATCHING SCREENSHOT)       -->
+            <!-- ---------------------------------------------------- -->
+            <div class="tab-content-pane" id="tab-tambah-paket">
+                <form id="addPackageForm" onsubmit="event.preventDefault(); handleSavePackageForm();" class="package-form-container">
+                    
+                    <!-- 1. Tambah Gambar -->
+                    <div class="package-form-card">
+                        <h3 class="form-section-heading">1. Tambah Gambar</h3>
+                        <div class="upload-dropzone" id="packageDropzone" onclick="document.getElementById('packageImageInput').click();">
+                            <input type="file" id="packageImageInput" accept="image/png, image/jpeg, image/webp" style="display: none;" onchange="handlePackageImageSelect(this)">
+                            
+                            <div class="upload-dropzone-content" id="uploadPlaceholderContent">
+                                <div class="upload-icon-circle">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                </div>
+                                <div class="upload-main-text">
+                                    Seret &amp; letakkan gambar disini atau <span class="upload-link-text">klik untuk memilih file</span>
+                                </div>
+                                <div class="upload-hint-text">
+                                    Format: JPG, PNG, WEBP. Maksimal 2MB
+                                </div>
+                            </div>
+
+                            <div class="image-preview-wrapper" id="packageImagePreviewWrap" onclick="event.stopPropagation();">
+                                <img id="packageImagePreview" src="" alt="Preview Gambar">
+                                <button type="button" class="btn-remove-preview" title="Hapus Gambar" onclick="removePackageImagePreview(event)">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Informasi Paket -->
+                    <div class="package-form-card">
+                        <h3 class="form-section-heading">2. Informasi Paket</h3>
+                        <div class="form-grid-2col">
+                            <!-- Nama Paket Wisata -->
+                            <div class="form-field-group">
+                                <label class="form-field-label">Nama Paket Wisata</label>
+                                <input type="text" id="inputFormPkgName" class="form-text-input" placeholder="Tulis nama paket wisata" required>
+                            </div>
+
+                            <!-- Harga Mulai (Rp) -->
+                            <div class="form-field-group">
+                                <label class="form-field-label">Harga Mulai (Rp)</label>
+                                <input type="text" id="inputFormPkgPrice" class="form-text-input" placeholder="Tulis harga" required>
+                            </div>
+
+                            <!-- Destinasi -->
+                            <div class="form-field-group">
+                                <label class="form-field-label">Destinasi</label>
+                                <div class="custom-select-wrapper">
+                                    <select id="inputFormPkgDest" class="form-select-control" required>
+                                        <option value="" disabled selected>Pilih destinasi</option>
+                                        <option value="Yogyakarta">Yogyakarta</option>
+                                        <option value="Jawa Timur">Jawa Timur</option>
+                                        <option value="Lampung">Lampung</option>
+                                        <option value="Bali">Bali</option>
+                                        <option value="Bandung">Bandung</option>
+                                        <option value="Bogor">Bogor</option>
+                                        <option value="Jakarta">Jakarta</option>
+                                        <option value="Lombok">Lombok</option>
+                                        <option value="Labuan Bajo">Labuan Bajo</option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down select-chevron"></i>
+                                </div>
+                            </div>
+
+                            <!-- Kategori Paket -->
+                            <div class="form-field-group">
+                                <label class="form-field-label">Kategori Paket</label>
+                                <div class="custom-select-wrapper">
+                                    <select id="inputFormPkgCategory" class="form-select-control" required>
+                                        <option value="" disabled selected>Pilih kategori paket</option>
+                                        <option value="Wisata Alam">Wisata Alam</option>
+                                        <option value="Wisata Budaya">Wisata Budaya</option>
+                                        <option value="Wisata Pantai">Wisata Pantai</option>
+                                        <option value="Family Trip">Family Trip</option>
+                                        <option value="Open Trip">Open Trip</option>
+                                        <option value="Honeymoon">Honeymoon</option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down select-chevron"></i>
+                                </div>
+                            </div>
+
+                            <!-- Durasi -->
+                            <div class="form-field-group">
+                                <label class="form-field-label">Durasi</label>
+                                <input type="text" id="inputFormPkgDuration" class="form-text-input" placeholder="Tulis durasi perjalanan" required>
+                            </div>
+
+                            <!-- Makan -->
+                            <div class="form-field-group">
+                                <label class="form-field-label">Makan</label>
+                                <input type="text" id="inputFormPkgMeal" class="form-text-input" placeholder="Tulis makan yang didapatkan">
+                            </div>
+
+                            <!-- Deskripsi -->
+                            <div class="form-field-group full-width">
+                                <label class="form-field-label">Deskripsi</label>
+                                <textarea id="inputFormPkgDesc" class="form-textarea-control" placeholder="Tulis deskripsi paket wisata" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Rencana Perjalanan -->
+                    <div class="package-form-card">
+                        <div class="itinerary-section-header">
+                            <h3 class="form-section-heading" style="margin-bottom: 0;">3. Rencana Perjalanan</h3>
+                            <button type="button" class="btn-add-itinerary" onclick="addItineraryDay()">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Tambah Rencana Perjalanan</span>
+                            </button>
+                        </div>
+
+                        <!-- Empty State Alert Box -->
+                        <div class="itinerary-empty-alert" id="itineraryEmptyAlert">
+                            <div class="alert-icon">
+                                <i class="fa-solid fa-exclamation"></i>
+                            </div>
+                            <div class="alert-content">
+                                <span class="alert-title">Belum Ada Rencana Perjalanan</span>
+                                <span class="alert-desc">Klik tombol <strong>Tambah Rencana Perjalanan</strong> untuk menambahkan rencana perjalanan.</span>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Itinerary Days List -->
+                        <div class="itinerary-items-list" id="itineraryDaysContainer"></div>
+                    </div>
+
+                    <!-- Action Buttons Bottom Row -->
+                    <div class="form-actions-bottom-row">
+                        <button type="button" class="btn-form-back" onclick="backToPackageList()">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            <span>Kembali</span>
+                        </button>
+                        <button type="submit" class="btn-form-save">
+                            <span>Simpan</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ---------------------------------------------------- -->
             <!-- TAB 3: RIWAYAT PEMESANAN TAB                         -->
             <!-- ---------------------------------------------------- -->
             <div class="tab-content-pane" id="tab-riwayat-pemesanan">
                 <div class="admin-section-card">
                     <div class="admin-card-header">
-                        <h2 class="admin-card-title" style="font-size: 20px;">Riwayat Pemesanan Pelanggan</h2>
+                        <h2 class="admin-card-title">Riwayat Pemesanan Pelanggan</h2>
                     </div>
 
                     <div class="table-responsive-wrapper">
@@ -492,7 +703,7 @@
                                     </td>
                                     <td>6 Orang</td>
                                     <td><strong>Rp. 13.200.000</strong></td>
-                                    <td><span class="badge-status confirmed">Dikonfirmasi</span></td>
+                                    <td><span class="badge-status pending" data-order-badge="alexa">Dipending</span></td>
                                     <td>
                                         <button type="button" class="btn-detail-outline" onclick="showOrderDetail('alexa')">
                                             Lihat Detail
@@ -514,7 +725,7 @@
                                     </td>
                                     <td>8 Orang</td>
                                     <td><strong>Rp. 14.400.000</strong></td>
-                                    <td><span class="badge-status completed">Selesai</span></td>
+                                    <td><span class="badge-status completed" data-order-badge="nadia">Selesai</span></td>
                                     <td>
                                         <button type="button" class="btn-detail-outline" onclick="showOrderDetail('nadia')">
                                             Lihat Detail
@@ -536,7 +747,7 @@
                                     </td>
                                     <td>4 Orang</td>
                                     <td><strong>Rp. 11.000.000</strong></td>
-                                    <td><span class="badge-status completed">Selesai</span></td>
+                                    <td><span class="badge-status completed" data-order-badge="raka">Selesai</span></td>
                                     <td>
                                         <button type="button" class="btn-detail-outline" onclick="showOrderDetail('raka')">
                                             Lihat Detail
@@ -558,7 +769,7 @@
                                     </td>
                                     <td>7 Orang</td>
                                     <td><strong>Rp. 6.825.000</strong></td>
-                                    <td><span class="badge-status completed">Selesai</span></td>
+                                    <td><span class="badge-status completed" data-order-badge="alya">Selesai</span></td>
                                     <td>
                                         <button type="button" class="btn-detail-outline" onclick="showOrderDetail('alya')">
                                             Lihat Detail
@@ -580,7 +791,7 @@
                                     </td>
                                     <td>10 Orang</td>
                                     <td><strong>Rp. 4.990.000</strong></td>
-                                    <td><span class="badge-status completed">Selesai</span></td>
+                                    <td><span class="badge-status completed" data-order-badge="fajar">Selesai</span></td>
                                     <td>
                                         <button type="button" class="btn-detail-outline" onclick="showOrderDetail('fajar')">
                                             Lihat Detail
@@ -599,10 +810,10 @@
             <div class="tab-content-pane" id="tab-pengaturan">
                 <div class="admin-section-card">
                     <div class="admin-card-header">
-                        <h2 class="admin-card-title" style="font-size: 20px;">Pengaturan Akun & Profil</h2>
+                        <h2 class="admin-card-title">Pengaturan Akun & Profil</h2>
                     </div>
 
-                    <form class="admin-settings-form" onsubmit="event.preventDefault(); alert('Perubahan profil berhasil disimpan!');">
+                    <form class="admin-settings-form" onsubmit="event.preventDefault(); showToast('Perubahan profil berhasil disimpan!', 'success');">
                         <div class="form-group-row">
                             <label class="form-group-label" for="settingName">Nama Pengguna</label>
                             <input type="text" id="settingName" class="form-input-control" value="{{ session('user.name', 'Ika Safitri Oktavia') }}" required>
@@ -640,14 +851,14 @@
                         <div class="detail-header-left">
                             <h2 class="detail-title">Detail Pemesanan</h2>
                             <span class="detail-subtitle">Dipesan pada <span id="dtOrderDate">01 Agustus 2026</span></span>
-                            <div id="dtStatusBadge" class="dt-status-badge confirmed">Dikonfirmasi</div>
+                            <div id="dtStatusBadge" class="dt-status-badge pending">Dipending</div>
                         </div>
                         <div class="detail-header-actions">
                             <button type="button" class="btn-back-link" onclick="backToOrdersList()">
                                 <i class="fa-solid fa-arrow-left"></i> Kembali
                             </button>
-                            <button type="button" class="btn-detail-approve" id="dtActionBtn">
-                                <i class="fa-solid fa-check"></i> <span id="dtActionBtnText">Disetujui</span>
+                            <button type="button" class="btn-detail-approve" id="dtActionBtn" onclick="toggleApproveOrder()">
+                                <i class="fa-solid fa-clock" id="dtActionBtnIcon"></i> <span id="dtActionBtnText">Dikonfirmasi</span>
                             </button>
                         </div>
                     </div>
@@ -811,13 +1022,13 @@
                             </div>
 
                             <!-- Status Banner Bottom Right -->
-                            <div class="detail-status-banner confirmed" id="dtStatusBanner">
+                            <div class="detail-status-banner pending" id="dtStatusBanner">
                                 <div class="status-banner-icon">
-                                    <i class="fa-regular fa-circle-check"></i>
+                                    <i class="fa-regular fa-clock" id="dtBannerIcon"></i>
                                 </div>
                                 <div class="status-banner-text">
-                                    <span class="status-banner-title" id="dtBannerTitle">Menunggu perjalanan</span>
-                                    <span class="status-banner-subtitle" id="dtBannerSubtitle">Menunggu perjalanan selesai</span>
+                                    <span class="status-banner-title" id="dtBannerTitle">Menunggu Konfirmasi</span>
+                                    <span class="status-banner-subtitle" id="dtBannerSubtitle">Menunggu pembayaran diverifikasi & disetujui</span>
                                 </div>
                             </div>
                         </div>
@@ -864,12 +1075,16 @@
     </div>
 </div>
 
+<!-- ==================== TOAST NOTIFICATION CONTAINER ==================== -->
+<div class="admin-toast-container" id="adminToastContainer"></div>
+
+<!-- ==================== SCRIPT LOGIKA PROFILE & ADMIN DASHBOARD ==================== -->
 <script>
-    // Master Dataset of Orders for Interactive Detail Views
+    // Master Dataset of Orders with initial 'Dipending' status for Alexa
     const orderDatabase = {
         'alexa': {
             orderDate: '01 Agustus 2026',
-            status: 'Dikonfirmasi',
+            status: 'Dipending',
             pkgName: 'Jogja Tour 2 Hari',
             pkgDuration: 'Durasi 1 Hari',
             pkgHotel: 'No Hotel',
@@ -1014,6 +1229,8 @@
         }
     };
 
+    let currentViewingOrderKey = 'alexa';
+
     // Tab Navigation Logic
     document.addEventListener('DOMContentLoaded', function() {
         const tabButtons = document.querySelectorAll('.sidebar-nav-link[data-tab]');
@@ -1051,14 +1268,44 @@
                 }
             });
         }
+
+        // Drag & Drop handlers for Package Image Upload
+        const dropzone = document.getElementById('packageDropzone');
+        if (dropzone) {
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropzone.addEventListener(eventName, function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropzone.classList.add('dragover');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropzone.addEventListener(eventName, function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropzone.classList.remove('dragover');
+                }, false);
+            });
+
+            dropzone.addEventListener('drop', function(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                const input = document.getElementById('packageImageInput');
+                if (files && files.length > 0) {
+                    if (input) input.files = files;
+                    handlePackageImageSelect(input);
+                }
+            }, false);
+        }
+
+        updateSummaryCounts();
     });
 
     function activateTab(tabId) {
-        // Deactivate all buttons & panes
         document.querySelectorAll('.sidebar-nav-link[data-tab]').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.tab-content-pane').forEach(pane => pane.classList.remove('active'));
 
-        // Activate matching button & pane
         const activeBtn = document.querySelector(`.sidebar-nav-link[data-tab="${tabId}"]`);
         const activePane = document.getElementById(tabId);
 
@@ -1066,51 +1313,193 @@
         if (activePane) activePane.classList.add('active');
     }
 
+    // ==========================================
+    // TAMBAH PAKET WISATA HANDLERS
+    // ==========================================
+    let itineraryDayCount = 0;
+    let uploadedPackageImageSrc = '{{ asset("images/jogja.jpg") }}';
+
+    function openAddPackageView() {
+        const form = document.getElementById('addPackageForm');
+        if (form) form.reset();
+        uploadedPackageImageSrc = '{{ asset("images/jogja.jpg") }}';
+        
+        // Reset preview
+        const previewWrap = document.getElementById('packageImagePreviewWrap');
+        const placeholder = document.getElementById('uploadPlaceholderContent');
+        const fileInput = document.getElementById('packageImageInput');
+        if (fileInput) fileInput.value = '';
+        if (previewWrap) previewWrap.style.display = 'none';
+        if (placeholder) placeholder.style.display = 'block';
+
+        // Reset itinerary
+        const itineraryContainer = document.getElementById('itineraryDaysContainer');
+        const itineraryAlert = document.getElementById('itineraryEmptyAlert');
+        if (itineraryContainer) itineraryContainer.innerHTML = '';
+        if (itineraryAlert) itineraryAlert.style.display = 'flex';
+        itineraryDayCount = 0;
+
+        // Switch to Tambah Paket Pane & keep Paket Wisata sidebar link active
+        activateTab('tab-tambah-paket');
+        const pkgSideLink = document.querySelector('.sidebar-nav-link[data-tab="tab-paket-wisata"]');
+        if (pkgSideLink) pkgSideLink.classList.add('active');
+    }
+
+    function backToPackageList() {
+        activateTab('tab-paket-wisata');
+    }
+
+    function handlePackageImageSelect(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedPackageImageSrc = e.target.result;
+                const previewImg = document.getElementById('packageImagePreview');
+                const previewWrap = document.getElementById('packageImagePreviewWrap');
+                const placeholder = document.getElementById('uploadPlaceholderContent');
+                
+                if (previewImg) previewImg.src = uploadedPackageImageSrc;
+                if (previewWrap) previewWrap.style.display = 'block';
+                if (placeholder) placeholder.style.display = 'none';
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function removePackageImagePreview(e) {
+        if (e) e.stopPropagation();
+        const fileInput = document.getElementById('packageImageInput');
+        const previewWrap = document.getElementById('packageImagePreviewWrap');
+        const placeholder = document.getElementById('uploadPlaceholderContent');
+        const previewImg = document.getElementById('packageImagePreview');
+
+        if (fileInput) fileInput.value = '';
+        if (previewImg) previewImg.src = '';
+        if (previewWrap) previewWrap.style.display = 'none';
+        if (placeholder) placeholder.style.display = 'block';
+        uploadedPackageImageSrc = '{{ asset("images/jogja.jpg") }}';
+    }
+
+    function addItineraryDay() {
+        itineraryDayCount++;
+        const itineraryContainer = document.getElementById('itineraryDaysContainer');
+        const itineraryAlert = document.getElementById('itineraryEmptyAlert');
+        
+        if (itineraryAlert) itineraryAlert.style.display = 'none';
+
+        const dayCard = document.createElement('div');
+        dayCard.className = 'itinerary-day-card';
+        dayCard.id = `itinerary-day-${itineraryDayCount}`;
+        dayCard.innerHTML = `
+            <div class="itinerary-day-header">
+                <span class="itinerary-day-badge">
+                    <i class="fa-regular fa-calendar-check"></i> Hari ke-${itineraryDayCount}
+                </span>
+                <button type="button" class="btn-remove-day" onclick="removeItineraryDay('itinerary-day-${itineraryDayCount}')" title="Hapus Hari">
+                    <i class="fa-regular fa-trash-can"></i>
+                </button>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px;">
+                <input type="text" class="form-text-input" placeholder="Jam (cth: 08.00 - 12.00)" style="font-size: 11.5px; padding: 8px 12px;">
+                <input type="text" class="form-text-input" placeholder="Aktivitas & Destinasi yang dikunjungi" style="font-size: 11.5px; padding: 8px 12px;">
+            </div>
+        `;
+
+        if (itineraryContainer) {
+            itineraryContainer.appendChild(dayCard);
+        }
+    }
+
+    function removeItineraryDay(id) {
+        const item = document.getElementById(id);
+        if (item) item.remove();
+
+        const itineraryContainer = document.getElementById('itineraryDaysContainer');
+        const itineraryAlert = document.getElementById('itineraryEmptyAlert');
+        if (itineraryContainer && itineraryContainer.children.length === 0) {
+            if (itineraryAlert) itineraryAlert.style.display = 'flex';
+        }
+    }
+
+    function handleSavePackageForm() {
+        const nameInput = document.getElementById('inputFormPkgName');
+        const priceInput = document.getElementById('inputFormPkgPrice');
+        const destInput = document.getElementById('inputFormPkgDest');
+        const durationInput = document.getElementById('inputFormPkgDuration');
+
+        const name = nameInput ? nameInput.value.trim() : '';
+        let price = priceInput ? priceInput.value.trim() : '';
+        const dest = destInput ? destInput.value : '';
+        const duration = durationInput ? durationInput.value.trim() : '';
+
+        if (!name || !price || !dest) {
+            showToast('Mohon lengkapi nama paket, harga, dan destinasi!', 'info');
+            return;
+        }
+
+        if (!price.toLowerCase().startsWith('rp')) {
+            price = 'Rp.' + price;
+        }
+
+        // Add to Full Packages List dynamically
+        const listContainer = document.getElementById('fullPackagesList');
+        if (listContainer) {
+            const newCard = document.createElement('div');
+            newCard.className = 'package-item-card full-package-card';
+            newCard.setAttribute('data-title', name.toLowerCase());
+            newCard.setAttribute('data-loc', dest.toLowerCase());
+            newCard.innerHTML = `
+                <div class="package-item-left">
+                    <img src="${uploadedPackageImageSrc}" alt="${name}" class="package-item-thumb" loading="lazy">
+                    <div class="package-item-meta">
+                        <h4 class="package-item-name">${name}</h4>
+                        <span class="package-item-location">${dest}</span>
+                    </div>
+                </div>
+                <div class="package-item-right">
+                    <div class="package-item-pricing">
+                        <span class="package-item-price">${price}</span>
+                        <span class="package-item-duration">
+                            <i class="fa-regular fa-clock"></i> ${duration || 'Durasi Fleksibel'}
+                        </span>
+                    </div>
+                    <div class="package-item-actions">
+                        <button type="button" class="btn-action-icon edit" title="Edit Paket" onclick="openPackageModal('${name}', '${price}', '${dest}')">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button type="button" class="btn-action-icon delete" title="Hapus Paket" onclick="deletePackageConfirm('${name}')">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            listContainer.insertBefore(newCard, listContainer.firstChild);
+
+            // Update badge count
+            const badge = document.getElementById('packageBadgeCount');
+            if (badge) {
+                const current = parseInt(badge.textContent.trim()) || 8;
+                badge.textContent = current + 1;
+            }
+        }
+
+        showToast(`Paket wisata "${name}" berhasil ditambahkan!`, 'success');
+        activateTab('tab-paket-wisata');
+    }
+
+    // Modal Tambah / Edit Paket
+    function openAddPackageModal() {
+        openAddPackageView();
+    }
+
     // Detail Pemesanan View Function
     function showOrderDetail(orderKey) {
+        currentViewingOrderKey = orderKey;
         const data = orderDatabase[orderKey] || orderDatabase['alexa'];
 
         document.getElementById('dtOrderDate').textContent = data.orderDate;
         
-        // Status Badge, Action Button, and Bottom Banner
-        const badge = document.getElementById('dtStatusBadge');
-        const actionBtn = document.getElementById('dtActionBtn');
-        const actionBtnText = document.getElementById('dtActionBtnText');
-        const banner = document.getElementById('dtStatusBanner');
-        const bannerTitle = document.getElementById('dtBannerTitle');
-        const bannerSub = document.getElementById('dtBannerSubtitle');
-
-        if (data.status === 'Dikonfirmasi') {
-            badge.className = 'dt-status-badge confirmed';
-            badge.textContent = 'Dikonfirmasi';
-            
-            actionBtn.className = 'btn-detail-approve';
-            actionBtnText.textContent = 'Disetujui';
-            
-            banner.className = 'detail-status-banner confirmed';
-            bannerTitle.textContent = 'Menunggu perjalanan';
-            bannerSub.textContent = 'Menunggu perjalanan selesai';
-        } else if (data.status === 'Selesai') {
-            badge.className = 'dt-status-badge completed';
-            badge.textContent = 'Selesai';
-            
-            actionBtn.className = 'btn-detail-approve completed';
-            actionBtnText.textContent = 'Perjalanan Selesai';
-            
-            banner.className = 'detail-status-banner completed';
-            bannerTitle.textContent = 'Perjalanan Selesai';
-            bannerSub.textContent = 'Perjalanan telah selesai dan dinikmati pelanggan';
-        } else {
-            badge.className = 'dt-status-badge pending';
-            badge.textContent = 'Dipending';
-            
-            actionBtn.className = 'btn-detail-approve';
-            actionBtnText.textContent = 'Disetujui';
-            
-            banner.className = 'detail-status-banner';
-            bannerTitle.textContent = 'Menunggu Konfirmasi';
-            bannerSub.textContent = 'Menunggu pembayaran diverifikasi';
-        }
+        renderDetailOrderStatus(data.status);
 
         // Populate Fields
         document.getElementById('dtPkgName').textContent = data.pkgName;
@@ -1156,6 +1545,147 @@
         window.scrollTo({ top: document.querySelector('.admin-glass-container').offsetTop - 20, behavior: 'smooth' });
     }
 
+    // Render Status and Action Button in Detail View
+    function renderDetailOrderStatus(status) {
+        const badge = document.getElementById('dtStatusBadge');
+        const actionBtn = document.getElementById('dtActionBtn');
+        const actionBtnText = document.getElementById('dtActionBtnText');
+        const actionBtnIcon = document.getElementById('dtActionBtnIcon');
+        const banner = document.getElementById('dtStatusBanner');
+        const bannerTitle = document.getElementById('dtBannerTitle');
+        const bannerSub = document.getElementById('dtBannerSubtitle');
+        const bannerIcon = document.getElementById('dtBannerIcon');
+
+        if (status === 'Dipending') {
+            badge.className = 'dt-status-badge pending';
+            badge.textContent = 'Dipending';
+            
+            // Button in Pending state shows 'Dikonfirmasi' (Blue)
+            actionBtn.className = 'btn-detail-approve';
+            actionBtnText.textContent = 'Dikonfirmasi';
+            actionBtnIcon.className = 'fa-solid fa-clock';
+            
+            banner.className = 'detail-status-banner pending';
+            bannerTitle.textContent = 'Menunggu Konfirmasi';
+            bannerSub.textContent = 'Menunggu pembayaran diverifikasi & disetujui';
+            if (bannerIcon) bannerIcon.className = 'fa-regular fa-clock';
+        } else if (status === 'Disetujui') {
+            badge.className = 'dt-status-badge completed';
+            badge.textContent = 'Disetujui';
+            
+            // Button when approved shows 'Disetujui' (Green, matching 'Selesai')
+            actionBtn.className = 'btn-detail-approve completed approved';
+            actionBtnText.textContent = 'Disetujui';
+            actionBtnIcon.className = 'fa-solid fa-check';
+            
+            banner.className = 'detail-status-banner completed';
+            bannerTitle.textContent = 'Disetujui';
+            bannerSub.textContent = 'Pesanan telah disetujui dan diverifikasi';
+            if (bannerIcon) bannerIcon.className = 'fa-regular fa-circle-check';
+        } else if (status === 'Selesai') {
+            badge.className = 'dt-status-badge completed';
+            badge.textContent = 'Selesai';
+            
+            actionBtn.className = 'btn-detail-approve completed';
+            actionBtnText.textContent = 'Perjalanan Selesai';
+            actionBtnIcon.className = 'fa-solid fa-check-double';
+            
+            banner.className = 'detail-status-banner completed';
+            bannerTitle.textContent = 'Perjalanan Selesai';
+            bannerSub.textContent = 'Perjalanan telah selesai dan dinikmati pelanggan';
+            if (bannerIcon) bannerIcon.className = 'fa-regular fa-circle-check';
+        }
+    }
+
+    // Toggle / Approve Order Function
+    function toggleApproveOrder() {
+        const orderData = orderDatabase[currentViewingOrderKey];
+        if (!orderData) return;
+
+        if (orderData.status === 'Dipending') {
+            // Ubah status menjadi Disetujui
+            orderData.status = 'Disetujui';
+            renderDetailOrderStatus('Disetujui');
+
+            // Update badge di tabel pesanan (Dashboard & Riwayat Pemesanan)
+            const badges = document.querySelectorAll(`[data-order-badge="${currentViewingOrderKey}"]`);
+            badges.forEach(b => {
+                b.className = 'badge-status completed';
+                b.textContent = 'Disetujui';
+            });
+
+            updateSummaryCounts();
+            showToast(`Pesanan untuk ${orderData.custName} berhasil Disetujui!`, 'success');
+        } else if (orderData.status === 'Disetujui') {
+            // Toggle kembali ke Dipending jika diklik lagi
+            orderData.status = 'Dipending';
+            renderDetailOrderStatus('Dipending');
+
+            const badges = document.querySelectorAll(`[data-order-badge="${currentViewingOrderKey}"]`);
+            badges.forEach(b => {
+                b.className = 'badge-status pending';
+                b.textContent = 'Dipending';
+            });
+
+            updateSummaryCounts();
+            showToast(`Status pesanan ${orderData.custName} diubah kembali menjadi Dipending`, 'info');
+        } else if (orderData.status === 'Selesai') {
+            showToast(`Pesanan ${orderData.custName} telah berstatus Perjalanan Selesai.`, 'info');
+        }
+    }
+
+    // Update Summary Counter Numbers
+    function updateSummaryCounts() {
+        let total = 0;
+        let completed = 0;
+        let pending = 0;
+
+        for (const key in orderDatabase) {
+            total++;
+            const st = orderDatabase[key].status;
+            if (st === 'Selesai' || st === 'Disetujui') {
+                completed++;
+            } else if (st === 'Dipending') {
+                pending++;
+            }
+        }
+
+        const totalElem = document.getElementById('summaryTotalCount');
+        const compElem = document.getElementById('summaryCompletedCount');
+        const pendElem = document.getElementById('summaryPendingCount');
+
+        if (totalElem) totalElem.textContent = total;
+        if (compElem) compElem.textContent = completed;
+        if (pendElem) pendElem.textContent = pending;
+    }
+
+    // Toast Notification System
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('adminToastContainer');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = `admin-toast toast-${type}`;
+        
+        const iconHtml = (type === 'success') 
+            ? '<i class="fa-solid fa-circle-check admin-toast-icon"></i>'
+            : '<i class="fa-solid fa-circle-info admin-toast-icon"></i>';
+            
+        toast.innerHTML = `${iconHtml} <span>${message}</span>`;
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 10);
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                if (toast.parentNode) toast.parentNode.removeChild(toast);
+            }, 300);
+        }, 3200);
+    }
+
     function backToOrdersList() {
         activateTab('tab-riwayat-pemesanan');
     }
@@ -1184,13 +1714,13 @@
     }
 
     function handlePackageSubmit() {
-        alert('Data paket wisata berhasil diperbarui!');
+        showToast('Data paket wisata berhasil diperbarui!', 'success');
         closePackageModal();
     }
 
     function deletePackageConfirm(pkgName) {
         if (confirm(`Apakah Anda yakin ingin menghapus paket "${pkgName}"?`)) {
-            alert(`Paket "${pkgName}" berhasil dihapus.`);
+            showToast(`Paket "${pkgName}" berhasil dihapus.`, 'info');
         }
     }
 
