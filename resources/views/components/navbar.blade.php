@@ -51,8 +51,8 @@
                             <div style="font-size: 11px; color: #64748b; word-break: break-all;">{{ session('user.email') }}</div>
                         </div>
                         <a href="{{ url('/profile') }}" style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #ea580c; font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 8px; margin-top: 6px; transition: background 0.2s;" onmouseover="this.style.background='#fff2eb'" onmouseout="this.style.background='transparent'">
-                            <i class="fa-solid fa-gauge-high"></i>
-                            <span>Dashboard Profil</span>
+                            <i class="{{ session('user.role') === 'user' ? 'fa-solid fa-clock-rotate-left' : 'fa-solid fa-gauge-high' }}"></i>
+                            <span>{{ session('user.role') === 'user' ? 'Riwayat Pemesanan' : 'Dashboard Profil' }}</span>
                         </a>
                         <a href="{{ url('/logout') }}" onclick="if(typeof openLogoutModal === 'function'){ event.preventDefault(); openLogoutModal(); }" style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #ef4444; font-size: 12.5px; font-weight: 600; text-decoration: none; border-radius: 8px; margin-top: 2px; transition: background 0.2s;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>

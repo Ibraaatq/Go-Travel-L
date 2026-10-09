@@ -5,7 +5,16 @@ use App\Http\Controllers\PaketWisataController;
 use App\Http\Controllers\DestinasiController;
 
 Route::get('/', function () {
-    return view('home');
+    $allPaket = PaketWisataController::getPaketData();
+    // Ambil 4 paket populer utama (Jogja, Bandung, Bali, Lampung)
+    $popularSlugs = ['jogja', 'bandung', 'bali', 'lampung'];
+    $popularPaket = [];
+    foreach ($popularSlugs as $slug) {
+        if (isset($allPaket[$slug])) {
+            $popularPaket[] = $allPaket[$slug];
+        }
+    }
+    return view('home', compact('popularPaket'));
 });
 
 Route::get('/destinasi', [DestinasiController::class, 'index'])->name('destinasi.index');
@@ -23,13 +32,27 @@ Route::get('/login', function () {
 
 Route::post('/login', function (Request $request) {
     $email = $request->input('email', 'user@gmail.com');
-    $name = explode('@', $email)[0];
+    $password = $request->input('password', '');
+    $dbUser = \App\Models\User::where('email', $email)->first();
+
+    if ($dbUser) {
+        $name = $dbUser->name;
+        $role = $dbUser->role ?? 'user';
+    } else {
+        $name = explode('@', $email)[0];
+        $role = 'user';
+        if (str_contains(strtolower($email), 'admin') || str_contains(strtolower($name), 'admin') || str_contains(strtolower($email), 'sasa') || str_contains(strtolower($name), 'sasa') || str_contains(strtolower($email), 'ika')) {
+            $role = 'admin';
+        }
+    }
+
     session([
         'user' => [
             'name' => ucfirst($name),
             'email' => $email,
             'avatar' => '',
             'provider' => 'local',
+            'role' => $role,
         ]
     ]);
     return redirect('/');
@@ -42,12 +65,25 @@ Route::get('/register', function () {
 Route::post('/register', function (Request $request) {
     $name = $request->input('name', 'User');
     $email = $request->input('email', 'user@gmail.com');
+    $password = $request->input('password', 'password123');
+
+    // Simpan ke database dengan role 'user'
+    \App\Models\User::updateOrCreate(
+        ['email' => $email],
+        [
+            'name' => $name,
+            'password' => \Illuminate\Support\Facades\Hash::make($password),
+            'role' => 'user',
+        ]
+    );
+
     session([
         'user' => [
             'name' => $name,
             'email' => $email,
             'avatar' => '',
             'provider' => 'local',
+            'role' => 'user',
         ]
     ]);
     return redirect('/login')->with('success', 'Registrasi berhasil! Silakan masuk.');
@@ -68,6 +104,7 @@ Route::post('/auth/google/select', function (Request $request) {
             'email' => $email,
             'avatar' => $avatar,
             'provider' => 'google',
+            'role' => 'user',
         ]
     ]);
 
@@ -81,6 +118,7 @@ Route::get('/auth/facebook', function () {
             'email' => 'user@facebook.com',
             'avatar' => '',
             'provider' => 'facebook',
+            'role' => 'user',
         ]
     ]);
     return redirect('/')->with('success', 'Berhasil masuk dengan Facebook!');

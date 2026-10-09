@@ -71,6 +71,12 @@
     </style>
 @endsection
 
+@php
+    $userRole = session('user.role', 'admin');
+    // If not explicitly 'user', default to 'admin' (or if session user has admin credentials)
+    $isAdmin = ($userRole === 'admin');
+@endphp
+
 @section('content')
 <div class="admin-page-wrapper">
 
@@ -101,41 +107,63 @@
                 <p class="sidebar-user-email">
                     {{ session('user.email', 'ikasafitrioktavia@gmail.com') }}
                 </p>
+                <div style="margin-top: 6px;">
+                    <span style="display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; {{ $isAdmin ? 'background: #fee2e2; color: #dc2626;' : 'background: #e0f2fe; color: #0284c7;' }}">
+                        {{ $isAdmin ? 'Admin' : 'User' }}
+                    </span>
+                </div>
             </div>
 
             <!-- Sidebar Nav Menu -->
             <nav>
                 <ul class="sidebar-nav-list">
-                    <li class="sidebar-nav-item">
-                        <button type="button" class="sidebar-nav-link active" data-tab="tab-dashboard">
-                            <i class="fa-solid fa-house"></i>
-                            <span>Dashboard</span>
-                        </button>
-                    </li>
-                    <li class="sidebar-nav-item">
-                        <button type="button" class="sidebar-nav-link" data-tab="tab-paket-wisata">
-                            <i class="fa-solid fa-suitcase"></i>
-                            <span>Paket Wisata</span>
-                        </button>
-                    </li>
-                    <li class="sidebar-nav-item">
-                        <button type="button" class="sidebar-nav-link" data-tab="tab-riwayat-pemesanan">
-                            <i class="fa-solid fa-clock-rotate-left"></i>
-                            <span>Riwayat Pemesanan</span>
-                        </button>
-                    </li>
-                    <li class="sidebar-nav-item">
-                        <button type="button" class="sidebar-nav-link" data-tab="tab-pengaturan">
-                            <i class="fa-solid fa-gear"></i>
-                            <span>Pengaturan</span>
-                        </button>
-                    </li>
-                    <li class="sidebar-nav-item">
-                        <button type="button" class="sidebar-nav-link nav-logout" onclick="openLogoutModal()">
-                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                            <span>Logout</span>
-                        </button>
-                    </li>
+                    @if($isAdmin)
+                        {{-- MENU LENGKAP UNTUK ADMIN --}}
+                        <li class="sidebar-nav-item">
+                            <button type="button" class="sidebar-nav-link active" data-tab="tab-dashboard">
+                                <i class="fa-solid fa-house"></i>
+                                <span>Dashboard</span>
+                            </button>
+                        </li>
+                        <li class="sidebar-nav-item">
+                            <button type="button" class="sidebar-nav-link" data-tab="tab-paket-wisata">
+                                <i class="fa-solid fa-suitcase"></i>
+                                <span>Paket Wisata</span>
+                            </button>
+                        </li>
+                        <li class="sidebar-nav-item">
+                            <button type="button" class="sidebar-nav-link" data-tab="tab-riwayat-pemesanan">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                                <span>Riwayat Pemesanan</span>
+                            </button>
+                        </li>
+                        <li class="sidebar-nav-item">
+                            <button type="button" class="sidebar-nav-link" data-tab="tab-pengaturan">
+                                <i class="fa-solid fa-gear"></i>
+                                <span>Pengaturan</span>
+                            </button>
+                        </li>
+                        <li class="sidebar-nav-item">
+                            <button type="button" class="sidebar-nav-link nav-logout" onclick="openLogoutModal()">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                <span>Logout</span>
+                            </button>
+                        </li>
+                    @else
+                        {{-- MENU KHUSUS USER BIASA: HANYA RIWAYAT DAN LOGOUT --}}
+                        <li class="sidebar-nav-item">
+                            <button type="button" class="sidebar-nav-link active" data-tab="tab-riwayat-pemesanan">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                                <span>Riwayat Pemesanan</span>
+                            </button>
+                        </li>
+                        <li class="sidebar-nav-item">
+                            <button type="button" class="sidebar-nav-link nav-logout" onclick="openLogoutModal()">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                <span>Logout</span>
+                            </button>
+                        </li>
+                    @endif
                 </ul>
             </nav>
         </aside>
@@ -143,8 +171,9 @@
         <!-- ==================== KOLOM KANAN: DASHBOARD CONTENT ==================== -->
         <main class="admin-main-content">
 
+            @if($isAdmin)
             <!-- ---------------------------------------------------- -->
-            <!-- TAB 1: DASHBOARD OVERVIEW                            -->
+            <!-- TAB 1: DASHBOARD OVERVIEW (KHUSUS ADMIN)             -->
             <!-- ---------------------------------------------------- -->
             <div class="tab-content-pane active" id="tab-dashboard">
 
@@ -812,14 +841,15 @@
                     </div>
                 </form>
             </div>
+            @endif
 
             <!-- ---------------------------------------------------- -->
-            <!-- TAB 3: RIWAYAT PEMESANAN TAB                         -->
+            <!-- TAB 3: RIWAYAT PEMESANAN TAB (UNTUK ADMIN & USER)    -->
             <!-- ---------------------------------------------------- -->
-            <div class="tab-content-pane" id="tab-riwayat-pemesanan">
+            <div class="tab-content-pane {{ !$isAdmin ? 'active' : '' }}" id="tab-riwayat-pemesanan">
                 <div class="admin-section-card">
                     <div class="admin-card-header">
-                        <h2 class="admin-card-title">Riwayat Pemesanan Pelanggan</h2>
+                        <h2 class="admin-card-title">{{ $isAdmin ? 'Riwayat Pemesanan Pelanggan' : 'Riwayat Pemesanan Saya' }}</h2>
                     </div>
 
                     <div class="table-responsive-wrapper">
@@ -952,8 +982,9 @@
                 </div>
             </div>
 
+            @if($isAdmin)
             <!-- ---------------------------------------------------- -->
-            <!-- TAB 4: PENGATURAN PROFIL TAB                         -->
+            <!-- TAB 4: PENGATURAN PROFIL TAB (KHUSUS ADMIN)          -->
             <!-- ---------------------------------------------------- -->
             <div class="tab-content-pane" id="tab-pengaturan">
                 <div class="admin-section-card">
@@ -988,6 +1019,7 @@
                     </form>
                 </div>
             </div>
+            @endif
 
             <!-- ---------------------------------------------------- -->
             <!-- TAB 5: DETAIL PEMESANAN (MATCHING REFERENCE DESIGN)  -->
@@ -1005,9 +1037,11 @@
                             <button type="button" class="btn-back-link" onclick="backToOrdersList()">
                                 <i class="fa-solid fa-arrow-left"></i> Kembali
                             </button>
+                            @if($isAdmin)
                             <button type="button" class="btn-detail-approve" id="dtActionBtn" onclick="toggleApproveOrder()">
                                 <i class="fa-solid fa-clock" id="dtActionBtnIcon"></i> <span id="dtActionBtnText">Dikonfirmasi</span>
                             </button>
+                            @endif
                         </div>
                     </div>
 
@@ -2305,9 +2339,11 @@
         if (status === 'Dipending') {
             badge.className = 'dt-status-badge pending';
             badge.textContent = 'Dipending';
-            actionBtn.className = 'btn-detail-approve';
-            actionBtnText.textContent = 'Dikonfirmasi';
-            actionBtnIcon.className = 'fa-solid fa-clock';
+            if (actionBtn) {
+                actionBtn.className = 'btn-detail-approve';
+                if (actionBtnText) actionBtnText.textContent = 'Dikonfirmasi';
+                if (actionBtnIcon) actionBtnIcon.className = 'fa-solid fa-clock';
+            }
             banner.className = 'detail-status-banner pending';
             bannerTitle.textContent = 'Menunggu Konfirmasi';
             bannerSub.textContent = 'Menunggu pembayaran diverifikasi & disetujui';
@@ -2315,9 +2351,11 @@
         } else if (status === 'Disetujui') {
             badge.className = 'dt-status-badge completed';
             badge.textContent = 'Disetujui';
-            actionBtn.className = 'btn-detail-approve completed approved';
-            actionBtnText.textContent = 'Disetujui';
-            actionBtnIcon.className = 'fa-solid fa-check';
+            if (actionBtn) {
+                actionBtn.className = 'btn-detail-approve completed approved';
+                if (actionBtnText) actionBtnText.textContent = 'Disetujui';
+                if (actionBtnIcon) actionBtnIcon.className = 'fa-solid fa-check';
+            }
             banner.className = 'detail-status-banner completed';
             bannerTitle.textContent = 'Disetujui';
             bannerSub.textContent = 'Pesanan telah disetujui dan diverifikasi';
@@ -2325,9 +2363,11 @@
         } else if (status === 'Selesai') {
             badge.className = 'dt-status-badge completed';
             badge.textContent = 'Selesai';
-            actionBtn.className = 'btn-detail-approve completed';
-            actionBtnText.textContent = 'Perjalanan Selesai';
-            actionBtnIcon.className = 'fa-solid fa-check-double';
+            if (actionBtn) {
+                actionBtn.className = 'btn-detail-approve completed';
+                if (actionBtnText) actionBtnText.textContent = 'Perjalanan Selesai';
+                if (actionBtnIcon) actionBtnIcon.className = 'fa-solid fa-check-double';
+            }
             banner.className = 'detail-status-banner completed';
             bannerTitle.textContent = 'Perjalanan Selesai';
             bannerSub.textContent = 'Perjalanan telah selesai dan dinikmati pelanggan';
@@ -2462,7 +2502,7 @@
         </div>
         <h3 class="logout-modal-title">Konfirmasi Keluar</h3>
         <p class="logout-modal-desc">
-            Apakah Anda yakin ingin keluar dari sesi admin Go Travel? Anda harus masuk kembali untuk mengakses halaman ini.
+            Apakah Anda yakin ingin keluar dari akun Go Travel? Anda harus masuk kembali untuk mengakses halaman ini.
         </p>
         <div class="logout-actions-row">
             <button type="button" class="btn-modal-cancel" onclick="closeLogoutModal()">
