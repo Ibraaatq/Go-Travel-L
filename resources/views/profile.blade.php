@@ -196,7 +196,7 @@
                         </a>
                     </div>
 
-                    <div class="packages-horizontal-list">
+                    <div class="packages-horizontal-list" id="dashboardPackagesList">
                         @php
                             $dashboardPackages = [
                                 [
@@ -227,7 +227,7 @@
                         @endphp
 
                         @foreach($dashboardPackages as $item)
-                            <div class="package-item-card">
+                            <div class="package-item-card" data-package-slug="{{ $item['slug'] }}" data-title="{{ strtolower($item['name']) }}" data-loc="{{ strtolower($item['location']) }}">
                                 <div class="package-item-left">
                                     <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="package-item-thumb" loading="lazy">
                                     <div class="package-item-meta">
@@ -243,10 +243,10 @@
                                         </span>
                                     </div>
                                     <div class="package-item-actions">
-                                        <button type="button" class="btn-action-icon edit" title="Edit Paket" onclick="openPackageModal('{{ $item['name'] }}', '{{ $item['price'] }}', '{{ $item['location'] }}')">
+                                        <button type="button" class="btn-action-icon edit" title="Edit Paket" onclick="openEditPackageView('{{ $item['slug'] }}', 'tab-dashboard')">
                                             <i class="fa-solid fa-pen"></i>
                                         </button>
-                                        <button type="button" class="btn-action-icon delete" title="Hapus Paket" onclick="deletePackageConfirm('{{ $item['name'] }}')">
+                                        <button type="button" class="btn-action-icon delete" title="Hapus Paket" onclick="deletePackageConfirm('{{ $item['slug'] }}', '{{ addslashes($item['name']) }}')">
                                             <i class="fa-regular fa-trash-can"></i>
                                         </button>
                                     </div>
@@ -491,7 +491,7 @@
                         @endphp
 
                         @foreach($allFullPackages as $pkg)
-                            <div class="package-item-card full-package-card" data-title="{{ strtolower($pkg['name']) }}" data-loc="{{ strtolower($pkg['location']) }}">
+                            <div class="package-item-card full-package-card" data-package-slug="{{ $pkg['slug'] }}" data-title="{{ strtolower($pkg['name']) }}" data-loc="{{ strtolower($pkg['location']) }}">
                                 <div class="package-item-left">
                                     <img src="{{ $pkg['image'] }}" alt="{{ $pkg['name'] }}" class="package-item-thumb" loading="lazy">
                                     <div class="package-item-meta">
@@ -507,10 +507,10 @@
                                         </span>
                                     </div>
                                     <div class="package-item-actions">
-                                        <button type="button" class="btn-action-icon edit" title="Edit Paket" onclick="openPackageModal('{{ $pkg['name'] }}', '{{ $pkg['price'] }}', '{{ $pkg['location'] }}')">
+                                        <button type="button" class="btn-action-icon edit" title="Edit Paket" onclick="openEditPackageView('{{ $pkg['slug'] }}', 'tab-paket-wisata')">
                                             <i class="fa-solid fa-pen"></i>
                                         </button>
-                                        <button type="button" class="btn-action-icon delete" title="Hapus Paket" onclick="deletePackageConfirm('{{ $pkg['name'] }}')">
+                                        <button type="button" class="btn-action-icon delete" title="Hapus Paket" onclick="deletePackageConfirm('{{ $pkg['slug'] }}', '{{ addslashes($pkg['name']) }}')">
                                             <i class="fa-regular fa-trash-can"></i>
                                         </button>
                                     </div>
@@ -660,6 +660,154 @@
                         </button>
                         <button type="submit" class="btn-form-save">
                             <span>Simpan</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ---------------------------------------------------- -->
+            <!-- TAB: EDIT PAKET WISATA (MATCHING SCREENSHOT)         -->
+            <!-- ---------------------------------------------------- -->
+            <div class="tab-content-pane" id="tab-edit-paket">
+                <h2 class="edit-package-title" id="editPageMainTitle">Edit Paket Wisata - Jogja Tour 2 Hari</h2>
+
+                <form id="editPackageForm" onsubmit="event.preventDefault(); handleSaveEditPackageForm();" class="package-form-container">
+                    <input type="hidden" id="editPkgSlug" value="jogja">
+                    <input type="hidden" id="editFromTab" value="tab-paket-wisata">
+
+                    <!-- 1. Ubah Gambar -->
+                    <div class="package-form-card">
+                        <h3 class="form-section-heading">1. Ubah Gambar</h3>
+                        <div class="upload-dropzone" id="editPackageDropzone" onclick="document.getElementById('editPackageImageInput').click();">
+                            <input type="file" id="editPackageImageInput" accept="image/png, image/jpeg, image/webp" style="display: none;" onchange="handleEditPackageImageSelect(this)">
+                            
+                            <div class="upload-dropzone-content" id="editUploadPlaceholderContent" style="display: none;">
+                                <div class="upload-icon-circle">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                </div>
+                                <div class="upload-main-text">
+                                    Seret &amp; letakkan gambar disini atau <span class="upload-link-text">klik untuk memilih file</span>
+                                </div>
+                                <div class="upload-hint-text">
+                                    Format: JPG, PNG, WEBP. Maksimal 2MB
+                                </div>
+                            </div>
+
+                            <div class="image-preview-wrapper" id="editPackageImagePreviewWrap" style="display: block;" onclick="event.stopPropagation();">
+                                <img id="editPackageImagePreview" src="{{ asset('images/jogja.jpg') }}" alt="Preview Gambar">
+                                <button type="button" class="btn-remove-preview" title="Hapus Gambar" onclick="removeEditPackageImagePreview(event)">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Informasi Paket -->
+                    <div class="package-form-card">
+                        <h3 class="form-section-heading">2. Informasi Paket</h3>
+                        <div class="form-grid-2col">
+                            <!-- Nama Paket Wisata -->
+                            <div class="form-field-group">
+                                <label class="form-field-label">Nama Paket Wisata</label>
+                                <input type="text" id="editFormPkgName" class="form-text-input" placeholder="Ubah nama paket wisata" required>
+                            </div>
+
+                            <!-- Harga Mulai (Rp) -->
+                            <div class="form-field-group">
+                                <label class="form-field-label">Harga Mulai (Rp)</label>
+                                <input type="text" id="editFormPkgPrice" class="form-text-input" placeholder="Ubah harga" required>
+                            </div>
+
+                            <!-- Destinasi -->
+                            <div class="form-field-group">
+                                <label class="form-field-label">Destinasi</label>
+                                <div class="custom-select-wrapper">
+                                    <select id="editFormPkgDest" class="form-select-control" required>
+                                        <option value="" disabled>Ubah destinasi</option>
+                                        <option value="Yogyakarta" selected>Yogyakarta</option>
+                                        <option value="Jawa Timur">Jawa Timur</option>
+                                        <option value="Lampung">Lampung</option>
+                                        <option value="Bali">Bali</option>
+                                        <option value="Bandung">Bandung</option>
+                                        <option value="Bogor">Bogor</option>
+                                        <option value="Jakarta">Jakarta</option>
+                                        <option value="Lombok">Lombok</option>
+                                        <option value="Labuan Bajo">Labuan Bajo</option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down select-chevron"></i>
+                                </div>
+                            </div>
+
+                            <!-- Kategori Paket -->
+                            <div class="form-field-group">
+                                <label class="form-field-label">Kategori Paket</label>
+                                <div class="custom-select-wrapper">
+                                    <select id="editFormPkgCategory" class="form-select-control" required>
+                                        <option value="" disabled>Ubah kategori paket</option>
+                                        <option value="Wisata Alam">Wisata Alam</option>
+                                        <option value="Wisata Budaya" selected>Wisata Budaya</option>
+                                        <option value="Wisata Pantai">Wisata Pantai</option>
+                                        <option value="Family Trip">Family Trip</option>
+                                        <option value="Open Trip">Open Trip</option>
+                                        <option value="Honeymoon">Honeymoon</option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down select-chevron"></i>
+                                </div>
+                            </div>
+
+                            <!-- Durasi -->
+                            <div class="form-field-group">
+                                <label class="form-field-label">Durasi</label>
+                                <input type="text" id="editFormPkgDuration" class="form-text-input" placeholder="Ubah durasi perjalanan" required>
+                            </div>
+
+                            <!-- Makan -->
+                            <div class="form-field-group">
+                                <label class="form-field-label">Makan</label>
+                                <input type="text" id="editFormPkgMeal" class="form-text-input" placeholder="Ubah makan yang didapatkan">
+                            </div>
+
+                            <!-- Deskripsi -->
+                            <div class="form-field-group full-width">
+                                <label class="form-field-label">Deskripsi</label>
+                                <textarea id="editFormPkgDesc" class="form-textarea-control" placeholder="Ubah deskripsi paket wisata" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Rencana Perjalanan -->
+                    <div class="package-form-card">
+                        <div class="itinerary-section-header">
+                            <h3 class="form-section-heading" style="margin-bottom: 0;">3. Rencana Perjalanan</h3>
+                            <button type="button" class="btn-add-itinerary" onclick="addEditItineraryDay()">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Ubah Rencana Perjalanan</span>
+                            </button>
+                        </div>
+
+                        <!-- Empty State Alert Box -->
+                        <div class="itinerary-empty-alert" id="editItineraryEmptyAlert" style="display: none;">
+                            <div class="alert-icon">
+                                <i class="fa-solid fa-exclamation"></i>
+                            </div>
+                            <div class="alert-content">
+                                <span class="alert-title">Belum Ada Rencana Perjalanan</span>
+                                <span class="alert-desc">Klik tombol <strong>Ubah Rencana Perjalanan</strong> untuk menambahkan rencana perjalanan.</span>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Itinerary Days List -->
+                        <div class="itinerary-items-list" id="editItineraryDaysContainer"></div>
+                    </div>
+
+                    <!-- Action Buttons Bottom Row -->
+                    <div class="form-actions-bottom-row">
+                        <button type="button" class="btn-form-back" onclick="backFromEditPackage()">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            <span>Kembali</span>
+                        </button>
+                        <button type="submit" class="btn-form-save">
+                            <span>Ubah Rencana Perjalanan</span>
                         </button>
                     </div>
                 </form>
@@ -1300,6 +1448,24 @@
         }
 
         updateSummaryCounts();
+
+        // Search Filter for Packages List
+        const filterInput = document.getElementById('packageFilterInput');
+        if (filterInput) {
+            filterInput.addEventListener('input', function(e) {
+                const query = e.target.value.toLowerCase().trim();
+                const cards = document.querySelectorAll('#fullPackagesList .package-item-card');
+                cards.forEach(card => {
+                    const title = (card.getAttribute('data-title') || '').toLowerCase();
+                    const loc = (card.getAttribute('data-loc') || '').toLowerCase();
+                    if (title.includes(query) || loc.includes(query)) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        }
     });
 
     function activateTab(tabId) {
@@ -1314,7 +1480,260 @@
     }
 
     // ==========================================
-    // TAMBAH PAKET WISATA HANDLERS
+    // MASTER DATASET OF PACKAGES
+    // ==========================================
+    const packagesDatabase = {
+        'jogja': {
+            slug: 'jogja',
+            name: 'Jogja Tour 2 Hari',
+            price: 'Rp.2.200.000',
+            location: 'Yogyakarta',
+            destination: 'Yogyakarta',
+            category: 'Wisata Budaya',
+            duration: 'Durasi 2 Hari 1 Malam',
+            meal: 'Makan 4x',
+            image: '{{ asset("images/jogja.jpg") }}',
+            description: 'Jelajahi keindahan budaya, sejarah, dan pesona alam kota Yogyakarta. Mengunjungi Candi Prambanan, Pantai Parangtritis, Tebing Breksi, hingga suasana malam syahdu di kawasan Malioboro.',
+            itinerary: [
+                {
+                    day: 1,
+                    slots: [
+                        { time: '08.00 - 12.00', activity: 'Tiba di Jogja, explore Candi Prambanan & Tebing Breksi' },
+                        { time: '13.00 - 17.00', activity: 'Makan siang kuliner khas Gudeg & sunset di Pantai Parangtritis' }
+                    ]
+                },
+                {
+                    day: 2,
+                    slots: [
+                        { time: '08.00 - 12.00', activity: 'Keraton Ngayogyakarta & Tamansari Water Castle' },
+                        { time: '13.00 - 16.00', activity: 'Belanja oleh-oleh di Malioboro & Sentra Bakpia Pathok' }
+                    ]
+                }
+            ]
+        },
+        'bromo': {
+            slug: 'bromo',
+            name: 'Bromo Tour 1 Hari',
+            price: 'Rp.499.000',
+            location: 'Jawa Timur',
+            destination: 'Jawa Timur',
+            category: 'Wisata Alam',
+            duration: 'Durasi 1 Hari',
+            meal: 'Makan 1x & Snack',
+            image: '{{ asset("images/bromo.jpg") }}',
+            description: 'Saksikan megahnya matahari terbit (sunrise) di Penanjakan 1 Bromo dan jelajahi Pasir Berbisik, Kawah Bromo, serta Bukit Teletubbies.',
+            itinerary: [
+                {
+                    day: 1,
+                    slots: [
+                        { time: '00.30 - 04.30', activity: 'Meeting point & perjalanan jeep menuju Penanjakan Bromo' },
+                        { time: '05.00 - 09.30', activity: 'Golden Sunrise, Kawah Bromo, Pasir Berbisik & Savana Teletubbies' }
+                    ]
+                }
+            ]
+        },
+        'lampung': {
+            slug: 'lampung',
+            name: 'Lampung Tour 3 Hari',
+            price: 'Rp.975.000',
+            location: 'Lampung',
+            destination: 'Lampung',
+            category: 'Wisata Pantai',
+            duration: 'Durasi 3 Hari 2 Malam',
+            meal: 'Makan 6x',
+            image: '{{ asset("images/lampung.jpg") }}',
+            description: 'Eksplorasi keindahan bahari Teluk Kiluan, Pulau Pahawang, serta snorkeling bersama ikan badut dan lumba-lumba liar.',
+            itinerary: [
+                {
+                    day: 1,
+                    slots: [
+                        { time: '08.00 - 12.00', activity: 'Penyeberangan pelabuhan & eksplorasi Pulau Kelagian' },
+                        { time: '13.00 - 17.00', activity: 'Snorkeling di Pahawang Besar & check-in homestay' }
+                    ]
+                },
+                {
+                    day: 2,
+                    slots: [
+                        { time: '06.00 - 11.00', activity: 'Dolphin tour di Teluk Kiluan melihat lumba-lumba' },
+                        { time: '13.00 - 16.30', activity: 'Laguna Gayau & bersantai di pantai pasir putih' }
+                    ]
+                },
+                {
+                    day: 3,
+                    slots: [
+                        { time: '08.00 - 12.00', activity: 'Beli oleh-oleh kripik pisang khas Lampung & transfer kembali' }
+                    ]
+                }
+            ]
+        },
+        'bali': {
+            slug: 'bali',
+            name: 'Bali Tour 5 Hari',
+            price: 'Rp.2.750.000',
+            location: 'Bali',
+            destination: 'Bali',
+            category: 'Wisata Budaya',
+            duration: 'Durasi 5 Hari 4 Malam',
+            meal: 'Makan 10x',
+            image: '{{ asset("images/bali.jpg") }}',
+            description: 'Liburan lengkap ke Pulau Dewata: Tanah Lot, Kintamani, Pantai Melasti, Tari Kecak Uluwatu, dan sunset dinner di Jimbaran.',
+            itinerary: [
+                {
+                    day: 1,
+                    slots: [
+                        { time: '10.00 - 14.00', activity: 'Penjemputan Bandara Ngurah Rai & check-in hotel' },
+                        { time: '15.30 - 19.00', activity: 'Sunset Tanah Lot & makan malam santai' }
+                    ]
+                },
+                {
+                    day: 2,
+                    slots: [
+                        { time: '08.30 - 13.00', activity: 'Kintamani view Gunung & Danau Batur' },
+                        { time: '14.00 - 17.30', activity: 'Tegalalang Rice Terrace & Tirta Empul' }
+                    ]
+                }
+            ]
+        },
+        'bandung': {
+            slug: 'bandung',
+            name: 'Bandung Tour 4 Hari',
+            price: 'Rp.1.800.000',
+            location: 'Bandung',
+            destination: 'Bandung',
+            category: 'Wisata Alam',
+            duration: 'Durasi 4 Hari 3 Malam',
+            meal: 'Makan 8x',
+            image: '{{ asset("images/bandung.jpg") }}',
+            description: 'Wisata sejuk Bandung & Lembang: Kawah Putih Ciwidey, Floating Market, The Great Asia Africa, dan belanja Factory Outlet.',
+            itinerary: [
+                {
+                    day: 1,
+                    slots: [
+                        { time: '08.00 - 12.30', activity: 'Wisata Kawah Putih Ciwidey & Kebun Teh Rancabali' },
+                        { time: '13.30 - 17.00', activity: 'Glamping Lakeside & Situ Patenggang' }
+                    ]
+                }
+            ]
+        },
+        'malioboro': {
+            slug: 'malioboro',
+            name: 'Malioboro Tour 1 Hari',
+            price: 'Rp.249.000',
+            location: 'Yogyakarta',
+            destination: 'Yogyakarta',
+            category: 'Wisata Budaya',
+            duration: 'Durasi 1 Hari',
+            meal: 'Makan 1x',
+            image: '{{ asset("images/malioboro.jpg") }}',
+            description: 'City tour Jogja menikmati suasana khas Malioboro, Titik Nol KM, Keraton Ngayogyakarta, dan Pasar Beringharjo.',
+            itinerary: [
+                {
+                    day: 1,
+                    slots: [
+                        { time: '09.00 - 12.00', activity: 'Walking tour Malioboro & Titik Nol Kilometer' },
+                        { time: '13.00 - 16.00', activity: 'Keraton & belanja batik Pasar Beringharjo' }
+                    ]
+                }
+            ]
+        },
+        'tangkuban-perahu': {
+            slug: 'tangkuban-perahu',
+            name: 'Tangkuban Perahu Tour 1 Hari',
+            price: 'Rp.200.000',
+            location: 'Jawa Barat',
+            destination: 'Bandung',
+            category: 'Wisata Alam',
+            duration: 'Durasi 1 Hari',
+            meal: 'Makan 1x & Snack',
+            image: '{{ asset("images/tangkuban.jpg") }}',
+            description: 'Menikmati keindahan Kawah Ratu Tangkuban Perahu dan udara sejuk pegunungan Lembang.',
+            itinerary: [
+                {
+                    day: 1,
+                    slots: [
+                        { time: '07.00 - 11.30', activity: 'Eksplorasi Kawah Ratu & Kawah Domas' },
+                        { time: '12.30 - 15.30', activity: 'Pemandian Air Panas Ciater & Kebun Teh' }
+                    ]
+                }
+            ]
+        },
+        'pantai-pandawa': {
+            slug: 'pantai-pandawa',
+            name: 'Pantai Pandawa 1 Hari',
+            price: 'Rp.175.000',
+            location: 'Bali',
+            destination: 'Bali',
+            category: 'Wisata Pantai',
+            duration: 'Durasi 1 Hari',
+            meal: 'Makan 1x',
+            image: '{{ asset("images/pandawa.jpg") }}',
+            description: 'Menikmati keindahan pasir putih Pantai Pandawa, tebing kapur patung Pandawa Lima, dan water sport kano.',
+            itinerary: [
+                {
+                    day: 1,
+                    slots: [
+                        { time: '09.00 - 12.00', activity: 'Foto tebing Patung Pandawa Lima & pantai pasir putih' },
+                        { time: '13.00 - 16.00', activity: 'Bermain kano laut & bersantai di beach club' }
+                    ]
+                }
+            ]
+        }
+    };
+
+    // ==========================================
+    // ITINERARY SLOTS & DAY BUILDER HELPERS
+    // ==========================================
+    function createTimeSlotRow(defaultTime = '', defaultActivity = '') {
+        const slotRow = document.createElement('div');
+        slotRow.className = 'itinerary-slot-row';
+        slotRow.innerHTML = `
+            <input type="text" class="form-text-input itinerary-time-input" value="${defaultTime}" placeholder="08.00 - 12.00">
+            <input type="text" class="form-text-input itinerary-act-input" value="${defaultActivity}" placeholder="Tiba di Jogja, explore Candi Prambanan & Tebing Breksi">
+            <button type="button" class="btn-remove-slot" onclick="removeTimeSlot(this)" title="Hapus Jam">
+                <i class="fa-regular fa-trash-can"></i>
+            </button>
+        `;
+        return slotRow;
+    }
+
+    function addTimeSlotFromButton(btn) {
+        const dayCard = btn.closest('.itinerary-day-card');
+        if (!dayCard) return;
+        const slotsContainer = dayCard.querySelector('.itinerary-slots-container');
+        if (slotsContainer) {
+            const newSlot = createTimeSlotRow('', '');
+            slotsContainer.appendChild(newSlot);
+            const timeInput = newSlot.querySelector('.itinerary-time-input');
+            if (timeInput) timeInput.focus();
+        }
+    }
+
+    function removeTimeSlot(btn) {
+        const slotRow = btn.closest('.itinerary-slot-row');
+        const slotsContainer = btn.closest('.itinerary-slots-container');
+        if (slotRow) {
+            slotRow.remove();
+        }
+        // If no slot remaining, automatically append one empty slot
+        if (slotsContainer && slotsContainer.children.length === 0) {
+            slotsContainer.appendChild(createTimeSlotRow('', ''));
+        }
+    }
+
+    function reindexItineraryDays(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const dayCards = container.querySelectorAll('.itinerary-day-card');
+        dayCards.forEach((card, index) => {
+            const badge = card.querySelector('.itinerary-day-badge');
+            if (badge) {
+                badge.innerHTML = `<i class="fa-regular fa-calendar-check"></i> Hari ke-${index + 1}`;
+            }
+        });
+    }
+
+    // ==========================================
+    // 1. TAMBAH PAKET WISATA HANDLERS
     // ==========================================
     let itineraryDayCount = 0;
     let uploadedPackageImageSrc = '{{ asset("images/jogja.jpg") }}';
@@ -1336,13 +1755,17 @@
         const itineraryContainer = document.getElementById('itineraryDaysContainer');
         const itineraryAlert = document.getElementById('itineraryEmptyAlert');
         if (itineraryContainer) itineraryContainer.innerHTML = '';
-        if (itineraryAlert) itineraryAlert.style.display = 'flex';
         itineraryDayCount = 0;
+
+        // Add 1 default day
+        addItineraryDay();
 
         // Switch to Tambah Paket Pane & keep Paket Wisata sidebar link active
         activateTab('tab-tambah-paket');
         const pkgSideLink = document.querySelector('.sidebar-nav-link[data-tab="tab-paket-wisata"]');
         if (pkgSideLink) pkgSideLink.classList.add('active');
+
+        window.scrollTo({ top: document.querySelector('.admin-glass-container').offsetTop - 20, behavior: 'smooth' });
     }
 
     function backToPackageList() {
@@ -1380,57 +1803,107 @@
         uploadedPackageImageSrc = '{{ asset("images/jogja.jpg") }}';
     }
 
-    function addItineraryDay() {
-        itineraryDayCount++;
+    function addItineraryDay(initialSlots = null) {
         const itineraryContainer = document.getElementById('itineraryDaysContainer');
         const itineraryAlert = document.getElementById('itineraryEmptyAlert');
         
         if (itineraryAlert) itineraryAlert.style.display = 'none';
 
+        const dayCards = itineraryContainer ? itineraryContainer.querySelectorAll('.itinerary-day-card') : [];
+        const currentDayIndex = dayCards.length + 1;
+
         const dayCard = document.createElement('div');
         dayCard.className = 'itinerary-day-card';
-        dayCard.id = `itinerary-day-${itineraryDayCount}`;
         dayCard.innerHTML = `
             <div class="itinerary-day-header">
                 <span class="itinerary-day-badge">
-                    <i class="fa-regular fa-calendar-check"></i> Hari ke-${itineraryDayCount}
+                    <i class="fa-regular fa-calendar-check"></i> Hari ke-${currentDayIndex}
                 </span>
-                <button type="button" class="btn-remove-day" onclick="removeItineraryDay('itinerary-day-${itineraryDayCount}')" title="Hapus Hari">
+                <button type="button" class="btn-remove-day" onclick="removeItineraryDay(this, 'itineraryDaysContainer')" title="Hapus Hari">
                     <i class="fa-regular fa-trash-can"></i>
                 </button>
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px;">
-                <input type="text" class="form-text-input" placeholder="Jam (cth: 08.00 - 12.00)" style="font-size: 11.5px; padding: 8px 12px;">
-                <input type="text" class="form-text-input" placeholder="Aktivitas & Destinasi yang dikunjungi" style="font-size: 11.5px; padding: 8px 12px;">
-            </div>
+            <div class="itinerary-slots-container"></div>
+            <button type="button" class="btn-add-time-slot" onclick="addTimeSlotFromButton(this)">
+                <i class="fa-solid fa-plus"></i>
+                <span>Tambah Jam</span>
+            </button>
         `;
+
+        const slotsContainer = dayCard.querySelector('.itinerary-slots-container');
+        if (initialSlots && Array.isArray(initialSlots) && initialSlots.length > 0) {
+            initialSlots.forEach(s => {
+                slotsContainer.appendChild(createTimeSlotRow(s.time || '', s.activity || ''));
+            });
+        } else {
+            slotsContainer.appendChild(createTimeSlotRow('08.00 - 12.00', ''));
+        }
 
         if (itineraryContainer) {
             itineraryContainer.appendChild(dayCard);
+            reindexItineraryDays('itineraryDaysContainer');
         }
     }
 
-    function removeItineraryDay(id) {
-        const item = document.getElementById(id);
-        if (item) item.remove();
+    function removeItineraryDay(btn, containerId = 'itineraryDaysContainer') {
+        const dayCard = btn.closest('.itinerary-day-card');
+        if (dayCard) dayCard.remove();
 
-        const itineraryContainer = document.getElementById('itineraryDaysContainer');
-        const itineraryAlert = document.getElementById('itineraryEmptyAlert');
-        if (itineraryContainer && itineraryContainer.children.length === 0) {
-            if (itineraryAlert) itineraryAlert.style.display = 'flex';
+        const container = document.getElementById(containerId);
+        const alertId = containerId === 'itineraryDaysContainer' ? 'itineraryEmptyAlert' : 'editItineraryEmptyAlert';
+        const alertEl = document.getElementById(alertId);
+
+        if (container && container.children.length === 0) {
+            if (alertEl) alertEl.style.display = 'flex';
+        } else {
+            reindexItineraryDays(containerId);
         }
+    }
+
+    function collectItineraryFromContainer(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return [];
+        const dayCards = container.querySelectorAll('.itinerary-day-card');
+        const itineraryResult = [];
+
+        dayCards.forEach((card, index) => {
+            const slots = [];
+            const slotRows = card.querySelectorAll('.itinerary-slot-row');
+            slotRows.forEach(row => {
+                const time = (row.querySelector('.itinerary-time-input')?.value || '').trim();
+                const act = (row.querySelector('.itinerary-act-input')?.value || '').trim();
+                if (time || act) {
+                    slots.push({ time: time, activity: act });
+                }
+            });
+
+            if (slots.length > 0) {
+                itineraryResult.push({
+                    day: index + 1,
+                    slots: slots
+                });
+            }
+        });
+
+        return itineraryResult;
     }
 
     function handleSavePackageForm() {
         const nameInput = document.getElementById('inputFormPkgName');
         const priceInput = document.getElementById('inputFormPkgPrice');
         const destInput = document.getElementById('inputFormPkgDest');
+        const categoryInput = document.getElementById('inputFormPkgCategory');
         const durationInput = document.getElementById('inputFormPkgDuration');
+        const mealInput = document.getElementById('inputFormPkgMeal');
+        const descInput = document.getElementById('inputFormPkgDesc');
 
         const name = nameInput ? nameInput.value.trim() : '';
         let price = priceInput ? priceInput.value.trim() : '';
         const dest = destInput ? destInput.value : '';
-        const duration = durationInput ? durationInput.value.trim() : '';
+        const category = categoryInput ? categoryInput.value : 'Wisata Alam';
+        const duration = durationInput ? durationInput.value.trim() : 'Durasi 1 Hari';
+        const meal = mealInput ? mealInput.value.trim() : 'Makan 1x';
+        const desc = descInput ? descInput.value.trim() : '';
 
         if (!name || !price || !dest) {
             showToast('Mohon lengkapi nama paket, harga, dan destinasi!', 'info');
@@ -1441,11 +1914,33 @@
             price = 'Rp.' + price;
         }
 
-        // Add to Full Packages List dynamically
+        // Generate slug
+        const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'paket-' + Date.now();
+
+        // Collect structured itinerary
+        const itineraryList = collectItineraryFromContainer('itineraryDaysContainer');
+
+        // Save to Database Object
+        packagesDatabase[slug] = {
+            slug: slug,
+            name: name,
+            price: price,
+            location: dest,
+            destination: dest,
+            category: category,
+            duration: duration,
+            meal: meal,
+            image: uploadedPackageImageSrc,
+            description: desc,
+            itinerary: itineraryList
+        };
+
+        // Add Card to Full Packages List
         const listContainer = document.getElementById('fullPackagesList');
         if (listContainer) {
             const newCard = document.createElement('div');
             newCard.className = 'package-item-card full-package-card';
+            newCard.setAttribute('data-package-slug', slug);
             newCard.setAttribute('data-title', name.toLowerCase());
             newCard.setAttribute('data-loc', dest.toLowerCase());
             newCard.innerHTML = `
@@ -1460,14 +1955,14 @@
                     <div class="package-item-pricing">
                         <span class="package-item-price">${price}</span>
                         <span class="package-item-duration">
-                            <i class="fa-regular fa-clock"></i> ${duration || 'Durasi Fleksibel'}
+                            <i class="fa-regular fa-clock"></i> ${duration}
                         </span>
                     </div>
                     <div class="package-item-actions">
-                        <button type="button" class="btn-action-icon edit" title="Edit Paket" onclick="openPackageModal('${name}', '${price}', '${dest}')">
+                        <button type="button" class="btn-action-icon edit" title="Edit Paket" onclick="openEditPackageView('${slug}', 'tab-paket-wisata')">
                             <i class="fa-solid fa-pen"></i>
                         </button>
-                        <button type="button" class="btn-action-icon delete" title="Hapus Paket" onclick="deletePackageConfirm('${name}')">
+                        <button type="button" class="btn-action-icon delete" title="Hapus Paket" onclick="deletePackageConfirm('${slug}', '${name.replace(/'/g, "\\'")}')">
                             <i class="fa-regular fa-trash-can"></i>
                         </button>
                     </div>
@@ -1487,21 +1982,275 @@
         activateTab('tab-paket-wisata');
     }
 
-    // Modal Tambah / Edit Paket
-    function openAddPackageModal() {
-        openAddPackageView();
+    // ==========================================
+    // 2. EDIT PAKET WISATA HANDLERS (MATCHING SCREENSHOT)
+    // ==========================================
+    let editUploadedPackageImageSrc = '';
+
+    function openEditPackageView(slugOrName, fromTab = 'tab-paket-wisata') {
+        let pkg = packagesDatabase[slugOrName];
+
+        if (!pkg) {
+            // Find by name if not matching slug
+            for (const key in packagesDatabase) {
+                if (packagesDatabase[key].name.toLowerCase() === slugOrName.toLowerCase() || key.includes(slugOrName.toLowerCase())) {
+                    pkg = packagesDatabase[key];
+                    slugOrName = key;
+                    break;
+                }
+            }
+        }
+
+        if (!pkg) {
+            pkg = {
+                slug: slugOrName,
+                name: slugOrName,
+                price: 'Rp.2.000.000',
+                location: 'Yogyakarta',
+                destination: 'Yogyakarta',
+                category: 'Wisata Budaya',
+                duration: 'Durasi 2 Hari 1 Malam',
+                meal: 'Makan 4x',
+                image: '{{ asset("images/jogja.jpg") }}',
+                description: 'Deskripsi paket wisata.',
+                itinerary: [
+                    { day: 1, slots: [{ time: '08.00 - 12.00', activity: 'Aktivitas tour' }] }
+                ]
+            };
+        }
+
+        document.getElementById('editPkgSlug').value = slugOrName;
+        document.getElementById('editFromTab').value = fromTab;
+        document.getElementById('editPageMainTitle').textContent = `Edit Paket Wisata - ${pkg.name}`;
+
+        // Populate fields
+        document.getElementById('editFormPkgName').value = pkg.name;
+        document.getElementById('editFormPkgPrice').value = pkg.price;
+        
+        const destSelect = document.getElementById('editFormPkgDest');
+        if (destSelect) {
+            destSelect.value = pkg.destination || pkg.location || 'Yogyakarta';
+        }
+
+        const catSelect = document.getElementById('editFormPkgCategory');
+        if (catSelect) {
+            catSelect.value = pkg.category || 'Wisata Budaya';
+        }
+
+        document.getElementById('editFormPkgDuration').value = pkg.duration || '';
+        document.getElementById('editFormPkgMeal').value = pkg.meal || '';
+        document.getElementById('editFormPkgDesc').value = pkg.description || '';
+
+        // Image
+        editUploadedPackageImageSrc = pkg.image || '{{ asset("images/jogja.jpg") }}';
+        const editPreview = document.getElementById('editPackageImagePreview');
+        const editPreviewWrap = document.getElementById('editPackageImagePreviewWrap');
+        const editPlaceholder = document.getElementById('editUploadPlaceholderContent');
+        if (editPreview) editPreview.src = editUploadedPackageImageSrc;
+        if (editPreviewWrap) editPreviewWrap.style.display = 'block';
+        if (editPlaceholder) editPlaceholder.style.display = 'none';
+
+        // Itinerary Days
+        const editContainer = document.getElementById('editItineraryDaysContainer');
+        const editAlert = document.getElementById('editItineraryEmptyAlert');
+        if (editContainer) editContainer.innerHTML = '';
+
+        if (pkg.itinerary && pkg.itinerary.length > 0) {
+            if (editAlert) editAlert.style.display = 'none';
+            pkg.itinerary.forEach(item => {
+                if (item.slots && Array.isArray(item.slots)) {
+                    addEditItineraryDay(item.slots);
+                } else if (item.time || item.activity) {
+                    addEditItineraryDay([{ time: item.time || '', activity: item.activity || '' }]);
+                }
+            });
+        } else {
+            addEditItineraryDay([{ time: '08.00 - 12.00', activity: 'Aktivitas wisata & eksplorasi destinasi' }]);
+        }
+
+        // Switch pane to Edit Paket & keep sidebar active
+        activateTab('tab-edit-paket');
+        const pkgSideLink = document.querySelector('.sidebar-nav-link[data-tab="tab-paket-wisata"]');
+        if (pkgSideLink) pkgSideLink.classList.add('active');
+
+        window.scrollTo({ top: document.querySelector('.admin-glass-container').offsetTop - 20, behavior: 'smooth' });
     }
 
-    // Detail Pemesanan View Function
+    function backFromEditPackage() {
+        const fromTab = document.getElementById('editFromTab').value || 'tab-paket-wisata';
+        activateTab(fromTab);
+    }
+
+    function handleEditPackageImageSelect(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                editUploadedPackageImageSrc = e.target.result;
+                const previewImg = document.getElementById('editPackageImagePreview');
+                const previewWrap = document.getElementById('editPackageImagePreviewWrap');
+                const placeholder = document.getElementById('editUploadPlaceholderContent');
+                
+                if (previewImg) previewImg.src = editUploadedPackageImageSrc;
+                if (previewWrap) previewWrap.style.display = 'block';
+                if (placeholder) placeholder.style.display = 'none';
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function removeEditPackageImagePreview(e) {
+        if (e) e.stopPropagation();
+        const fileInput = document.getElementById('editPackageImageInput');
+        const previewWrap = document.getElementById('editPackageImagePreviewWrap');
+        const placeholder = document.getElementById('editUploadPlaceholderContent');
+        const previewImg = document.getElementById('editPackageImagePreview');
+
+        if (fileInput) fileInput.value = '';
+        if (previewImg) previewImg.src = '';
+        if (previewWrap) previewWrap.style.display = 'none';
+        if (placeholder) placeholder.style.display = 'block';
+        editUploadedPackageImageSrc = '{{ asset("images/jogja.jpg") }}';
+    }
+
+    function addEditItineraryDay(initialSlots = null) {
+        const editContainer = document.getElementById('editItineraryDaysContainer');
+        const editAlert = document.getElementById('editItineraryEmptyAlert');
+        
+        if (editAlert) editAlert.style.display = 'none';
+
+        const dayCards = editContainer ? editContainer.querySelectorAll('.itinerary-day-card') : [];
+        const currentDayIndex = dayCards.length + 1;
+
+        const dayCard = document.createElement('div');
+        dayCard.className = 'itinerary-day-card';
+        dayCard.innerHTML = `
+            <div class="itinerary-day-header">
+                <span class="itinerary-day-badge">
+                    <i class="fa-regular fa-calendar-check"></i> Hari ke-${currentDayIndex}
+                </span>
+                <button type="button" class="btn-remove-day" onclick="removeItineraryDay(this, 'editItineraryDaysContainer')" title="Hapus Hari">
+                    <i class="fa-regular fa-trash-can"></i>
+                </button>
+            </div>
+            <div class="itinerary-slots-container"></div>
+            <button type="button" class="btn-add-time-slot" onclick="addTimeSlotFromButton(this)">
+                <i class="fa-solid fa-plus"></i>
+                <span>Tambah Jam</span>
+            </button>
+        `;
+
+        const slotsContainer = dayCard.querySelector('.itinerary-slots-container');
+        if (initialSlots && Array.isArray(initialSlots) && initialSlots.length > 0) {
+            initialSlots.forEach(s => {
+                slotsContainer.appendChild(createTimeSlotRow(s.time || '', s.activity || ''));
+            });
+        } else {
+            slotsContainer.appendChild(createTimeSlotRow('08.00 - 12.00', ''));
+        }
+
+        if (editContainer) {
+            editContainer.appendChild(dayCard);
+            reindexItineraryDays('editItineraryDaysContainer');
+        }
+    }
+
+    function handleSaveEditPackageForm() {
+        const slug = document.getElementById('editPkgSlug').value;
+        const fromTab = document.getElementById('editFromTab').value || 'tab-paket-wisata';
+
+        const name = document.getElementById('editFormPkgName').value.trim();
+        let price = document.getElementById('editFormPkgPrice').value.trim();
+        const dest = document.getElementById('editFormPkgDest').value;
+        const category = document.getElementById('editFormPkgCategory').value;
+        const duration = document.getElementById('editFormPkgDuration').value.trim();
+        const meal = document.getElementById('editFormPkgMeal').value.trim();
+        const desc = document.getElementById('editFormPkgDesc').value.trim();
+
+        if (!name || !price || !dest) {
+            showToast('Mohon lengkapi nama paket, harga, dan destinasi!', 'info');
+            return;
+        }
+
+        if (!price.toLowerCase().startsWith('rp')) {
+            price = 'Rp.' + price;
+        }
+
+        // Collect structured edit itinerary
+        const itineraryList = collectItineraryFromContainer('editItineraryDaysContainer');
+
+        // Update database object
+        packagesDatabase[slug] = {
+            slug: slug,
+            name: name,
+            price: price,
+            location: dest,
+            destination: dest,
+            category: category,
+            duration: duration,
+            meal: meal,
+            image: editUploadedPackageImageSrc,
+            description: desc,
+            itinerary: itineraryList
+        };
+
+        // Update DOM cards in both lists
+        const matchingCards = document.querySelectorAll(`[data-package-slug="${slug}"]`);
+        matchingCards.forEach(card => {
+            const nameEl = card.querySelector('.package-item-name');
+            const locEl = card.querySelector('.package-item-location');
+            const priceEl = card.querySelector('.package-item-price');
+            const durEl = card.querySelector('.package-item-duration');
+            const imgEl = card.querySelector('.package-item-thumb');
+
+            if (nameEl) nameEl.textContent = name;
+            if (locEl) locEl.textContent = dest;
+            if (priceEl) priceEl.textContent = price;
+            if (durEl) durEl.innerHTML = `<i class="fa-regular fa-clock"></i> ${duration}`;
+            if (imgEl && editUploadedPackageImageSrc) imgEl.src = editUploadedPackageImageSrc;
+
+            card.setAttribute('data-title', name.toLowerCase());
+            card.setAttribute('data-loc', dest.toLowerCase());
+        });
+
+        showToast(`Paket wisata "${name}" berhasil diperbarui!`, 'success');
+        activateTab(fromTab);
+    }
+
+    // ==========================================
+    // 3. HAPUS PAKET WISATA HANDLER
+    // ==========================================
+    function deletePackageConfirm(slugOrName, displayName) {
+        displayName = displayName || slugOrName;
+        if (confirm(`Apakah Anda yakin ingin menghapus paket "${displayName}"?`)) {
+            if (packagesDatabase[slugOrName]) {
+                delete packagesDatabase[slugOrName];
+            }
+
+            // Remove card from lists
+            const matchingCards = document.querySelectorAll(`[data-package-slug="${slugOrName}"]`);
+            matchingCards.forEach(card => card.remove());
+
+            // Update badge count
+            const badge = document.getElementById('packageBadgeCount');
+            if (badge) {
+                const remaining = document.querySelectorAll('#fullPackagesList .package-item-card').length;
+                badge.textContent = remaining;
+            }
+
+            showToast(`Paket wisata "${displayName}" berhasil dihapus.`, 'info');
+        }
+    }
+
+    // ==========================================
+    // 4. DETAIL PEMESANAN ORDER HANDLERS
+    // ==========================================
     function showOrderDetail(orderKey) {
         currentViewingOrderKey = orderKey;
         const data = orderDatabase[orderKey] || orderDatabase['alexa'];
 
         document.getElementById('dtOrderDate').textContent = data.orderDate;
-        
         renderDetailOrderStatus(data.status);
 
-        // Populate Fields
         document.getElementById('dtPkgName').textContent = data.pkgName;
         document.getElementById('dtPkgDuration').textContent = data.pkgDuration;
         document.getElementById('dtPkgHotel').textContent = data.pkgHotel;
@@ -1533,11 +2282,9 @@
         document.getElementById('dtReceiptMerchant').textContent = data.receiptMerchant;
         document.getElementById('dtReceiptMethod').innerHTML = `<i class="fa-solid fa-circle-check" style="color: #2563eb; margin-right: 4px;"></i> ${data.receiptMethod}`;
 
-        // Switch pane
         document.querySelectorAll('.tab-content-pane').forEach(p => p.classList.remove('active'));
         document.getElementById('tab-detail-pemesanan').classList.add('active');
 
-        // Keep Riwayat Pemesanan sidebar link active
         document.querySelectorAll('.sidebar-nav-link').forEach(btn => btn.classList.remove('active'));
         const riwayatBtn = document.querySelector('.sidebar-nav-link[data-tab="tab-riwayat-pemesanan"]');
         if (riwayatBtn) riwayatBtn.classList.add('active');
@@ -1545,7 +2292,6 @@
         window.scrollTo({ top: document.querySelector('.admin-glass-container').offsetTop - 20, behavior: 'smooth' });
     }
 
-    // Render Status and Action Button in Detail View
     function renderDetailOrderStatus(status) {
         const badge = document.getElementById('dtStatusBadge');
         const actionBtn = document.getElementById('dtActionBtn');
@@ -1559,12 +2305,9 @@
         if (status === 'Dipending') {
             badge.className = 'dt-status-badge pending';
             badge.textContent = 'Dipending';
-            
-            // Button in Pending state shows 'Dikonfirmasi' (Blue)
             actionBtn.className = 'btn-detail-approve';
             actionBtnText.textContent = 'Dikonfirmasi';
             actionBtnIcon.className = 'fa-solid fa-clock';
-            
             banner.className = 'detail-status-banner pending';
             bannerTitle.textContent = 'Menunggu Konfirmasi';
             bannerSub.textContent = 'Menunggu pembayaran diverifikasi & disetujui';
@@ -1572,12 +2315,9 @@
         } else if (status === 'Disetujui') {
             badge.className = 'dt-status-badge completed';
             badge.textContent = 'Disetujui';
-            
-            // Button when approved shows 'Disetujui' (Green, matching 'Selesai')
             actionBtn.className = 'btn-detail-approve completed approved';
             actionBtnText.textContent = 'Disetujui';
             actionBtnIcon.className = 'fa-solid fa-check';
-            
             banner.className = 'detail-status-banner completed';
             bannerTitle.textContent = 'Disetujui';
             bannerSub.textContent = 'Pesanan telah disetujui dan diverifikasi';
@@ -1585,11 +2325,9 @@
         } else if (status === 'Selesai') {
             badge.className = 'dt-status-badge completed';
             badge.textContent = 'Selesai';
-            
             actionBtn.className = 'btn-detail-approve completed';
             actionBtnText.textContent = 'Perjalanan Selesai';
             actionBtnIcon.className = 'fa-solid fa-check-double';
-            
             banner.className = 'detail-status-banner completed';
             bannerTitle.textContent = 'Perjalanan Selesai';
             bannerSub.textContent = 'Perjalanan telah selesai dan dinikmati pelanggan';
@@ -1597,36 +2335,28 @@
         }
     }
 
-    // Toggle / Approve Order Function
     function toggleApproveOrder() {
         const orderData = orderDatabase[currentViewingOrderKey];
         if (!orderData) return;
 
         if (orderData.status === 'Dipending') {
-            // Ubah status menjadi Disetujui
             orderData.status = 'Disetujui';
             renderDetailOrderStatus('Disetujui');
-
-            // Update badge di tabel pesanan (Dashboard & Riwayat Pemesanan)
             const badges = document.querySelectorAll(`[data-order-badge="${currentViewingOrderKey}"]`);
             badges.forEach(b => {
                 b.className = 'badge-status completed';
                 b.textContent = 'Disetujui';
             });
-
             updateSummaryCounts();
             showToast(`Pesanan untuk ${orderData.custName} berhasil Disetujui!`, 'success');
         } else if (orderData.status === 'Disetujui') {
-            // Toggle kembali ke Dipending jika diklik lagi
             orderData.status = 'Dipending';
             renderDetailOrderStatus('Dipending');
-
             const badges = document.querySelectorAll(`[data-order-badge="${currentViewingOrderKey}"]`);
             badges.forEach(b => {
                 b.className = 'badge-status pending';
                 b.textContent = 'Dipending';
             });
-
             updateSummaryCounts();
             showToast(`Status pesanan ${orderData.custName} diubah kembali menjadi Dipending`, 'info');
         } else if (orderData.status === 'Selesai') {
@@ -1634,7 +2364,6 @@
         }
     }
 
-    // Update Summary Counter Numbers
     function updateSummaryCounts() {
         let total = 0;
         let completed = 0;
@@ -1659,7 +2388,6 @@
         if (pendElem) pendElem.textContent = pending;
     }
 
-    // Toast Notification System
     function showToast(message, type = 'success') {
         const container = document.getElementById('adminToastContainer');
         if (!container) return;
@@ -1688,40 +2416,6 @@
 
     function backToOrdersList() {
         activateTab('tab-riwayat-pemesanan');
-    }
-
-    // Modal Tambah / Edit Paket
-    function openAddPackageModal() {
-        document.getElementById('packageModalTitle').textContent = 'Tambah Paket Wisata Baru';
-        document.getElementById('inputPkgName').value = '';
-        document.getElementById('inputPkgLocation').value = '';
-        document.getElementById('inputPkgPrice').value = '';
-        document.getElementById('inputPkgDuration').value = '';
-        document.getElementById('packageFormModal').classList.add('show');
-    }
-
-    function openPackageModal(name, price, location) {
-        document.getElementById('packageModalTitle').textContent = 'Edit Paket Wisata';
-        document.getElementById('inputPkgName').value = name;
-        document.getElementById('inputPkgLocation').value = location;
-        document.getElementById('inputPkgPrice').value = price;
-        document.getElementById('inputPkgDuration').value = 'Durasi Sesuai Paket';
-        document.getElementById('packageFormModal').classList.add('show');
-    }
-
-    function closePackageModal() {
-        document.getElementById('packageFormModal').classList.remove('show');
-    }
-
-    function handlePackageSubmit() {
-        showToast('Data paket wisata berhasil diperbarui!', 'success');
-        closePackageModal();
-    }
-
-    function deletePackageConfirm(pkgName) {
-        if (confirm(`Apakah Anda yakin ingin menghapus paket "${pkgName}"?`)) {
-            showToast(`Paket "${pkgName}" berhasil dihapus.`, 'info');
-        }
     }
 
     // Logout Confirmation Modal

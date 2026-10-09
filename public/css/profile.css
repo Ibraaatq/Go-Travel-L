@@ -1726,13 +1726,14 @@
 }
 
 .itinerary-day-card {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    padding: 14px 16px;
+    background: #fdfefe;
+    border: 1.5px solid #fed7aa;
+    border-radius: 16px;
+    padding: 16px 18px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
+    box-shadow: 0 3px 12px rgba(234, 88, 12, 0.04);
     animation: fadeInTab 0.25s ease;
 }
 
@@ -1740,6 +1741,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding-bottom: 2px;
 }
 
 .itinerary-day-badge {
@@ -1750,7 +1752,7 @@
     color: #ea580c;
     font-weight: 700;
     font-size: 12px;
-    padding: 4px 12px;
+    padding: 5px 14px;
     border-radius: 9999px;
 }
 
@@ -1759,13 +1761,100 @@
     border: none;
     color: #ef4444;
     cursor: pointer;
-    font-size: 13px;
-    padding: 4px;
-    transition: transform 0.2s ease;
+    font-size: 14px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-remove-day:hover {
-    transform: scale(1.15);
+    color: #dc2626;
+    background: #fee2e2;
+    transform: scale(1.1);
+}
+
+.itinerary-slots-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.itinerary-slot-row {
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    gap: 10px;
+    align-items: center;
+}
+
+@media (max-width: 640px) {
+    .itinerary-slot-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.itinerary-slot-row .form-text-input {
+    font-size: 12px;
+    padding: 9px 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #1e293b;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.itinerary-slot-row .form-text-input:focus {
+    border-color: #ea580c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
+    outline: none;
+}
+
+.btn-remove-slot {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-remove-slot:hover {
+    color: #ef4444;
+    background: #fee2e2;
+    transform: scale(1.1);
+}
+
+.btn-add-time-slot {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff8f5;
+    border: 1px dashed #fdba74;
+    color: #ea580c;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 2px;
+}
+
+.btn-add-time-slot:hover {
+    background: #ffedd5;
+    border-color: #ea580c;
+    color: #c2410c;
+    transform: translateY(-1px);
 }
 
 /* Form Action Buttons Bottom */
@@ -1818,6 +1907,72 @@
     background: #c2410c;
     transform: translateY(-1px);
     box-shadow: 0 6px 18px rgba(234, 88, 12, 0.45);
+}
+
+.edit-package-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-top: 0;
+    margin-bottom: 20px;
+    letter-spacing: -0.3px;
+}
+
+.itinerary-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.btn-add-itinerary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 18px;
+    border-radius: 9999px;
+    background: #ffffff;
+    color: #ea580c;
+    border: 1.5px solid #ea580c;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-add-itinerary:hover {
+    background: #fff2eb;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.15);
+}
+
+.itinerary-empty-alert {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fffbeb;
+    border: 1px solid #fef3c7;
+    padding: 14px 18px;
+    border-radius: 14px;
+    color: #92400e;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.itinerary-empty-alert .alert-icon {
+    font-size: 18px;
+    color: #d97706;
+}
+
+.itinerary-empty-alert .alert-title {
+    font-weight: 700;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.itinerary-empty-alert .alert-desc {
+    color: #b45309;
+    font-size: 12.5px;
 }
 
 @media (max-width: 768px) {
