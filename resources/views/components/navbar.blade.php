@@ -45,15 +45,36 @@
                         </span>
                         <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: #ea580c;"></i>
                     </a>
-                    <div class="user-dropdown-popover" id="userDropdownMenu" style="display: none; position: absolute; top: calc(100% + 8px); right: 0; min-width: 200px; background: #ffffff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid #f1f5f9; padding: 10px; z-index: 1000;">
+                    <div class="user-dropdown-popover" id="userDropdownMenu" style="display: none; position: absolute; top: calc(100% + 8px); right: 0; min-width: 210px; background: #ffffff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid #f1f5f9; padding: 10px; z-index: 1000;">
                         <div style="padding: 6px 10px 10px 10px; border-bottom: 1px solid #f1f5f9;">
-                            <div style="font-size: 13px; font-weight: 700; color: #0f172a; line-height: 1.2;">{{ session('user.name') }}</div>
-                            <div style="font-size: 11px; color: #64748b; word-break: break-all;">{{ session('user.email') }}</div>
+                            <div style="font-size: 13px; font-weight: 700; color: #0f172a; line-height: 1.2;">{{ session('user.name', 'Pengguna') }}</div>
+                            <div style="font-size: 11px; color: #64748b; word-break: break-all;">{{ session('user.email', 'user@gmail.com') }}</div>
+                            <div style="margin-top: 5px;">
+                                <span style="font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 9999px; {{ (session('user.role') ?? 'user') === 'admin' ? 'background: #e0f2fe; color: #0284c7;' : 'background: #fff2eb; color: #ea580c;' }}">
+                                    <i class="fa-solid {{ (session('user.role') ?? 'user') === 'admin' ? 'fa-user-shield' : 'fa-user' }}" style="margin-right: 3px;"></i>
+                                    {{ (session('user.role') ?? 'user') === 'admin' ? 'ADMINISTRATOR' : 'USER (READ-ONLY)' }}
+                                </span>
+                            </div>
                         </div>
-                        <a href="{{ url('/profile') }}" style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #ea580c; font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 8px; margin-top: 6px; transition: background 0.2s;" onmouseover="this.style.background='#fff2eb'" onmouseout="this.style.background='transparent'">
-                            <i class="fa-solid fa-gauge-high"></i>
-                            <span>Dashboard Profil</span>
-                        </a>
+                        @if((session('user.role') ?? 'user') === 'admin')
+                            <a href="{{ url('/admin') }}" style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #0284c7; font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 8px; margin-top: 6px; transition: background 0.2s;" onmouseover="this.style.background='#f0f9ff'" onmouseout="this.style.background='transparent'">
+                                <i class="fa-solid fa-user-shield"></i>
+                                <span>Panel Admin (Full Control)</span>
+                            </a>
+                            <a href="{{ url('/user-profile') }}" style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #ea580c; font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 8px; margin-top: 2px; transition: background 0.2s;" onmouseover="this.style.background='#fff2eb'" onmouseout="this.style.background='transparent'">
+                                <i class="fa-solid fa-user"></i>
+                                <span>Tampilan Profil User</span>
+                            </a>
+                        @else
+                            <a href="{{ url('/user-profile') }}" style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #ea580c; font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 8px; margin-top: 6px; transition: background 0.2s;" onmouseover="this.style.background='#fff2eb'" onmouseout="this.style.background='transparent'">
+                                <i class="fa-solid fa-user"></i>
+                                <span>Profil Saya (Read-Only)</span>
+                            </a>
+                            <a href="{{ url('/admin') }}" style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #0284c7; font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 8px; margin-top: 2px; transition: background 0.2s;" onmouseover="this.style.background='#f0f9ff'" onmouseout="this.style.background='transparent'">
+                                <i class="fa-solid fa-user-shield"></i>
+                                <span>Mode Admin</span>
+                            </a>
+                        @endif
                         <a href="{{ url('/logout') }}" onclick="if(typeof openLogoutModal === 'function'){ event.preventDefault(); openLogoutModal(); }" style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #ef4444; font-size: 12.5px; font-weight: 600; text-decoration: none; border-radius: 8px; margin-top: 2px; transition: background 0.2s;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>
                             <span>Keluar (Logout)</span>

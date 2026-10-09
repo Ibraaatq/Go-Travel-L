@@ -24,12 +24,14 @@ Route::get('/login', function () {
 Route::post('/login', function (Request $request) {
     $email = $request->input('email', 'user@gmail.com');
     $name = explode('@', $email)[0];
+    $role = (str_contains(strtolower($email), 'admin')) ? 'admin' : 'user';
     session([
         'user' => [
             'name' => ucfirst($name),
             'email' => $email,
             'avatar' => '',
             'provider' => 'local',
+            'role' => $role,
         ]
     ]);
     return redirect('/');
@@ -42,12 +44,14 @@ Route::get('/register', function () {
 Route::post('/register', function (Request $request) {
     $name = $request->input('name', 'User');
     $email = $request->input('email', 'user@gmail.com');
+    $role = (str_contains(strtolower($email), 'admin')) ? 'admin' : 'user';
     session([
         'user' => [
             'name' => $name,
             'email' => $email,
             'avatar' => '',
             'provider' => 'local',
+            'role' => $role,
         ]
     ]);
     return redirect('/login')->with('success', 'Registrasi berhasil! Silakan masuk.');
@@ -61,6 +65,7 @@ Route::post('/auth/google/select', function (Request $request) {
     $name = $request->input('name', 'Google User');
     $email = $request->input('email', 'user@gmail.com');
     $avatar = $request->input('avatar', '');
+    $role = (str_contains(strtolower($email), 'admin')) ? 'admin' : 'user';
 
     session([
         'user' => [
@@ -68,6 +73,7 @@ Route::post('/auth/google/select', function (Request $request) {
             'email' => $email,
             'avatar' => $avatar,
             'provider' => 'google',
+            'role' => $role,
         ]
     ]);
 
@@ -81,6 +87,7 @@ Route::get('/auth/facebook', function () {
             'email' => 'user@facebook.com',
             'avatar' => '',
             'provider' => 'facebook',
+            'role' => 'user',
         ]
     ]);
     return redirect('/')->with('success', 'Berhasil masuk dengan Facebook!');
@@ -99,13 +106,31 @@ Route::get('/checkout/{slug}', [PaketWisataController::class, 'checkout'])->name
 Route::get('/paket-wisata/checkout/{slug}', [PaketWisataController::class, 'checkout']);
 
 Route::get('/profile', function () {
-    return view('profile');
+    $user = session('user');
+    if ($user && ($user['role'] ?? 'user') === 'admin') {
+        return view('profile');
+    }
+    return view('user-profile');
 })->name('profile');
 
-Route::get('/dashboard', function () {
-    return view('profile');
-})->name('dashboard');
+Route::get('/user-profile', function () {
+    if (session()->has('user')) {
+        session(['user.role' => 'user']);
+    }
+    return view('user-profile');
+})->name('user-profile');
 
 Route::get('/admin', function () {
+    if (session()->has('user')) {
+        session(['user.role' => 'admin']);
+    }
     return view('profile');
 })->name('admin');
+
+Route::get('/dashboard', function () {
+    $user = session('user');
+    if ($user && ($user['role'] ?? 'user') === 'admin') {
+        return view('profile');
+    }
+    return view('user-profile');
+})->name('dashboard');

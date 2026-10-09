@@ -74,11 +74,17 @@
 @section('content')
 <div class="admin-page-wrapper">
 
-    <!-- Top Action / Back Button -->
-    <div class="admin-top-nav-row">
+    <!-- Top Action / Back Button & Mode Switcher -->
+    <div class="admin-top-nav-row" style="justify-content: space-between;">
         <a href="{{ url('/') }}" class="admin-back-btn" title="Kembali ke Beranda" aria-label="Kembali ke Beranda">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 12.5px; color: #ffffff; font-weight: 600; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">Tampilan: Admin Panel (Full Control)</span>
+            <a href="{{ url('/user-profile') }}" style="padding: 6px 14px; background: rgba(255,255,255,0.9); color: #0284c7; border-radius: 9999px; font-size: 12px; font-weight: 700; text-decoration: none; transition: background 0.2s;" onmouseover="this.style.background='#ffffff'" onmouseout="this.style.background='rgba(255,255,255,0.9)'">
+                <i class="fa-solid fa-user"></i> Lihat Tampilan User
+            </a>
+        </div>
     </div>
 
     <!-- Main Glassmorphism Container (2-Column Layout) -->
