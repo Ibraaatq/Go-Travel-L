@@ -505,13 +505,37 @@
             <!-- TAB: TAMBAH PAKET WISATA (MATCHING SCREENSHOT)       -->
             <!-- ---------------------------------------------------- -->
             <div class="tab-content-pane" id="tab-tambah-paket">
-                <form id="addPackageForm" onsubmit="event.preventDefault(); handleSavePackageForm();" class="package-form-container">
+
+                {{-- Flash messages --}}
+                @if(session('success'))
+                    <div class="pkg-alert-success" style="background:#f0fdf4;border:1px solid #bbf7d0;border-left:5px solid #16a34a;color:#15803d;padding:14px 18px;border-radius:14px;margin-bottom:20px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:12px;">
+                        <i class="fa-solid fa-circle-check"></i> <span>{{ session('success') }}</span>
+                    </div>
+                @endif
+                @if(session('error'))
+                    <div class="pkg-alert-error" style="background:#fef2f2;border:1px solid #fecaca;border-left:5px solid #ef4444;color:#b91c1c;padding:14px 18px;border-radius:14px;margin-bottom:20px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:12px;">
+                        <i class="fa-solid fa-triangle-exclamation"></i> <span>{{ session('error') }}</span>
+                    </div>
+                @endif
+
+                <form
+                    id="addPackageForm"
+                    action="{{ route('admin.packages.store') }}"
+                    method="POST"
+                    enctype="multipart/form-data"
+                    onsubmit="return handleSavePackageForm(event)"
+                    class="package-form-container">
+                    @csrf
+                    {{-- Hidden: itinerary dalam format JSON --}}
+                    <input type="hidden" id="itineraryJsonInput" name="itinerary">
+
                     
                     <!-- 1. Tambah Gambar -->
                     <div class="package-form-card">
                         <h3 class="form-section-heading">1. Tambah Gambar</h3>
                         <div class="upload-dropzone" id="packageDropzone" onclick="document.getElementById('packageImageInput').click();">
-                            <input type="file" id="packageImageInput" accept="image/png, image/jpeg, image/webp" style="display: none;" onchange="handlePackageImageSelect(this)">
+                            <input type="file" id="packageImageInput" name="gambar" accept="image/png, image/jpeg, image/webp" style="display: none;" onchange="handlePackageImageSelect(this)">
+
                             
                             <div class="upload-dropzone-content" id="uploadPlaceholderContent">
                                 <div class="upload-icon-circle">
@@ -541,20 +565,21 @@
                             <!-- Nama Paket Wisata -->
                             <div class="form-field-group">
                                 <label class="form-field-label">Nama Paket Wisata</label>
-                                <input type="text" id="inputFormPkgName" class="form-text-input" placeholder="Tulis nama paket wisata" required>
+                                <input type="text" id="inputFormPkgName" name="nama_paket" class="form-text-input" placeholder="Tulis nama paket wisata" required>
                             </div>
 
                             <!-- Harga Mulai (Rp) -->
                             <div class="form-field-group">
                                 <label class="form-field-label">Harga Mulai (Rp)</label>
-                                <input type="text" id="inputFormPkgPrice" class="form-text-input" placeholder="Tulis harga" required>
+                                <input type="text" id="inputFormPkgPrice" name="harga" class="form-text-input" placeholder="Tulis harga" required>
                             </div>
+
 
                             <!-- Destinasi -->
                             <div class="form-field-group">
                                 <label class="form-field-label">Destinasi</label>
                                 <div class="custom-select-wrapper">
-                                    <select id="inputFormPkgDest" class="form-select-control" required>
+                                    <select id="inputFormPkgDest" name="destinasi" class="form-select-control" required>
                                         <option value="" disabled selected>Pilih destinasi</option>
                                         <option value="Yogyakarta">Yogyakarta</option>
                                         <option value="Jawa Timur">Jawa Timur</option>
@@ -574,7 +599,7 @@
                             <div class="form-field-group">
                                 <label class="form-field-label">Kategori Paket</label>
                                 <div class="custom-select-wrapper">
-                                    <select id="inputFormPkgCategory" class="form-select-control" required>
+                                    <select id="inputFormPkgCategory" name="kategori" class="form-select-control" required>
                                         <option value="" disabled selected>Pilih kategori paket</option>
                                         <option value="Wisata Alam">Wisata Alam</option>
                                         <option value="Wisata Budaya">Wisata Budaya</option>
@@ -590,20 +615,21 @@
                             <!-- Durasi -->
                             <div class="form-field-group">
                                 <label class="form-field-label">Durasi</label>
-                                <input type="text" id="inputFormPkgDuration" class="form-text-input" placeholder="Tulis durasi perjalanan" required>
+                                <input type="text" id="inputFormPkgDuration" name="durasi" class="form-text-input" placeholder="Tulis durasi perjalanan" required>
                             </div>
 
                             <!-- Makan -->
                             <div class="form-field-group">
                                 <label class="form-field-label">Makan</label>
-                                <input type="text" id="inputFormPkgMeal" class="form-text-input" placeholder="Tulis makan yang didapatkan">
+                                <input type="text" id="inputFormPkgMeal" name="makan" class="form-text-input" placeholder="Tulis makan yang didapatkan">
                             </div>
 
                             <!-- Deskripsi -->
                             <div class="form-field-group full-width">
                                 <label class="form-field-label">Deskripsi</label>
-                                <textarea id="inputFormPkgDesc" class="form-textarea-control" placeholder="Tulis deskripsi paket wisata" rows="3"></textarea>
+                                <textarea id="inputFormPkgDesc" name="deskripsi" class="form-textarea-control" placeholder="Tulis deskripsi paket wisata" rows="3"></textarea>
                             </div>
+
                         </div>
                     </div>
 
@@ -1698,98 +1724,43 @@
         return itineraryResult;
     }
 
-    function handleSavePackageForm() {
-        const nameInput = document.getElementById('inputFormPkgName');
-        const priceInput = document.getElementById('inputFormPkgPrice');
-        const destInput = document.getElementById('inputFormPkgDest');
+    function handleSavePackageForm(event) {
+        // Prevent default HTML submit so we can collect itinerary first
+        if (event) event.preventDefault();
+
+        const nameInput     = document.getElementById('inputFormPkgName');
+        const priceInput    = document.getElementById('inputFormPkgPrice');
+        const destInput     = document.getElementById('inputFormPkgDest');
         const categoryInput = document.getElementById('inputFormPkgCategory');
         const durationInput = document.getElementById('inputFormPkgDuration');
-        const mealInput = document.getElementById('inputFormPkgMeal');
-        const descInput = document.getElementById('inputFormPkgDesc');
 
-        const name = nameInput ? nameInput.value.trim() : '';
-        let price = priceInput ? priceInput.value.trim() : '';
-        const dest = destInput ? destInput.value : '';
-        const category = categoryInput ? categoryInput.value : 'Wisata Alam';
-        const duration = durationInput ? durationInput.value.trim() : 'Durasi 1 Hari';
-        const meal = mealInput ? mealInput.value.trim() : 'Makan 1x';
-        const desc = descInput ? descInput.value.trim() : '';
+        const name     = nameInput     ? nameInput.value.trim()     : '';
+        const price    = priceInput    ? priceInput.value.trim()    : '';
+        const dest     = destInput     ? destInput.value            : '';
+        const category = categoryInput ? categoryInput.value        : '';
+        const duration = durationInput ? durationInput.value.trim() : '';
 
-        if (!name || !price || !dest) {
-            showToast('Mohon lengkapi nama paket, harga, dan destinasi!', 'info');
-            return;
+        // Validasi sisi klien
+        if (!name || !price || !dest || !category || !duration) {
+            showToast('Mohon lengkapi nama paket, harga, destinasi, kategori, dan durasi!', 'info');
+            return false;
         }
 
-        if (!price.toLowerCase().startsWith('rp')) {
-            price = 'Rp.' + price;
-        }
-
-        // Generate slug
-        const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'paket-' + Date.now();
-
-        // Collect structured itinerary
+        // Kumpulkan itinerary sebagai JSON lalu masukkan ke hidden input
         const itineraryList = collectItineraryFromContainer('itineraryDaysContainer');
-
-        // Save to Database Object
-        packagesDatabase[slug] = {
-            slug: slug,
-            name: name,
-            price: price,
-            location: dest,
-            destination: dest,
-            category: category,
-            duration: duration,
-            meal: meal,
-            image: uploadedPackageImageSrc,
-            description: desc,
-            itinerary: itineraryList
-        };
-
-        // Add Card to Full Packages List
-        const listContainer = document.getElementById('fullPackagesList');
-        if (listContainer) {
-            const newCard = document.createElement('div');
-            newCard.className = 'package-item-card full-package-card';
-            newCard.setAttribute('data-package-slug', slug);
-            newCard.setAttribute('data-title', name.toLowerCase());
-            newCard.setAttribute('data-loc', dest.toLowerCase());
-            newCard.innerHTML = `
-                <div class="package-item-left">
-                    <img src="${uploadedPackageImageSrc}" alt="${name}" class="package-item-thumb" loading="lazy">
-                    <div class="package-item-meta">
-                        <h4 class="package-item-name">${name}</h4>
-                        <span class="package-item-location">${dest}</span>
-                    </div>
-                </div>
-                <div class="package-item-right">
-                    <div class="package-item-pricing">
-                        <span class="package-item-price">${price}</span>
-                        <span class="package-item-duration">
-                            <i class="fa-regular fa-clock"></i> ${duration}
-                        </span>
-                    </div>
-                    <div class="package-item-actions">
-                        <button type="button" class="btn-action-icon edit" title="Edit Paket" onclick="openEditPackageView('${slug}', 'tab-paket-wisata')">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                        <button type="button" class="btn-action-icon delete" title="Hapus Paket" onclick="deletePackageConfirm('${slug}', '${name.replace(/'/g, "\\'")}')">
-                            <i class="fa-regular fa-trash-can"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-            listContainer.insertBefore(newCard, listContainer.firstChild);
-
-            // Update badge count
-            const badge = document.getElementById('packageBadgeCount');
-            if (badge) {
-                const current = parseInt(badge.textContent.trim()) || 8;
-                badge.textContent = current + 1;
-            }
+        const itineraryHidden = document.getElementById('itineraryJsonInput');
+        if (itineraryHidden) {
+            itineraryHidden.value = JSON.stringify(itineraryList);
         }
 
-        showToast(`Paket wisata "${name}" berhasil ditambahkan!`, 'success');
-        activateTab('tab-paket-wisata');
+        // Submit form secara normal ke server (POST /admin/packages)
+        const form = document.getElementById('addPackageForm');
+        if (form) {
+            showToast(`Menyimpan paket "${name}" ke database...`, 'info');
+            form.submit();
+        }
+
+        return false;
     }
 
     // ==========================================

@@ -189,7 +189,13 @@ Route::get('/profile', function () {
 
 // ---- Route: /admin (Dashboard Admin) ----
 // Dilindungi AdminMiddleware — hanya role 'admin' dari DB yang bisa masuk.
-Route::get('/admin', [AdminController::class, 'index'])->middleware('admin')->name('admin');
+Route::middleware('admin')->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin');
+
+    // Packages CRUD
+    Route::post('/admin/packages', [AdminController::class, 'storePackage'])->name('admin.packages.store');
+    Route::delete('/admin/packages/{id}', [AdminController::class, 'destroyPackage'])->name('admin.packages.destroy');
+});
 
 // ---- Route: /dashboard (alias /profile) ----
 Route::get('/dashboard', function () {
