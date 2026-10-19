@@ -248,7 +248,8 @@
                         Isi formulir di bawah ini dan kami akan segera merespon Anda
                     </p>
 
-                    <form id="contactForm" class="contact-form" onsubmit="handleFormSubmit(event)">
+                    <form id="contactForm" class="contact-form" action="{{ url('/contact') }}" method="POST" onsubmit="handleFormSubmit(event)">
+                        @csrf
                         <div class="form-row-two-cols">
                             <div class="form-group">
                                 <label for="nama_lengkap">Nama Lengkap</label>

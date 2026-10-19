@@ -53,6 +53,7 @@
 
                 <!-- Form Checkout Multi-Step -->
                 <form id="checkoutBookingForm" onsubmit="event.preventDefault();">
+                    @csrf
                     
                     <!-- ==================== STEP 1: DATA PESANAN ==================== -->
                     <div class="checkout-step-content active" id="stepContent1">

@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaketWisataController;
 use App\Http\Controllers\DestinasiController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', function () {
     $allPaket = PaketWisataController::getPaketData();
@@ -31,33 +34,40 @@ Route::get('/login', function () {
 })->name('login');
 
 Route::post('/login', function (Request $request) {
-    $email = $request->input('email', 'user@gmail.com');
+    $email = $request->input('email', '');
     $password = $request->input('password', '');
+
+    // Ambil data resmi dari tabel users MySQL
     $dbUser = \App\Models\User::where('email', $email)->first();
 
     if ($dbUser) {
-        $name = $dbUser->name;
-        $role = $dbUser->role ?? 'user';
+        // Data dari database (id, email, name, role)
+        session([
+            'user' => [
+                'id'       => $dbUser->id,
+                'name'     => $dbUser->name,
+                'email'    => $dbUser->email,
+                'avatar'   => '',
+                'provider' => 'local',
+                'role'     => $dbUser->role ?? 'user',
+            ]
+        ]);
     } else {
-        $name = explode('@', $email)[0];
-        $role = 'user';
-        if (str_contains(strtolower($email), 'admin') || str_contains(strtolower($name), 'admin') || str_contains(strtolower($email), 'sasa') || str_contains(strtolower($name), 'sasa') || str_contains(strtolower($email), 'ika')) {
-            $role = 'admin';
-        }
+        // Fallback jika user belum ada di DB (misal: demo/testing)
+        $name = ucfirst(explode('@', $email)[0]);
+        $role = str_contains(strtolower($email), 'admin') ? 'admin' : 'user';
+        session([
+            'user' => [
+                'id'       => null,
+                'name'     => $name,
+                'email'    => $email,
+                'avatar'   => '',
+                'provider' => 'local',
+                'role'     => $role,
+            ]
+        ]);
     }
 
-    $name = explode('@', $email)[0];
-    $role = (str_contains(strtolower($email), 'admin')) ? 'admin' : 'user';
-    session([
-        'user' => [
-            'name' => ucfirst($name),
-            'email' => $email,
-            'avatar' => '',
-            'provider' => 'local',
-            'role' => $role,
-            'role' => $role,
-        ]
-    ]);
     return redirect('/');
 });
 
@@ -71,26 +81,16 @@ Route::post('/register', function (Request $request) {
     $password = $request->input('password', 'password123');
 
     // Simpan ke database dengan role 'user'
-    \App\Models\User::updateOrCreate(
+    $newUser = \App\Models\User::updateOrCreate(
         ['email' => $email],
         [
-            'name' => $name,
+            'name'     => $name,
             'password' => \Illuminate\Support\Facades\Hash::make($password),
-            'role' => 'user',
+            'role'     => 'user',
         ]
     );
 
-    $role = (str_contains(strtolower($email), 'admin')) ? 'admin' : 'user';
-    session([
-        'user' => [
-            'name' => $name,
-            'email' => $email,
-            'avatar' => '',
-            'provider' => 'local',
-            'role' => 'user',
-            'role' => $role,
-        ]
-    ]);
+    // Jangan langsung login setelah register; arahkan ke halaman login
     return redirect('/login')->with('success', 'Registrasi berhasil! Silakan masuk.');
 });
 
@@ -99,19 +99,23 @@ Route::get('/auth/google', function () {
 })->name('auth.google');
 
 Route::post('/auth/google/select', function (Request $request) {
-    $name = $request->input('name', 'Google User');
-    $email = $request->input('email', 'user@gmail.com');
+    $name   = $request->input('name', 'Google User');
+    $email  = $request->input('email', 'user@gmail.com');
     $avatar = $request->input('avatar', '');
-    $role = (str_contains(strtolower($email), 'admin')) ? 'admin' : 'user';
+
+    // Cek apakah user sudah ada di DB, ambil id & role resmi
+    $dbUser = \App\Models\User::where('email', $email)->first();
+    $role   = $dbUser ? ($dbUser->role ?? 'user') : 'user';
+    $userId = $dbUser ? $dbUser->id : null;
 
     session([
         'user' => [
-            'name' => $name,
-            'email' => $email,
-            'avatar' => $avatar,
+            'id'       => $userId,
+            'name'     => $name,
+            'email'    => $email,
+            'avatar'   => $avatar,
             'provider' => 'google',
-            'role' => 'user',
-            'role' => $role,
+            'role'     => $role,
         ]
     ]);
 
@@ -121,12 +125,12 @@ Route::post('/auth/google/select', function (Request $request) {
 Route::get('/auth/facebook', function () {
     session([
         'user' => [
-            'name' => 'Facebook User',
-            'email' => 'user@facebook.com',
-            'avatar' => '',
+            'id'       => null,
+            'name'     => 'Facebook User',
+            'email'    => 'user@facebook.com',
+            'avatar'   => '',
             'provider' => 'facebook',
-            'role' => 'user',
-            'role' => 'user',
+            'role'     => 'user',
         ]
     ]);
     return redirect('/')->with('success', 'Berhasil masuk dengan Facebook!');
@@ -143,33 +147,56 @@ Route::get('/paket-wisata/detail/{slug}', [PaketWisataController::class, 'show']
 
 Route::get('/checkout/{slug}', [PaketWisataController::class, 'checkout'])->name('paket-wisata.checkout');
 Route::get('/paket-wisata/checkout/{slug}', [PaketWisataController::class, 'checkout']);
+Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.store');
+Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/kontak', [ContactController::class, 'store'])->name('kontak.store');
+
+// ---- Route: /profile (Halaman Profil Pengguna) ----
+// Hanya untuk user yang sudah login. Menampilkan profile.blade.php.
 Route::get('/profile', function () {
-    $user = session('user');
-    if ($user && ($user['role'] ?? 'user') === 'admin') {
-        return view('profile');
+    $userSession = session('user');
+    if (!$userSession) {
+        return redirect('/login')->with('error', 'Silakan masuk terlebih dahulu.');
     }
-    return view('user-profile');
+
+    // Ambil data resmi dari MySQL berdasarkan id atau email di session
+    $dbUser = null;
+    if (!empty($userSession['id'])) {
+        $dbUser = \App\Models\User::find($userSession['id']);
+    }
+    if (!$dbUser && !empty($userSession['email'])) {
+        $dbUser = \App\Models\User::where('email', $userSession['email'])->first();
+    }
+
+    // Hitung pesanan user
+    $userOrders = collect();
+    try {
+        if ($dbUser) {
+            $userOrders = \App\Models\Order::where('user_id', $dbUser->id)
+                ->orWhere('email_pemesan', $dbUser->email)
+                ->latest()
+                ->get();
+        }
+    } catch (\Throwable $e) {
+        $userOrders = collect();
+    }
+
+    return view('profile', compact('dbUser', 'userOrders'));
 })->name('profile');
 
-Route::get('/user-profile', function () {
-    if (session()->has('user')) {
-        session(['user.role' => 'user']);
-    }
-    return view('user-profile');
-})->name('user-profile');
+// ---- Route: /admin (Dashboard Admin) ----
+// Dilindungi AdminMiddleware — hanya role 'admin' dari DB yang bisa masuk.
+Route::get('/admin', [AdminController::class, 'index'])->middleware('admin')->name('admin');
 
-Route::get('/admin', function () {
-    if (session()->has('user')) {
-        session(['user.role' => 'admin']);
-    }
-    return view('profile');
-})->name('admin');
-
+// ---- Route: /dashboard (alias /profile) ----
 Route::get('/dashboard', function () {
-    $user = session('user');
-    if ($user && ($user['role'] ?? 'user') === 'admin') {
-        return view('profile');
-    }
-    return view('user-profile');
+    return redirect()->route('profile');
 })->name('dashboard');
+
+// ---- Route: /user-profile (legacy redirect) ----
+Route::get('/user-profile', function () {
+    return redirect()->route('profile');
+})->name('user-profile');

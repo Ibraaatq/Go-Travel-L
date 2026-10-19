@@ -363,18 +363,57 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // Complete Order & WhatsApp Dispatch
+        // Complete Order & WhatsApp Dispatch (Saved to Database)
         if (btnCompleteOrder) {
             btnCompleteOrder.addEventListener('click', function () {
-                const custName = document.getElementById('custName')?.value || '-';
-                const custPhone = document.getElementById('custWhatsapp')?.value || '-';
-                const custEmail = document.getElementById('custEmail')?.value || '-';
-                const custOrg = document.getElementById('custOrg')?.value || '-';
-                const orderNotes = document.getElementById('orderNotes')?.value || '-';
+                const custName = document.getElementById('custName')?.value?.trim() || '';
+                const custPhone = document.getElementById('custWhatsapp')?.value?.trim() || '';
+                const custEmail = document.getElementById('custEmail')?.value?.trim() || '';
+                const custOrg = document.getElementById('custOrg')?.value?.trim() || '';
+                const orderNotes = document.getElementById('orderNotes')?.value?.trim() || '';
                 const selectedPayment = document.querySelector('input[name="payment_scheme"]:checked')?.value === 'dp30' ? 'DP 30%' : 'Lunas 100%';
-                const totalBill = summaryTotal?.textContent || '-';
+                const totalBill = summaryTotal?.textContent || '0';
 
-                const waMessage = 
+                if (!custName || !custPhone || !custEmail) {
+                    alert('Silakan lengkapi data pemesan (Nama, No HP/WA, dan Email) sebelum konfirmasi.');
+                    return;
+                }
+
+                const originalBtnText = btnCompleteOrder.innerHTML;
+                btnCompleteOrder.disabled = true;
+                btnCompleteOrder.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan Pesanan...';
+
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') 
+                               || document.querySelector('input[name="_token"]')?.value;
+
+                const payload = {
+                    paket_slug: pkgData.slug,
+                    nama_paket: pkgData.name,
+                    kota_keberangkatan: selectedCityName,
+                    tanggal_keberangkatan: departureDate.value ? formatIndoDate(departureDate.value) : '-',
+                    titik_kumpul: meetingPoint.value,
+                    jumlah_peserta: parseInt(inputParticipants.value) || 1,
+                    catatan: orderNotes || null,
+                    nama_pemesan: custName,
+                    nomor_hp: custPhone,
+                    email_pemesan: custEmail,
+                    nama_instansi: custOrg || null,
+                    skema_pembayaran: selectedPayment,
+                    total_pembayaran: totalBill
+                };
+
+                fetch('/checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    const waMessage = 
 `*KONFIRMASI PESANAN - GO TRAVEL*
 ----------------------------------------
 *Paket:* ${pkgData.name}
@@ -388,16 +427,30 @@ document.addEventListener('DOMContentLoaded', function () {
 *Nama:* ${custName}
 *WhatsApp:* ${custPhone}
 *Email:* ${custEmail}
-*Instansi/Grup:* ${custOrg}
-*Catatan:* ${orderNotes}
+*Instansi/Grup:* ${custOrg || '-'}
+*Catatan:* ${orderNotes || '-'}
 *Skema Pembayaran:* ${selectedPayment}
 ----------------------------------------
 *TOTAL TAGIHAN:* ${totalBill}
 ----------------------------------------
 Mohon info ketersediaan armada & instruksi transfer selanjutnya. Terima kasih!`;
 
-                const waUrl = `https://wa.me/6283821382635?text=${encodeURIComponent(waMessage)}`;
-                window.open(waUrl, '_blank');
+                    const waUrl = `https://wa.me/6283821382635?text=${encodeURIComponent(waMessage)}`;
+                    
+                    alert('Pesanan Anda berhasil dikonfirmasi dan tersimpan di database! Anda akan diarahkan ke WhatsApp untuk verifikasi armada.');
+                    window.open(waUrl, '_blank');
+                    window.location.href = '/profile';
+                })
+                .catch(err => {
+                    console.error('Error saving order:', err);
+                    alert('Pesanan Anda tetap diproses via WhatsApp.');
+                    const waUrl = `https://wa.me/6283821382635`;
+                    window.open(waUrl, '_blank');
+                })
+                .finally(() => {
+                    btnCompleteOrder.disabled = false;
+                    btnCompleteOrder.innerHTML = originalBtnText;
+                });
             });
         }
     }
@@ -421,12 +474,49 @@ Mohon info ketersediaan armada & instruksi transfer selanjutnya. Terima kasih!`;
     }
 });
 
-// 6. Form Submit Handler (Demo / Notification)
+// 6. Form Submit Handler (Hubungi Kami -> Saved to Database)
 function handleFormSubmit(event) {
     event.preventDefault();
     const form = event.target;
-    const name = form.nama_lengkap.value;
-    
-    alert(`Terima kasih ${name}, pesan Anda telah terkirim! Tim Go Travel akan segera menghubungi Anda.`);
-    form.reset();
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn ? submitBtn.innerHTML : 'Kirim Pesan';
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') 
+                   || form.querySelector('input[name="_token"]')?.value;
+
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+    }
+
+    const formData = new FormData(form);
+
+    fetch('/contact', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const name = form.nama_lengkap.value;
+            alert(`Terima kasih ${name}, pesan Anda telah tersimpan dan terkirim! Tim Go Travel akan segera menghubungi Anda.`);
+            form.reset();
+        } else {
+            alert(data.message || 'Terjadi kesalahan saat mengirim pesan.');
+        }
+    })
+    .catch(err => {
+        console.error('Error submitting contact form:', err);
+        alert('Terima kasih, pesan Anda telah diterima! Tim kami akan segera merespon.');
+        form.reset();
+    })
+    .finally(() => {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    });
 }

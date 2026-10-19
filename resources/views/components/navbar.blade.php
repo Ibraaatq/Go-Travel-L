@@ -56,32 +56,21 @@
                                 </span>
                             </div>
                         </div>
-<<<<<<< HEAD
                         @if((session('user.role') ?? 'user') === 'admin')
                             <a href="{{ url('/admin') }}" style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #0284c7; font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 8px; margin-top: 6px; transition: background 0.2s;" onmouseover="this.style.background='#f0f9ff'" onmouseout="this.style.background='transparent'">
                                 <i class="fa-solid fa-user-shield"></i>
-                                <span>Panel Admin (Full Control)</span>
+                                <span>Panel Admin</span>
                             </a>
-                            <a href="{{ url('/user-profile') }}" style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #ea580c; font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 8px; margin-top: 2px; transition: background 0.2s;" onmouseover="this.style.background='#fff2eb'" onmouseout="this.style.background='transparent'">
+                            <a href="{{ url('/profile') }}" style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #ea580c; font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 8px; margin-top: 2px; transition: background 0.2s;" onmouseover="this.style.background='#fff2eb'" onmouseout="this.style.background='transparent'">
                                 <i class="fa-solid fa-user"></i>
-                                <span>Tampilan Profil User</span>
+                                <span>Profil Saya</span>
                             </a>
                         @else
-                            <a href="{{ url('/user-profile') }}" style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #ea580c; font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 8px; margin-top: 6px; transition: background 0.2s;" onmouseover="this.style.background='#fff2eb'" onmouseout="this.style.background='transparent'">
+                            <a href="{{ url('/profile') }}" style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #ea580c; font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 8px; margin-top: 6px; transition: background 0.2s;" onmouseover="this.style.background='#fff2eb'" onmouseout="this.style.background='transparent'">
                                 <i class="fa-solid fa-user"></i>
-                                <span>Profil Saya (Read-Only)</span>
-                            </a>
-                            <a href="{{ url('/admin') }}" style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #0284c7; font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 8px; margin-top: 2px; transition: background 0.2s;" onmouseover="this.style.background='#f0f9ff'" onmouseout="this.style.background='transparent'">
-                                <i class="fa-solid fa-user-shield"></i>
-                                <span>Mode Admin</span>
+                                <span>Profil Saya</span>
                             </a>
                         @endif
-=======
-                        <a href="{{ url('/profile') }}" style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #ea580c; font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 8px; margin-top: 6px; transition: background 0.2s;" onmouseover="this.style.background='#fff2eb'" onmouseout="this.style.background='transparent'">
-                            <i class="{{ session('user.role') === 'user' ? 'fa-solid fa-clock-rotate-left' : 'fa-solid fa-gauge-high' }}"></i>
-                            <span>{{ session('user.role') === 'user' ? 'Riwayat Pemesanan' : 'Dashboard Profil' }}</span>
-                        </a>
->>>>>>> 6dc45091dc84ad6a296ef8bc7092af3dbcddf7fd
                         <a href="{{ url('/logout') }}" onclick="if(typeof openLogoutModal === 'function'){ event.preventDefault(); openLogoutModal(); }" style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #ef4444; font-size: 12.5px; font-weight: 600; text-decoration: none; border-radius: 8px; margin-top: 2px; transition: background 0.2s;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>
                             <span>Keluar (Logout)</span>
