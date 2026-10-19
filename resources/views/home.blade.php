@@ -79,177 +79,89 @@
         <h2 class="section-glass-header">Paket Wisata Populer</h2>
 
         <div class="packages-grid">
-            <!-- Package Card 1: Jogja -->
-            <div class="package-card">
-                <div class="package-image-container">
-                    <img src="{{ asset('images/jogja.jpg') }}" alt="Jogja Tour 2 Hari" class="package-image" loading="lazy">
+            @if(isset($popularPaket) && count($popularPaket) > 0)
+                @foreach($popularPaket as $item)
+                    <!-- Package Card: {{ $item['name'] }} -->
+                    <div class="package-card" data-slug="{{ $item['slug'] }}">
+                        <div class="package-image-container">
+                            <img src="{{ asset($item['image']) }}" alt="{{ $item['name'] }}" class="package-image" loading="lazy">
+                            <span class="package-tag-badge">{{ $item['location'] }}</span>
+                        </div>
+                        <div class="package-content">
+                            <div class="package-header-row">
+                                <h3 class="package-name" title="{{ $item['name'] }}">{{ $item['name'] }}</h3>
+                                <button class="wishlist-btn" type="button" aria-label="Simpan ke Wishlist" onclick="toggleWishlist(this, '{{ $item['slug'] }}')">
+                                    <i class="fa-regular fa-heart"></i>
+                                </button>
+                            </div>
+
+                            <div class="package-meta-row">
+                                <div class="meta-item">
+                                    <i class="fa-regular fa-clock"></i>
+                                    <span>{{ $item['duration'] }}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fa-solid fa-users"></i>
+                                    <span>{{ $item['max_people'] ?? 'Max 40 Orang' }}</span>
+                                </div>
+                            </div>
+
+                            <div class="package-price-section">
+                                <span class="price-caption">Mulai dari</span>
+                                <div class="price-amount-wrapper">
+                                    <span class="price-value">{{ $item['price'] }}</span>
+                                    <span class="price-unit">/orang</span>
+                                </div>
+                            </div>
+
+                            <div class="package-rating-stars">
+                                @for($i = 0; $i < floor($item['rating'] ?? 5); $i++)
+                                    <i class="fa-solid fa-star"></i>
+                                @endfor
+                                <span class="rating-text-score">({{ $item['rating'] ?? 5.0 }})</span>
+                            </div>
+
+                            <a href="{{ route('paket-wisata.show', $item['slug']) }}" class="btn-detail-pill">
+                                <span>Lihat Detail</span>
+                                <i class="fa-solid fa-arrow-right-long btn-detail-arrow"></i>
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <!-- Fallback jika belum di-passing -->
+                <div class="package-card">
+                    <div class="package-image-container">
+                        <img src="{{ asset('images/jogja.jpg') }}" alt="Jogja Tour 2 Hari" class="package-image" loading="lazy">
+                    </div>
+                    <div class="package-content">
+                        <div class="package-header-row">
+                            <h3 class="package-name">Jogja Tour 2 Hari</h3>
+                            <button class="wishlist-btn" type="button" aria-label="Simpan ke Wishlist">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="package-meta-row">
+                            <div class="meta-item"><i class="fa-regular fa-clock"></i><span>2 Hari</span></div>
+                            <div class="meta-item"><i class="fa-solid fa-users"></i><span>Max 40 Orang</span></div>
+                        </div>
+                        <div class="package-price-section">
+                            <span class="price-caption">Mulai dari</span>
+                            <div class="price-amount-wrapper">
+                                <span class="price-value">Rp.2.200.000</span>
+                                <span class="price-unit">/orang</span>
+                            </div>
+                        </div>
+                        <div class="package-rating-stars">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <a href="{{ url('/paket-wisata/jogja') }}" class="btn-detail-pill">
+                            <span>Lihat Detail</span>
+                            <i class="fa-solid fa-arrow-right-long btn-detail-arrow"></i>
+                        </a>
+                    </div>
                 </div>
-                <div class="package-content">
-                    <div class="package-header-row">
-                        <h3 class="package-name">Jogja Tour 2 Hari</h3>
-                        <button class="wishlist-btn" aria-label="Simpan ke Wishlist">
-                            <i class="fa-regular fa-heart"></i>
-                        </button>
-                    </div>
-
-                    <div class="package-meta-row">
-                        <div class="meta-item">
-                            <i class="fa-regular fa-clock"></i>
-                            <span>2 Hari</span>
-                        </div>
-                        <div class="meta-item">
-                            <i class="fa-solid fa-users"></i>
-                            <span>Max 40 Orang</span>
-                        </div>
-                    </div>
-
-                    <div class="package-price-section">
-                        <span class="price-caption">Mulai dari</span>
-                        <div class="price-amount-wrapper">
-                            <span class="price-value">Rp.700.000</span>
-                            <span class="price-unit">/orang</span>
-                        </div>
-                    </div>
-
-                    <div class="package-rating-stars">
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                    </div>
-
-                    <a href="#booking-form" class="btn-detail-pill">Lihat Detail</a>
-                </div>
-            </div>
-
-            <!-- Package Card 2: Bandung -->
-            <div class="package-card">
-                <div class="package-image-container">
-                    <img src="{{ asset('images/bandung.jpg') }}" alt="Bandung Tour 2 Hari" class="package-image" loading="lazy">
-                </div>
-                <div class="package-content">
-                    <div class="package-header-row">
-                        <h3 class="package-name">Bandung Tour 2 Hari</h3>
-                        <button class="wishlist-btn" aria-label="Simpan ke Wishlist">
-                            <i class="fa-regular fa-heart"></i>
-                        </button>
-                    </div>
-
-                    <div class="package-meta-row">
-                        <div class="meta-item">
-                            <i class="fa-regular fa-clock"></i>
-                            <span>2 Hari</span>
-                        </div>
-                        <div class="meta-item">
-                            <i class="fa-solid fa-users"></i>
-                            <span>Max 40 Orang</span>
-                        </div>
-                    </div>
-
-                    <div class="package-price-section">
-                        <span class="price-caption">Mulai dari</span>
-                        <div class="price-amount-wrapper">
-                            <span class="price-value">Rp.700.000</span>
-                            <span class="price-unit">/orang</span>
-                        </div>
-                    </div>
-
-                    <div class="package-rating-stars">
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                    </div>
-
-                    <a href="#booking-form" class="btn-detail-pill">Lihat Detail</a>
-                </div>
-            </div>
-
-            <!-- Package Card 3: Bali -->
-            <div class="package-card">
-                <div class="package-image-container">
-                    <img src="{{ asset('images/bali.jpg') }}" alt="Bali Tour 2 Hari" class="package-image" loading="lazy">
-                </div>
-                <div class="package-content">
-                    <div class="package-header-row">
-                        <h3 class="package-name">Bali Tour 2 Hari</h3>
-                        <button class="wishlist-btn" aria-label="Simpan ke Wishlist">
-                            <i class="fa-regular fa-heart"></i>
-                        </button>
-                    </div>
-
-                    <div class="package-meta-row">
-                        <div class="meta-item">
-                            <i class="fa-regular fa-clock"></i>
-                            <span>2 Hari</span>
-                        </div>
-                        <div class="meta-item">
-                            <i class="fa-solid fa-users"></i>
-                            <span>Max 40 Orang</span>
-                        </div>
-                    </div>
-
-                    <div class="package-price-section">
-                        <span class="price-caption">Mulai dari</span>
-                        <div class="price-amount-wrapper">
-                            <span class="price-value">Rp.700.000</span>
-                            <span class="price-unit">/orang</span>
-                        </div>
-                    </div>
-
-                    <div class="package-rating-stars">
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                    </div>
-
-                    <a href="#booking-form" class="btn-detail-pill">Lihat Detail</a>
-                </div>
-            </div>
-
-            <!-- Package Card 4: Lampung -->
-            <div class="package-card">
-                <div class="package-image-container">
-                    <img src="{{ asset('images/lampung.jpg') }}" alt="Lampung Tour 2 Hari" class="package-image" loading="lazy">
-                </div>
-                <div class="package-content">
-                    <div class="package-header-row">
-                        <h3 class="package-name">Lampung Tour 2 Hari</h3>
-                        <button class="wishlist-btn" aria-label="Simpan ke Wishlist">
-                            <i class="fa-regular fa-heart"></i>
-                        </button>
-                    </div>
-
-                    <div class="package-meta-row">
-                        <div class="meta-item">
-                            <i class="fa-regular fa-clock"></i>
-                            <span>2 Hari</span>
-                        </div>
-                        <div class="meta-item">
-                            <i class="fa-solid fa-users"></i>
-                            <span>Max 40 Orang</span>
-                        </div>
-                    </div>
-
-                    <div class="package-price-section">
-                        <span class="price-caption">Mulai dari</span>
-                        <div class="price-amount-wrapper">
-                            <span class="price-value">Rp.700.000</span>
-                            <span class="price-unit">/orang</span>
-                        </div>
-                    </div>
-
-                    <div class="package-rating-stars">
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                    </div>
-
-                    <a href="#booking-form" class="btn-detail-pill">Lihat Detail</a>
-                </div>
-            </div>
+            @endif
         </div>
     </section>
 

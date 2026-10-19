@@ -728,32 +728,98 @@ body.page-body::before {
 
 .package-rating-stars {
     display: flex;
-    gap: 2px;
+    align-items: center;
+    gap: 3px;
     color: #facc15;
     font-size: 11.5px;
     margin-bottom: 12px;
 }
 
+.rating-text-score {
+    color: var(--text-muted, #64748b);
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 3px;
+}
+
+.package-tag-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(15, 23, 42, 0.65);
+    color: #ffffff;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 9999px;
+    letter-spacing: 0.3px;
+    z-index: 2;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    transition: background 0.3s ease;
+}
+
+.package-card:hover .package-tag-badge {
+    background: rgba(234, 88, 12, 0.85);
+}
+
 .btn-detail-pill {
-    display: block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     width: 100%;
-    background: var(--primary-orange);
+    background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
     color: #ffffff;
     text-align: center;
     text-decoration: none;
-    padding: 8px 12px;
+    padding: 9px 16px;
     border-radius: 9999px;
     font-size: 13px;
-    font-weight: 600;
-    transition: all 0.2s ease;
-    box-shadow: 0 3px 10px rgba(234, 88, 12, 0.3);
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
     margin-top: auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-detail-pill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-detail-pill:hover::after {
+    left: 140%;
+}
+
+.btn-detail-arrow {
+    font-size: 12px;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-detail-pill:hover {
-    background: var(--primary-orange-hover);
-    transform: translateY(-1px);
-    box-shadow: 0 5px 14px rgba(234, 88, 12, 0.4);
+    background: linear-gradient(135deg, #c2410c 0%, #ea580c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(234, 88, 12, 0.5);
+    color: #ffffff;
+}
+
+.btn-detail-pill:hover .btn-detail-arrow {
+    transform: translateX(4px);
+}
+
+.btn-detail-pill:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(234, 88, 12, 0.35);
 }
 
 /* ==========================================================================
