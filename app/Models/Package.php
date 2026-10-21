@@ -75,6 +75,20 @@ class Package extends Model
         if (!$this->gambar) {
             return asset('images/jogja.jpg');
         }
+        if (str_starts_with($this->gambar, 'images/') || str_starts_with($this->gambar, 'http://') || str_starts_with($this->gambar, 'https://')) {
+            return asset($this->gambar);
+        }
         return asset('storage/' . $this->gambar);
+    }
+
+    /**
+     * Accessor: Format tampilan harga.
+     */
+    public function getFormattedHargaAttribute(): string
+    {
+        if (!empty($this->harga_display)) {
+            return $this->harga_display;
+        }
+        return 'Rp.' . number_format((float) ($this->harga ?? 0), 0, ',', '.');
     }
 }

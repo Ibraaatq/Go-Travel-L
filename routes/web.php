@@ -7,20 +7,14 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AdminController;
 
-Route::get('/', function () {
-    $allPaket = PaketWisataController::getPaketData();
-    // Ambil 4 paket populer utama (Jogja, Bandung, Bali, Lampung)
-    $popularSlugs = ['jogja', 'bandung', 'bali', 'lampung'];
-    $popularPaket = [];
-    foreach ($popularSlugs as $slug) {
-        if (isset($allPaket[$slug])) {
-            $popularPaket[] = $allPaket[$slug];
-        }
-    }
-    return view('home', compact('popularPaket'));
-});
+use App\Models\Package;
 
-Route::get('/destinasi', [DestinasiController::class, 'index'])->name('destinasi.index');
+Route::get('/', function () {
+    $popularPackages = Package::latest()->take(4)->get();
+    return view('home', compact('popularPackages'));
+})->name('home');
+
+Route::get('/destinasi', [DestinasiController::class, 'index'])->name('destinasi');
 Route::get('/destinasi/{slug}', [DestinasiController::class, 'show'])->name('destinasi.show');
 
 Route::get('/about', function () {
@@ -141,7 +135,7 @@ Route::get('/logout', function () {
     return redirect('/login')->with('success', 'Anda telah berhasil keluar.');
 })->name('logout');
 
-Route::get('/paket-wisata', [PaketWisataController::class, 'index'])->name('paket-wisata.index');
+Route::get('/paket-wisata', [PaketWisataController::class, 'index'])->name('paket-wisata');
 Route::get('/paket-wisata/{slug}', [PaketWisataController::class, 'show'])->name('paket-wisata.show');
 Route::get('/paket-wisata/detail/{slug}', [PaketWisataController::class, 'show'])->name('paket-wisata.detail');
 

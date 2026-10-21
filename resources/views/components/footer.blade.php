@@ -20,8 +20,8 @@
                 <h4>Menu Navigasi</h4>
                 <ul>
                     <li><a href="{{ url('/') }}">Beranda</a></li>
-                    <li><a href="#paket-wisata">Paket Wisata</a></li>
-                    <li><a href="#destinasi">Destinasi</a></li>
+                    <li><a href="{{ route('paket-wisata') }}">Paket Wisata</a></li>
+                    <li><a href="{{ route('destinasi') }}">Destinasi</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>

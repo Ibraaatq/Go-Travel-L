@@ -355,6 +355,15 @@
 @endsection
 
 @section('content')
+    @php
+        $countAll = $packages->count();
+        $countJawa = $packages->filter(fn($p) => str_contains(strtolower(($p->kategori ?? '') . ' ' . ($p->destinasi ?? '')), 'jawa'))->count();
+        $countBali = $packages->filter(fn($p) => str_contains(strtolower(($p->kategori ?? '') . ' ' . ($p->destinasi ?? '')), 'bali'))->count();
+        $countSumatera = $packages->filter(fn($p) => str_contains(strtolower(($p->kategori ?? '') . ' ' . ($p->destinasi ?? '')), 'sumatera') || str_contains(strtolower(($p->kategori ?? '') . ' ' . ($p->destinasi ?? '')), 'lampung'))->count();
+        $count1Hari = $packages->filter(fn($p) => str_contains(strtolower(($p->kategori ?? '') . ' ' . ($p->durasi ?? '')), '1hari') || str_contains(strtolower($p->durasi ?? ''), '1 hari'))->count();
+        $countMenginap = $packages->filter(fn($p) => str_contains(strtolower(($p->kategori ?? '') . ' ' . ($p->durasi ?? '')), 'menginap') || str_contains(strtolower($p->durasi ?? ''), 'malam') || str_contains(strtolower($p->durasi ?? ''), '2 hari') || str_contains(strtolower($p->durasi ?? ''), '3 hari') || str_contains(strtolower($p->durasi ?? ''), '4 hari') || str_contains(strtolower($p->durasi ?? ''), '5 hari'))->count();
+    @endphp
+
     <div class="home-container">
 
         <!-- ==================== HERO / HEADER SECTION ==================== -->
@@ -378,7 +387,7 @@
 
                 <div class="hero-action-buttons">
                     <a href="#daftar-paket" class="btn-hero-white">Lihat paket kami</a>
-                    <a href="{{ url('/#destinasi') }}" class="btn-hero-outline">Jelajahi Destinasi</a>
+                    <a href="{{ route('destinasi') }}" class="btn-hero-outline">Jelajahi Destinasi</a>
                 </div>
             </div>
         </section>
@@ -402,31 +411,31 @@
                     <div class="category-dropdown-menu" id="categoryDropdownMenu">
                         <a href="javascript:void(0)" class="dropdown-item active" data-category="all">
                             <span><i class="fa-solid fa-layer-group"></i> Semua Kategori</span>
-                            <span class="category-badge-count" data-count-for="all">24</span>
+                            <span class="category-badge-count" data-count-for="all">{{ $countAll }}</span>
                         </a>
                         <div class="dropdown-divider"></div>
                         <div class="dropdown-section-title">Destinasi</div>
                         <a href="javascript:void(0)" class="dropdown-item" data-category="jawa">
                             <span><i class="fa-solid fa-map-location-dot"></i> Wisata Jawa</span>
-                            <span class="category-badge-count" data-count-for="jawa">0</span>
+                            <span class="category-badge-count" data-count-for="jawa">{{ $countJawa }}</span>
                         </a>
                         <a href="javascript:void(0)" class="dropdown-item" data-category="bali">
                             <span><i class="fa-solid fa-umbrella-beach"></i> Wisata Bali</span>
-                            <span class="category-badge-count" data-count-for="bali">0</span>
+                            <span class="category-badge-count" data-count-for="bali">{{ $countBali }}</span>
                         </a>
                         <a href="javascript:void(0)" class="dropdown-item" data-category="sumatera">
                             <span><i class="fa-solid fa-mountain-sun"></i> Wisata Sumatera</span>
-                            <span class="category-badge-count" data-count-for="sumatera">0</span>
+                            <span class="category-badge-count" data-count-for="sumatera">{{ $countSumatera }}</span>
                         </a>
                         <div class="dropdown-divider"></div>
                         <div class="dropdown-section-title">Durasi</div>
                         <a href="javascript:void(0)" class="dropdown-item" data-category="1hari">
                             <span><i class="fa-regular fa-clock"></i> Wisata 1 Hari</span>
-                            <span class="category-badge-count" data-count-for="1hari">0</span>
+                            <span class="category-badge-count" data-count-for="1hari">{{ $count1Hari }}</span>
                         </a>
                         <a href="javascript:void(0)" class="dropdown-item" data-category="menginap">
                             <span><i class="fa-solid fa-hotel"></i> Wisata Menginap</span>
-                            <span class="category-badge-count" data-count-for="menginap">0</span>
+                            <span class="category-badge-count" data-count-for="menginap">{{ $countMenginap }}</span>
                         </a>
                     </div>
                 </div>
@@ -435,29 +444,29 @@
             <!-- Quick Filter Chips / Pills (Horizontal Scrollable & Interactive) -->
             <div class="quick-filter-chips" id="quickFilterChips">
                 <button type="button" class="filter-chip active" data-category="all">
-                    <i class="fa-solid fa-border-all"></i> Semua (<span class="chip-count" data-count-for="all">24</span>)
+                    <i class="fa-solid fa-border-all"></i> Semua (<span class="chip-count" data-count-for="all">{{ $countAll }}</span>)
                 </button>
                 <button type="button" class="filter-chip" data-category="jawa">
-                    <i class="fa-solid fa-map-pin"></i> Jawa (<span class="chip-count" data-count-for="jawa">0</span>)
+                    <i class="fa-solid fa-map-pin"></i> Jawa (<span class="chip-count" data-count-for="jawa">{{ $countJawa }}</span>)
                 </button>
                 <button type="button" class="filter-chip" data-category="bali">
-                    <i class="fa-solid fa-umbrella-beach"></i> Bali (<span class="chip-count" data-count-for="bali">0</span>)
+                    <i class="fa-solid fa-umbrella-beach"></i> Bali (<span class="chip-count" data-count-for="bali">{{ $countBali }}</span>)
                 </button>
                 <button type="button" class="filter-chip" data-category="sumatera">
-                    <i class="fa-solid fa-mountain"></i> Sumatera (<span class="chip-count" data-count-for="sumatera">0</span>)
+                    <i class="fa-solid fa-mountain"></i> Sumatera (<span class="chip-count" data-count-for="sumatera">{{ $countSumatera }}</span>)
                 </button>
                 <button type="button" class="filter-chip" data-category="1hari">
-                    <i class="fa-regular fa-sun"></i> 1 Hari (<span class="chip-count" data-count-for="1hari">0</span>)
+                    <i class="fa-regular fa-sun"></i> 1 Hari (<span class="chip-count" data-count-for="1hari">{{ $count1Hari }}</span>)
                 </button>
                 <button type="button" class="filter-chip" data-category="menginap">
-                    <i class="fa-solid fa-moon"></i> Menginap (<span class="chip-count" data-count-for="menginap">0</span>)
+                    <i class="fa-solid fa-moon"></i> Menginap (<span class="chip-count" data-count-for="menginap">{{ $countMenginap }}</span>)
                 </button>
             </div>
 
             <!-- Active Filter Status Indicator & Results Counter -->
             <div class="filter-status-row" id="filterStatusRow">
                 <div class="filter-results-info">
-                    Menampilkan <strong id="filterResultCount">24</strong> paket wisata
+                    Menampilkan <strong id="filterResultCount">{{ $countAll }}</strong> paket wisata
                     <span id="activeFilterBadge" class="active-filter-badge" style="display: none;">
                         <span id="activeFilterName">Kategori</span>
                         <button type="button" id="btnRemoveFilter" aria-label="Hapus filter">
@@ -472,29 +481,23 @@
         <section class="section-frosted-container paket-list-section">
             <div class="packages-grid paket-page-grid" id="paketGrid">
 
-                @php
-                    $packages = isset($allPackages) ? $allPackages : \App\Http\Controllers\PaketWisataController::getPaketData();
-                    $activePage = isset($currentPage) ? (int)$currentPage : 1;
-                @endphp
-
-                @foreach($packages as $key => $pkg)
+                @foreach($packages as $package)
                     <div class="package-card" 
-                         data-slug="{{ $pkg['slug'] }}"
-                         data-page="{{ $pkg['page'] ?? 1 }}" 
-                         data-title="{{ strtolower($pkg['name']) }} {{ strtolower($pkg['location']) }}" 
-                         data-category="{{ strtolower($pkg['category']) }}">
+                         data-slug="{{ $package->slug }}"
+                         data-title="{{ strtolower($package->nama_paket) }} {{ strtolower($package->destinasi) }}" 
+                         data-category="{{ strtolower($package->kategori) }}">
                         
                         <div class="package-image-container">
-                            <img src="{{ asset($pkg['image']) }}" 
-                                 alt="{{ $pkg['name'] }}"
+                            <img src="{{ $package->gambar_url }}" 
+                                 alt="{{ $package->nama_paket }}"
                                  class="package-image" 
                                  loading="lazy">
                         </div>
 
                         <div class="package-content">
                             <div class="package-header-row">
-                                <h3 class="package-name">{{ $pkg['name'] }}</h3>
-                                <button class="wishlist-btn" type="button" aria-label="Simpan ke Wishlist" data-slug="{{ $pkg['slug'] }}">
+                                <h3 class="package-name">{{ $package->nama_paket }}</h3>
+                                <button class="wishlist-btn" type="button" aria-label="Simpan ke Wishlist" data-slug="{{ $package->slug }}">
                                     <i class="fa-regular fa-heart"></i>
                                 </button>
                             </div>
@@ -502,33 +505,29 @@
                             <div class="package-meta-row">
                                 <div class="meta-item">
                                     <i class="fa-regular fa-clock"></i>
-                                    <span>{{ $pkg['duration'] }}</span>
+                                    <span>{{ $package->durasi }}</span>
                                 </div>
                                 <div class="meta-item">
                                     <i class="fa-solid fa-users"></i>
-                                    <span>{{ $pkg['max_people'] ?? 'Max 40 Orang' }}</span>
+                                    <span>Max 40 Orang</span>
                                 </div>
                             </div>
 
                             <div class="package-price-section">
                                 <span class="price-caption">Mulai dari</span>
                                 <div class="price-amount-wrapper">
-                                    <span class="price-value">{{ $pkg['price'] }}</span>
+                                    <span class="price-value">{{ $package->formatted_harga }}</span>
                                     <span class="price-unit">/orang</span>
                                 </div>
                             </div>
 
                             <div class="package-rating-stars">
-                                @php
-                                    $ratingCount = (isset($pkg['rating']) && $pkg['rating'] >= 5.0) ? 5 : (int)floor($pkg['rating'] ?? 5);
-                                    if ($ratingCount < 4) $ratingCount = 4;
-                                @endphp
-                                @for($i = 0; $i < $ratingCount; $i++)
+                                @for($i = 0; $i < 5; $i++)
                                     <i class="fa-solid fa-star"></i>
                                 @endfor
                             </div>
 
-                            <a href="{{ url('/paket-wisata/' . $pkg['slug']) }}" class="btn-detail-pill">Lihat Detail</a>
+                            <a href="{{ url('/paket-wisata/' . $package->slug) }}" class="btn-detail-pill">Lihat Detail</a>
                         </div>
                     </div>
                 @endforeach
@@ -548,16 +547,9 @@
             </div>
         </section>
 
-        <!-- ==================== PAGINATION ==================== -->
-        <div class="paket-pagination" id="paketPagination">
-            <a href="javascript:void(0)" class="page-num {{ $activePage == 1 ? 'active' : '' }}" data-page="1">1</a>
-            <a href="javascript:void(0)" class="page-num {{ $activePage == 2 ? 'active' : '' }}" data-page="2">2</a>
-            <a href="javascript:void(0)" class="page-num {{ $activePage == 3 ? 'active' : '' }}" data-page="3">3</a>
-        </div>
-
     </div>
 
-    <!-- ==================== SCRIPT FILTER, SEARCH, PAGINASI INTERAKTIF ==================== -->
+    <!-- ==================== SCRIPT FILTER, SEARCH, INTERAKTIF ==================== -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('paketSearchInput');
@@ -568,8 +560,6 @@
             const selectedCategoryLabel = document.getElementById('selectedCategoryLabel');
             const filterChips = document.querySelectorAll('.filter-chip');
             const cards = document.querySelectorAll('.package-card');
-            const paginationContainer = document.getElementById('paketPagination');
-            const pageButtons = document.querySelectorAll('.paket-pagination .page-num');
             const noMsg = document.getElementById('noPaketMessage');
             const btnReset = document.getElementById('btnResetFilter');
             const filterResultCount = document.getElementById('filterResultCount');
@@ -617,11 +607,6 @@
             }
 
             updateCategoryCounts();
-
-            // Baca page awal dari URL atau attribute server
-            const urlParams = new URLSearchParams(window.location.search);
-            let currentPage = parseInt(urlParams.get('page')) || {{ $activePage }};
-            if (currentPage < 1 || currentPage > 3) currentPage = 1;
 
             let currentCategory = 'all';
             let searchQuery = '';
@@ -675,9 +660,7 @@
                     if (categoryBtn) categoryBtn.setAttribute('aria-expanded', 'false');
                 }
 
-                // Reset page ke 1
-                currentPage = 1;
-                applyFilterAndPagination();
+                applyFilter();
             }
 
             // Klik item kategori di Dropdown
@@ -720,8 +703,7 @@
 
                     clearTimeout(searchTimeout);
                     searchTimeout = setTimeout(() => {
-                        currentPage = 1;
-                        applyFilterAndPagination();
+                        applyFilter();
                     }, 120);
                 });
             }
@@ -734,8 +716,7 @@
                         searchQuery = '';
                         this.style.display = 'none';
                         searchInput.focus();
-                        currentPage = 1;
-                        applyFilterAndPagination();
+                        applyFilter();
                     }
                 });
             }
@@ -750,39 +731,20 @@
                 });
             }
 
-            // Klik Tombol Paginasi
-            pageButtons.forEach(btn => {
-                btn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const targetPage = parseInt(this.getAttribute('data-page'));
-                    if (targetPage && targetPage !== currentPage) {
-                        currentPage = targetPage;
-                        applyFilterAndPagination(true);
-
-                        // Smooth scroll ke daftar paket
-                        const targetElem = document.getElementById('daftar-paket');
-                        if (targetElem) {
-                            targetElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
-                    }
-                });
-            });
-
-            // Fungsi Utama Filter dan Paginasi
-            function applyFilterAndPagination(shouldScroll = false) {
+            // Fungsi Utama Filter (Seluruh paket tampil dalam satu halaman dengan scroll biasa)
+            function applyFilter() {
                 let matchingCards = [];
 
                 // 1. Saring kartu berdasarkan pencarian & kategori
                 cards.forEach(card => {
                     const cardTitle = card.getAttribute('data-title') || '';
                     const cardCategory = card.getAttribute('data-category') || '';
-                    const cardPage = parseInt(card.getAttribute('data-page')) || 1;
 
                     let matchCat = (currentCategory === 'all') || cardCategory.includes(currentCategory);
                     let matchSearch = (searchQuery === '') || cardTitle.includes(searchQuery);
 
                     if (matchCat && matchSearch) {
-                        matchingCards.push({ elem: card, originalPage: cardPage });
+                        matchingCards.push(card);
                     }
                 });
 
@@ -791,62 +753,22 @@
                     filterResultCount.textContent = matchingCards.length;
                 }
 
-                // 2. Cek apakah sedang dalam mode filter atau default
-                const isFilteredMode = (currentCategory !== 'all' || searchQuery !== '');
+                // Sembunyikan semua kartu terlebih dahulu
+                cards.forEach(card => {
+                    card.classList.add('page-hidden');
+                    card.classList.remove('fade-in');
+                });
 
-                if (isFilteredMode) {
-                    // Sembunyikan semua kartu terlebih dahulu
-                    cards.forEach(card => {
-                        card.classList.add('page-hidden');
-                        card.classList.remove('fade-in');
-                    });
-
-                    if (matchingCards.length === 0) {
-                        if (noMsg) noMsg.style.display = 'block';
-                        if (paginationContainer) paginationContainer.style.display = 'none';
-                    } else {
-                        if (noMsg) noMsg.style.display = 'none';
-                        if (paginationContainer) paginationContainer.style.display = 'none';
-
-                        matchingCards.forEach((item, index) => {
-                            item.elem.classList.remove('page-hidden');
-                            item.elem.classList.add('fade-in');
-                            // Stagger animasi halus
-                            item.elem.style.animationDelay = `${Math.min(index * 0.04, 0.4)}s`;
-                        });
-                    }
+                if (matchingCards.length === 0) {
+                    if (noMsg) noMsg.style.display = 'block';
                 } else {
-                    // Mode Standar (Paginasi halaman 1, 2, atau 3)
                     if (noMsg) noMsg.style.display = 'none';
-                    if (paginationContainer) paginationContainer.style.display = 'flex';
 
-                    cards.forEach((card, index) => {
-                        const pageNum = parseInt(card.getAttribute('data-page')) || 1;
-                        if (pageNum === currentPage) {
-                            card.classList.remove('page-hidden');
-                            card.classList.add('fade-in');
-                            card.style.animationDelay = `${(index % 8) * 0.04}s`;
-                        } else {
-                            card.classList.add('page-hidden');
-                            card.classList.remove('fade-in');
-                            card.style.animationDelay = '0s';
-                        }
+                    matchingCards.forEach((card, index) => {
+                        card.classList.remove('page-hidden');
+                        card.classList.add('fade-in');
+                        card.style.animationDelay = `${Math.min(index * 0.03, 0.3)}s`;
                     });
-
-                    // Update tombol aktif pagination
-                    pageButtons.forEach(btn => {
-                        const p = parseInt(btn.getAttribute('data-page'));
-                        btn.classList.toggle('active', p === currentPage);
-                    });
-
-                    // Update URL browser tanpa reload
-                    const newUrl = new URL(window.location);
-                    if (currentPage === 1) {
-                        newUrl.searchParams.delete('page');
-                    } else {
-                        newUrl.searchParams.set('page', currentPage);
-                    }
-                    window.history.replaceState({ page: currentPage }, '', newUrl);
                 }
             }
 
@@ -868,8 +790,8 @@
                 });
             });
 
-            // Inisialisasi awal
-            applyFilterAndPagination();
+            // Inisialisasi awal: tampilkan seluruh paket
+            applyFilter();
         });
     </script>
 @endsection

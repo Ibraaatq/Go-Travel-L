@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\PaketWisataController;
+use App\Models\Package;
 
 class DestinasiController extends Controller
 {
@@ -102,7 +103,11 @@ class DestinasiController extends Controller
     public function index()
     {
         $destinasiList = self::getDestinasiData();
-        return view('destinasi', compact('destinasiList'));
+        $packages = Package::where('is_active', true)->get();
+        if ($packages->isEmpty()) {
+            $packages = Package::all();
+        }
+        return view('destinasi', compact('destinasiList', 'packages'));
     }
 
     /**
@@ -117,12 +122,36 @@ class DestinasiController extends Controller
             abort(404);
         }
 
-        $allPackages = PaketWisataController::getPaketData();
-        $packages = [];
+        // Ambil paket dari MySQL yang cocok dengan nama destinasi atau slug paket
+        $dbPackages = Package::where('is_active', true)
+            ->where(function ($q) use ($destinasi) {
+                $q->where('destinasi', 'like', '%' . $destinasi['name'] . '%')
+                  ->orWhereIn('slug', $destinasi['package_slugs'] ?? []);
+            })->get();
 
-        foreach ($destinasi['package_slugs'] as $pkgSlug) {
-            if (isset($allPackages[$pkgSlug])) {
-                $packages[] = $allPackages[$pkgSlug];
+        if ($dbPackages->isNotEmpty()) {
+            $packages = [];
+            foreach ($dbPackages as $dbPkg) {
+                $packages[] = [
+                    'slug' => $dbPkg->slug,
+                    'name' => $dbPkg->nama_paket,
+                    'price' => $dbPkg->harga_display ?: ('Rp.' . number_format($dbPkg->harga, 0, ',', '.')),
+                    'duration' => $dbPkg->durasi,
+                    'max_people' => 'Max 40 Orang',
+                    'location' => $dbPkg->destinasi,
+                    'rating' => 4.9,
+                    'image' => $dbPkg->gambar ? (str_starts_with($dbPkg->gambar, 'images/') ? $dbPkg->gambar : 'storage/' . $dbPkg->gambar) : 'images/jogja.jpg',
+                    'category' => $dbPkg->kategori,
+                ];
+            }
+        } else {
+            $allPackages = PaketWisataController::getPaketData();
+            $packages = [];
+
+            foreach ($destinasi['package_slugs'] as $pkgSlug) {
+                if (isset($allPackages[$pkgSlug])) {
+                    $packages[] = $allPackages[$pkgSlug];
+                }
             }
         }
 

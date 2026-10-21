@@ -17,8 +17,8 @@
             </p>
 
             <div class="hero-action-buttons">
-                <a href="#paket-wisata" class="btn-hero-translucent">Lihat Paket Wisata</a>
-                <a href="#destinasi" class="btn-hero-outline">Jelajahi Destinasi</a>
+                <a href="{{ route('paket-wisata') }}" class="btn-hero-translucent">Lihat Paket Wisata</a>
+                <a href="{{ route('destinasi') }}" class="btn-hero-outline">Jelajahi Destinasi</a>
             </div>
         </div>
     </section>
@@ -79,18 +79,18 @@
         <h2 class="section-glass-header">Paket Wisata Populer</h2>
 
         <div class="packages-grid">
-            @if(isset($popularPaket) && count($popularPaket) > 0)
-                @foreach($popularPaket as $item)
-                    <!-- Package Card: {{ $item['name'] }} -->
-                    <div class="package-card" data-slug="{{ $item['slug'] }}">
+            @if(isset($popularPackages) && count($popularPackages) > 0)
+                @foreach($popularPackages as $package)
+                    <!-- Package Card: {{ $package->nama_paket }} -->
+                    <div class="package-card" data-slug="{{ $package->slug }}">
                         <div class="package-image-container">
-                            <img src="{{ asset($item['image']) }}" alt="{{ $item['name'] }}" class="package-image" loading="lazy">
-                            <span class="package-tag-badge">{{ $item['location'] }}</span>
+                            <img src="{{ $package->gambar_url }}" alt="{{ $package->nama_paket }}" class="package-image" loading="lazy">
+                            <span class="package-tag-badge">{{ $package->destinasi }}</span>
                         </div>
                         <div class="package-content">
                             <div class="package-header-row">
-                                <h3 class="package-name" title="{{ $item['name'] }}">{{ $item['name'] }}</h3>
-                                <button class="wishlist-btn" type="button" aria-label="Simpan ke Wishlist" onclick="toggleWishlist(this, '{{ $item['slug'] }}')">
+                                <h3 class="package-name" title="{{ $package->nama_paket }}">{{ $package->nama_paket }}</h3>
+                                <button class="wishlist-btn" type="button" aria-label="Simpan ke Wishlist" onclick="toggleWishlist(this, '{{ $package->slug }}')">
                                     <i class="fa-regular fa-heart"></i>
                                 </button>
                             </div>
@@ -98,30 +98,30 @@
                             <div class="package-meta-row">
                                 <div class="meta-item">
                                     <i class="fa-regular fa-clock"></i>
-                                    <span>{{ $item['duration'] }}</span>
+                                    <span>{{ $package->durasi }}</span>
                                 </div>
                                 <div class="meta-item">
                                     <i class="fa-solid fa-users"></i>
-                                    <span>{{ $item['max_people'] ?? 'Max 40 Orang' }}</span>
+                                    <span>Max 40 Orang</span>
                                 </div>
                             </div>
 
                             <div class="package-price-section">
                                 <span class="price-caption">Mulai dari</span>
                                 <div class="price-amount-wrapper">
-                                    <span class="price-value">{{ $item['price'] }}</span>
+                                    <span class="price-value">{{ $package->formatted_harga }}</span>
                                     <span class="price-unit">/orang</span>
                                 </div>
                             </div>
 
                             <div class="package-rating-stars">
-                                @for($i = 0; $i < floor($item['rating'] ?? 5); $i++)
+                                @for($i = 0; $i < 5; $i++)
                                     <i class="fa-solid fa-star"></i>
                                 @endfor
-                                <span class="rating-text-score">({{ $item['rating'] ?? 5.0 }})</span>
+                                <span class="rating-text-score">(5.0)</span>
                             </div>
 
-                            <a href="{{ route('paket-wisata.show', $item['slug']) }}" class="btn-detail-pill">
+                            <a href="{{ route('paket-wisata.show', $package->slug) }}" class="btn-detail-pill">
                                 <span>Lihat Detail</span>
                                 <i class="fa-solid fa-arrow-right-long btn-detail-arrow"></i>
                             </a>
@@ -129,37 +129,8 @@
                     </div>
                 @endforeach
             @else
-                <!-- Fallback jika belum di-passing -->
-                <div class="package-card">
-                    <div class="package-image-container">
-                        <img src="{{ asset('images/jogja.jpg') }}" alt="Jogja Tour 2 Hari" class="package-image" loading="lazy">
-                    </div>
-                    <div class="package-content">
-                        <div class="package-header-row">
-                            <h3 class="package-name">Jogja Tour 2 Hari</h3>
-                            <button class="wishlist-btn" type="button" aria-label="Simpan ke Wishlist">
-                                <i class="fa-regular fa-heart"></i>
-                            </button>
-                        </div>
-                        <div class="package-meta-row">
-                            <div class="meta-item"><i class="fa-regular fa-clock"></i><span>2 Hari</span></div>
-                            <div class="meta-item"><i class="fa-solid fa-users"></i><span>Max 40 Orang</span></div>
-                        </div>
-                        <div class="package-price-section">
-                            <span class="price-caption">Mulai dari</span>
-                            <div class="price-amount-wrapper">
-                                <span class="price-value">Rp.2.200.000</span>
-                                <span class="price-unit">/orang</span>
-                            </div>
-                        </div>
-                        <div class="package-rating-stars">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                        </div>
-                        <a href="{{ url('/paket-wisata/jogja') }}" class="btn-detail-pill">
-                            <span>Lihat Detail</span>
-                            <i class="fa-solid fa-arrow-right-long btn-detail-arrow"></i>
-                        </a>
-                    </div>
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #fff;">
+                    <p>Belum ada paket wisata yang tersedia.</p>
                 </div>
             @endif
         </div>

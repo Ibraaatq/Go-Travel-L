@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Package;
 
 class PaketWisataController extends Controller
 {
@@ -1691,17 +1692,14 @@ class PaketWisataController extends Controller
     }
 
     /**
-     * Halaman index paket wisata (Mendukung query ?page=1, ?page=2, ?page=3 atau paginasi dynamic)
+    /**
+     * Halaman index paket wisata dari database MySQL
      */
     public function index(Request $request)
     {
-        $allPackages = self::getPaketData();
-        $currentPage = (int) $request->query('page', 1);
-        if ($currentPage < 1 || $currentPage > 3) {
-            $currentPage = 1;
-        }
+        $packages = Package::all();
 
-        return view('paket-wisata', compact('allPackages', 'currentPage'));
+        return view('paket-wisata', compact('packages'));
     }
 
     /**
@@ -1709,6 +1707,56 @@ class PaketWisataController extends Controller
      */
     public function show($slug)
     {
+        $dbPackage = Package::where('slug', $slug)->first();
+        if ($dbPackage) {
+            $allPackages = self::getPaketData();
+            $staticPaket = $allPackages[$slug] ?? null;
+
+            $paket = [
+                'slug' => $dbPackage->slug,
+                'name' => $dbPackage->nama_paket,
+                'price' => $dbPackage->harga_display ?: ('Rp.' . number_format($dbPackage->harga, 0, ',', '.')),
+                'price_raw' => (int) $dbPackage->harga,
+                'duration' => $dbPackage->durasi,
+                'max_people' => $staticPaket['max_people'] ?? 'Max 40 Orang',
+                'location' => $dbPackage->destinasi,
+                'rating' => $staticPaket['rating'] ?? 4.9,
+                'reviews_count' => $staticPaket['reviews_count'] ?? 120,
+                'image' => $dbPackage->gambar ? (str_starts_with($dbPackage->gambar, 'images/') ? $dbPackage->gambar : 'storage/' . $dbPackage->gambar) : 'images/jogja.jpg',
+                'category' => $dbPackage->kategori,
+                'description' => $dbPackage->deskripsi,
+                'highlights' => $staticPaket['highlights'] ?? ['Destinasi Populer Terbaik', 'Pemandangan Memukau', 'Kuliner Khas Lokal', 'Wisata Belanja & Oleh-oleh'],
+                'facilities' => $staticPaket['facilities'] ?? [
+                    ['icon' => 'fa-solid fa-bus', 'title' => 'Bus Pariwisata AC', 'desc' => 'Armada nyaman & bersih'],
+                    ['icon' => 'fa-solid fa-user-tie', 'title' => 'Driver & Tour Leader', 'desc' => 'Ramah & profesional'],
+                    ['icon' => 'fa-solid fa-ticket', 'title' => 'Tiket Masuk Wisata', 'desc' => 'Semua destinasi utama'],
+                    ['icon' => 'fa-solid fa-utensils', 'title' => 'Makan & Air Mineral', 'desc' => $dbPackage->makan ?: 'Makan Sesuai Jadwal'],
+                ],
+                'inclusions' => $staticPaket['inclusions'] ?? [
+                    'Bus Pariwisata Executive AC (Reclining Seat, Audio, TV)',
+                    'Tiket masuk seluruh destinasi wisata yang tertera',
+                    $dbPackage->makan ?: 'Makan & Snack sesuai program',
+                    'Air Mineral botol per peserta',
+                    'BBM, Biaya Tol, dan Parkir bus',
+                    'Driver berpengalaman & Tour Leader',
+                    'P3K Standar Perjalanan',
+                ],
+                'exclusions' => $staticPaket['exclusions'] ?? [
+                    'Pengeluaran pribadi (oleh-oleh, belanja pribadi)',
+                    'Tiket wahana tambahan di luar paket',
+                    'Tips sukarela untuk Driver & Crew',
+                ],
+                'important_info' => $staticPaket['important_info'] ?? [
+                    'Membawa pakaian yang nyaman dan sesuai dengan destinasi wisata.',
+                    'Dianjurkan membawa obat-obatan pribadi jika memiliki riwayat tertentu.',
+                    'Waktu berkumpul di titik temu maksimal 15 menit sebelum keberangkatan.',
+                ],
+                'itinerary' => $dbPackage->itinerary ?: ($staticPaket['itinerary'] ?? []),
+            ];
+
+            return view('detail-paket', compact('paket'));
+        }
+
         $allPackages = self::getPaketData();
 
         $paket = $allPackages[$slug] ?? null;
@@ -1751,6 +1799,31 @@ class PaketWisataController extends Controller
      */
     public function checkout($slug)
     {
+        $dbPackage = Package::where('slug', $slug)->first();
+        if ($dbPackage) {
+            $allPackages = self::getPaketData();
+            $staticPaket = $allPackages[$slug] ?? null;
+
+            $paket = [
+                'slug' => $dbPackage->slug,
+                'name' => $dbPackage->nama_paket,
+                'price' => $dbPackage->harga_display ?: ('Rp.' . number_format($dbPackage->harga, 0, ',', '.')),
+                'price_raw' => (int) $dbPackage->harga,
+                'duration' => $dbPackage->durasi,
+                'max_people' => $staticPaket['max_people'] ?? 'Max 40 Orang',
+                'location' => $dbPackage->destinasi,
+                'rating' => $staticPaket['rating'] ?? 4.9,
+                'reviews_count' => $staticPaket['reviews_count'] ?? 120,
+                'image' => $dbPackage->gambar ? (str_starts_with($dbPackage->gambar, 'images/') ? $dbPackage->gambar : 'storage/' . $dbPackage->gambar) : 'images/jogja.jpg',
+                'category' => $dbPackage->kategori,
+                'description' => $dbPackage->deskripsi,
+                'hotel_info' => 'Hotel Bintang 3',
+                'meal_info' => $dbPackage->makan ?: 'Makan Sesuai Program',
+            ];
+            $departureCities = self::getDepartureCities();
+            return view('checkout', compact('paket', 'departureCities'));
+        }
+
         $allPackages = self::getPaketData();
 
         $paket = $allPackages[$slug] ?? null;
