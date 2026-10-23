@@ -2,166 +2,99 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
-use App\Models\Package;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Models\Package;
+use App\Models\Order;
+use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
     /**
-     * Tampilkan dashboard admin dengan data Orders, Packages, dan Users dari MySQL.
+     * Halaman Dashboard Admin
      */
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $orders = Order::latest()->get();
-            $totalOrders    = $orders->count();
-            $completedOrders = $orders->filter(function ($o) {
-                return in_array(strtolower($o->status), ['selesai', 'disetujui']);
-            })->count();
-            $pendingOrders = $orders->filter(function ($o) {
-                return in_array(strtolower($o->status), ['dipending', 'pending']);
-            })->count();
-        } catch (\Throwable $e) {
-            $orders          = collect();
-            $totalOrders     = 0;
-            $completedOrders = 0;
-            $pendingOrders   = 0;
-        }
+        $packages = Package::all();
+        $orders = Order::latest()->get();
+        $users = User::all();
 
-        try {
-            $packages = Package::latest()->get();
-        } catch (\Throwable $e) {
-            $packages = collect();
-        }
-
-        try {
-            $users = User::latest()->get();
-        } catch (\Throwable $e) {
-            $users = collect();
-        }
+        $totalOrders = $orders->count();
+        $completedOrders = $orders->whereIn('status', ['Selesai', 'selesai', 'disetujui', 'Disetujui'])->count();
+        $pendingOrders = $orders->whereIn('status', ['Menunggu', 'menunggu', 'pending', 'Pending'])->count();
+        $totalRevenue = $orders->whereIn('status', ['Selesai', 'selesai', 'disetujui', 'Disetujui'])->sum('total_pembayaran');
 
         return view('admin', compact(
-            'orders',
-            'totalOrders',
-            'completedOrders',
-            'pendingOrders',
-            'packages',
-            'users'
+            'packages', 
+            'orders', 
+            'users', 
+            'totalOrders', 
+            'completedOrders', 
+            'pendingOrders', 
+            'totalRevenue'
         ));
     }
 
     /**
-     * Simpan paket wisata baru ke database MySQL.
-     * Route: POST /admin/packages
+     * Tambah Paket Wisata Baru ke Database
      */
     public function storePackage(Request $request)
     {
-        // Validasi input
         $request->validate([
-            'nama_paket'  => 'required|string|max:255',
-            'harga'       => 'required|string|max:100',
-            'destinasi'   => 'required|string|max:100',
-            'kategori'    => 'required|string|max:100',
-            'durasi'      => 'required|string|max:100',
-            'makan'       => 'nullable|string|max:255',
-            'deskripsi'   => 'nullable|string',
-            'gambar'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'itinerary'   => 'nullable|string', // JSON string dari JS
-        ], [
-            'nama_paket.required' => 'Nama paket wisata wajib diisi.',
-            'harga.required'      => 'Harga paket wajib diisi.',
-            'destinasi.required'  => 'Destinasi wajib dipilih.',
-            'kategori.required'   => 'Kategori paket wajib dipilih.',
-            'durasi.required'     => 'Durasi wajib diisi.',
-            'gambar.image'        => 'File gambar harus berformat JPG, PNG, atau WEBP.',
-            'gambar.max'          => 'Ukuran gambar maksimal 2MB.',
+            'nama_paket' => 'required|string|max:255',
+            'harga' => 'required|numeric',
+            'durasi' => 'required|string',
+            'destinasi' => 'required|string',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        // --- Normalkan harga ---
-        $hargaRaw     = $request->input('harga', '0');
-        $hargaDisplay = $hargaRaw;
-        // Hapus prefix "Rp", "Rp.", titik sebagai pemisah ribuan, lalu simpan angka
-        $hargaNumeric = preg_replace('/[^0-9]/', '', $hargaRaw);
-        $hargaNumeric = $hargaNumeric ?: 0;
+        $baseSlug = Str::slug($request->nama_paket);
+        $slug = $baseSlug;
 
-        // Buat format display yang rapi
-        if (!Str::startsWith(strtolower($hargaDisplay), 'rp')) {
-            $hargaDisplay = 'Rp. ' . number_format((int) $hargaNumeric, 0, ',', '.');
+        // Cegah error Duplicate Entry Slug dengan memberi penanda unik jika sudah ada
+        if (Package::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . time();
         }
 
-        // --- Proses upload gambar ---
-        $gambarPath = null;
-        if ($request->hasFile('gambar') && $request->file('gambar')->isValid()) {
-            // Simpan ke storage/app/public/packages/
-            $gambarPath = $request->file('gambar')->store('packages', 'public');
+        // Upload Gambar
+        $gambarPath = 'images/jogja.jpg';
+        if ($request->hasFile('gambar')) {
+            $path = $request->file('gambar')->store('packages', 'public');
+            $gambarPath = 'storage/' . $path;
         }
 
-        // --- Parse itinerary JSON ---
-        $itinerary = null;
-        if ($request->filled('itinerary')) {
-            $decoded = json_decode($request->input('itinerary'), true);
-            $itinerary = is_array($decoded) ? $decoded : null;
-        }
-
-        // --- Generate slug unik ---
-        $baseSlug = Str::slug($request->input('nama_paket'));
-        $slug     = $baseSlug ?: 'paket-' . now()->timestamp;
-        // Pastikan slug unik
-        $count = 1;
-        while (Package::where('slug', $slug)->exists()) {
-            $slug = $baseSlug . '-' . $count++;
-        }
-
-        // --- Simpan ke database ---
-        $userSession = session('user');
-        $userId      = $userSession['id'] ?? null;
-
-        $package = Package::create([
-            'nama_paket'   => $request->input('nama_paket'),
-            'slug'         => $slug,
-            'destinasi'    => $request->input('destinasi'),
-            'kategori'     => $request->input('kategori'),
-            'durasi'       => $request->input('durasi'),
-            'makan'        => $request->input('makan'),
-            'deskripsi'    => $request->input('deskripsi'),
-            'harga'        => $hargaNumeric,
-            'harga_display'=> $hargaDisplay,
-            'gambar'       => $gambarPath,
-            'itinerary'    => $itinerary,
-            'is_active'    => true,
-            'created_by'   => $userId,
+        Package::create([
+            'nama_paket' => $request->nama_paket,
+            'slug' => $slug,
+            'harga' => $request->harga,
+            'harga_display' => 'Rp.' . number_format($request->harga, 0, ',', '.'),
+            'durasi' => $request->durasi,
+            'destinasi' => $request->destinasi,
+            'kategori' => $request->kategori ?? 'jawa',
+            'makan' => $request->makan ?? 'Makan Sesuai Program',
+            'deskripsi' => $request->deskripsi ?? 'Deskripsi paket wisata.',
+            'gambar' => $gambarPath,
+            'itinerary' => $request->itinerary ?? [],
         ]);
 
-        return redirect()->route('admin')
-            ->with('success', "Paket wisata \"{$package->nama_paket}\" berhasil disimpan ke database!");
+        return redirect()->back()->with('success', 'Paket wisata berhasil ditambahkan!');
     }
 
     /**
-     * Hapus paket wisata dari database.
-     * Route: DELETE /admin/packages/{id}
+     * Hapus Paket Wisata
      */
-    public function destroyPackage(int $id)
+    public function destroyPackage($id)
     {
-        try {
-            $package = Package::findOrFail($id);
-            $nama    = $package->nama_paket;
-
-            // Hapus file gambar dari storage jika ada
-            if ($package->gambar) {
-                Storage::disk('public')->delete($package->gambar);
-            }
-
-            $package->delete();
-
-            return redirect()->route('admin')
-                ->with('success', "Paket wisata \"{$nama}\" berhasil dihapus.");
-        } catch (\Throwable $e) {
-            return redirect()->route('admin')
-                ->with('error', 'Gagal menghapus paket wisata.');
+        $package = Package::findOrFail($id);
+        
+        if ($package->gambar && str_starts_with($package->gambar, 'storage/packages/')) {
+            $relativePath = str_replace('storage/', '', $package->gambar);
+            Storage::disk('public')->delete($relativePath);
         }
+
+        $package->delete();
+
+        return redirect()->back()->with('success', 'Paket wisata berhasil dihapus!');
     }
 }
