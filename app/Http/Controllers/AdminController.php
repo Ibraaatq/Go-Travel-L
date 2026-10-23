@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Package;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -11,7 +12,7 @@ use Illuminate\Support\Str;
 class AdminController extends Controller
 {
     /**
-     * Tampilkan dashboard admin dengan data Orders dan Packages dari MySQL.
+     * Tampilkan dashboard admin dengan data Orders, Packages, dan Users dari MySQL.
      */
     public function index()
     {
@@ -37,12 +38,19 @@ class AdminController extends Controller
             $packages = collect();
         }
 
+        try {
+            $users = User::latest()->get();
+        } catch (\Throwable $e) {
+            $users = collect();
+        }
+
         return view('admin', compact(
             'orders',
             'totalOrders',
             'completedOrders',
             'pendingOrders',
-            'packages'
+            'packages',
+            'users'
         ));
     }
 

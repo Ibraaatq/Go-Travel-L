@@ -189,6 +189,13 @@ Route::middleware('admin')->group(function () {
     // Packages CRUD
     Route::post('/admin/packages', [AdminController::class, 'storePackage'])->name('admin.packages.store');
     Route::delete('/admin/packages/{id}', [AdminController::class, 'destroyPackage'])->name('admin.packages.destroy');
+
+    // Users Management CRUD
+    Route::get('/admin/users', [\App\Http\Controllers\AdminUserController::class, 'index'])->name('admin.users.index');
+    Route::post('/admin/users', [\App\Http\Controllers\AdminUserController::class, 'store'])->name('admin.users.store');
+    Route::put('/admin/users/{id}', [\App\Http\Controllers\AdminUserController::class, 'update'])->name('admin.users.update');
+    Route::patch('/admin/users/{id}/role', [\App\Http\Controllers\AdminUserController::class, 'updateRole'])->name('admin.users.updateRole');
+    Route::delete('/admin/users/{id}', [\App\Http\Controllers\AdminUserController::class, 'destroy'])->name('admin.users.destroy');
 });
 
 // ---- Route: /dashboard (alias /profile) ----

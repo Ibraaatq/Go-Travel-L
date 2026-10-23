@@ -68,6 +68,291 @@
             background: #15803d !important;
             box-shadow: 0 6px 18px rgba(22, 163, 74, 0.45) !important;
         }
+
+        /* ==========================================================
+           KELOLA PENGGUNA (USER MANAGEMENT) STYLES
+           ========================================================== */
+        .btn-add-admin {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 9px 18px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-add-admin:hover {
+            background: linear-gradient(135deg, #0369a1, #075985);
+            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.45);
+            transform: translateY(-1px);
+        }
+        .btn-add-admin:active {
+            transform: translateY(0);
+        }
+
+        .user-controls-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+        }
+        .user-stats-pills {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .user-filter-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .user-filter-pill:hover {
+            border-color: #0284c7;
+            color: #0284c7;
+        }
+        .user-filter-pill.active {
+            background: #0284c7;
+            border-color: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+        }
+        .user-filter-pill .pill-count {
+            display: inline-block;
+            margin-left: 6px;
+            padding: 1px 7px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(0, 0, 0, 0.08);
+        }
+        .user-filter-pill.active .pill-count {
+            background: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+        }
+
+        .user-search-wrapper {
+            position: relative;
+            min-width: 250px;
+            flex: 1;
+            max-width: 360px;
+        }
+        .user-search-wrapper .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 13px;
+        }
+        .user-search-input {
+            width: 100%;
+            padding: 8px 12px 8px 34px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            font-size: 12.5px;
+            background: #ffffff;
+            color: #0f172a;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .user-search-input:focus {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        .user-id-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #f1f5f9;
+            color: #475569;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.3px;
+        }
+
+        .user-avatar-initial {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12.5px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        }
+
+        .badge-self-user {
+            display: inline-block;
+            padding: 1px 7px;
+            background: #dcfce7;
+            color: #166534;
+            border-radius: 9999px;
+            font-size: 9.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .badge-user-role {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        .badge-user-role.admin {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+        .badge-user-role.user {
+            background: #e0f2fe;
+            color: #0284c7;
+            border: 1px solid #bae6fd;
+        }
+
+        .user-action-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .btn-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            text-decoration: none;
+            background: transparent;
+        }
+        .btn-action-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+        .btn-role-to-user {
+            background: #fef2f2;
+            color: #dc2626;
+            border-color: #fecaca;
+        }
+        .btn-role-to-user:hover:not(:disabled) {
+            background: #fee2e2;
+            border-color: #f87171;
+            transform: translateY(-1px);
+        }
+        .btn-role-to-admin {
+            background: #eff6ff;
+            color: #2563eb;
+            border-color: #bfdbfe;
+        }
+        .btn-role-to-admin:hover:not(:disabled) {
+            background: #dbeafe;
+            border-color: #93c5fd;
+            transform: translateY(-1px);
+        }
+        .btn-role-disabled {
+            background: #f1f5f9;
+            color: #94a3b8;
+            border-color: #e2e8f0;
+        }
+        .btn-edit-user {
+            background: #f8fafc;
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+        .btn-edit-user:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            color: #0284c7;
+            transform: translateY(-1px);
+        }
+        .btn-delete-user {
+            background: #fef2f2;
+            color: #dc2626;
+            border-color: #fecaca;
+        }
+        .btn-delete-user:hover:not(:disabled) {
+            background: #dc2626;
+            color: #ffffff;
+            border-color: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+        }
+        .btn-delete-disabled {
+            background: #f1f5f9;
+            color: #94a3b8;
+            border-color: #e2e8f0;
+        }
+
+        .user-form-modal-box {
+            max-width: 480px;
+        }
+        .form-group-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .form-group-item .form-label {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #334155;
+        }
+        .btn-modal-submit-admin {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #ffffff;
+            padding: 9px 18px;
+            border-radius: 10px;
+            border: none;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+            transition: all 0.2s ease;
+        }
+        .btn-modal-submit-admin:hover {
+            background: linear-gradient(135deg, #0369a1, #075985);
+            box-shadow: 0 6px 16px rgba(2, 132, 199, 0.4);
+            transform: translateY(-1px);
+        }
     </style>
 @endsection
 
@@ -91,6 +376,14 @@
             $totalOrders = 0;
             $completedOrders = 0;
             $pendingOrders = 0;
+        }
+    }
+
+    if (!isset($users)) {
+        try {
+            $users = \App\Models\User::latest()->get();
+        } catch (\Throwable $e) {
+            $users = collect();
         }
     }
 @endphp
@@ -159,6 +452,12 @@
                             <button type="button" class="sidebar-nav-link" data-tab="tab-riwayat-pemesanan">
                                 <i class="fa-solid fa-clock-rotate-left"></i>
                                 <span>Riwayat Pemesanan</span>
+                            </button>
+                        </li>
+                        <li class="sidebar-nav-item">
+                            <button type="button" class="sidebar-nav-link" data-tab="tab-kelola-pengguna">
+                                <i class="fa-solid fa-users-gear"></i>
+                                <span>Kelola Pengguna</span>
                             </button>
                         </li>
                         <li class="sidebar-nav-item">
@@ -888,6 +1187,202 @@
 
             @if($isAdmin)
             <!-- ---------------------------------------------------- -->
+            <!-- TAB: KELOLA PENGGUNA / USER MANAGEMENT (KHUSUS ADMIN)-->
+            <!-- ---------------------------------------------------- -->
+            <div class="tab-content-pane" id="tab-kelola-pengguna">
+                <div class="admin-section-card">
+
+                    <!-- Header & Title -->
+                    <div class="admin-card-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 22px;">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <div class="summary-icon-circle" style="background: #e0f2fe; color: #0284c7; width: 44px; height: 44px; font-size: 18px; border-radius: 14px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fa-solid fa-users-gear"></i>
+                            </div>
+                            <div>
+                                <h2 class="admin-card-title" style="margin: 0; font-size: 18px; font-weight: 700; color: #0f172a;">Kelola Pengguna</h2>
+                                <p style="margin: 2px 0 0 0; font-size: 12.5px; color: #64748b;">Kelola akun pengguna, hak akses administrator, dan pendaftaran admin baru.</p>
+                            </div>
+                        </div>
+
+                        <!-- Action Button: Tambah Admin Baru -->
+                        <div>
+                            <button type="button" class="btn-add-admin" onclick="openAddUserModal()">
+                                <i class="fa-solid fa-user-plus"></i>
+                                <span>Tambah Admin Baru</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- Feedback Alerts --}}
+                    @if(session('success'))
+                        <div class="pkg-alert-success" style="background:#f0fdf4;border:1px solid #bbf7d0;border-left:5px solid #16a34a;color:#15803d;padding:12px 16px;border-radius:12px;margin-bottom:20px;font-weight:600;font-size:13px;display:flex;align-items:center;gap:10px;">
+                            <i class="fa-solid fa-circle-check"></i> <span>{{ session('success') }}</span>
+                        </div>
+                    @endif
+                    @if(session('error'))
+                        <div class="pkg-alert-error" style="background:#fef2f2;border:1px solid #fecaca;border-left:5px solid #ef4444;color:#b91c1c;padding:12px 16px;border-radius:12px;margin-bottom:20px;font-weight:600;font-size:13px;display:flex;align-items:center;gap:10px;">
+                            <i class="fa-solid fa-triangle-exclamation"></i> <span>{{ session('error') }}</span>
+                        </div>
+                    @endif
+
+                    <!-- Stats Badges & Search Filter Controls -->
+                    <div class="user-controls-bar">
+                        <div class="user-stats-pills">
+                            <button type="button" class="user-filter-pill active" data-filter="all" onclick="filterUserRole('all', this)">
+                                Semua <span class="pill-count" id="countAllUsers">{{ $users->count() }}</span>
+                            </button>
+                            <button type="button" class="user-filter-pill" data-filter="admin" onclick="filterUserRole('admin', this)">
+                                <i class="fa-solid fa-shield-halved" style="font-size: 11px; margin-right: 4px;"></i> Admin <span class="pill-count" id="countAdminUsers">{{ $users->where('role', 'admin')->count() }}</span>
+                            </button>
+                            <button type="button" class="user-filter-pill" data-filter="user" onclick="filterUserRole('user', this)">
+                                <i class="fa-solid fa-user" style="font-size: 11px; margin-right: 4px;"></i> User <span class="pill-count" id="countRegularUsers">{{ $users->where('role', 'user')->count() }}</span>
+                            </button>
+                        </div>
+
+                        <div class="user-search-wrapper">
+                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                            <input type="text" id="userSearchInput" class="user-search-input" placeholder="Cari ID, nama, atau email...">
+                        </div>
+                    </div>
+
+                    <!-- Users Table -->
+                    <div class="table-responsive-wrapper" style="margin-top: 16px;">
+                        <table class="admin-orders-table user-table" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 60px;">ID</th>
+                                    <th>Nama Pengguna</th>
+                                    <th>Email</th>
+                                    <th style="width: 120px;">Role</th>
+                                    <th style="width: 130px;">Terdaftar</th>
+                                    <th style="width: 250px; text-align: center;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userTableBody">
+                                @forelse($users as $usr)
+                                    @php
+                                        $currentUserId = session('user.id');
+                                        $currentUserEmail = session('user.email');
+                                        $isSelf = ($usr->id == $currentUserId || $usr->email == $currentUserEmail);
+                                        $roleLower = strtolower($usr->role ?? 'user');
+                                        $joinedDate = $usr->created_at ? \Carbon\Carbon::parse($usr->created_at)->translatedFormat('d M Y') : '-';
+                                        
+                                        $initials = strtoupper(substr($usr->name, 0, 1));
+                                        $avatarBg = ($roleLower === 'admin') ? 'linear-gradient(135deg, #f43f5e, #e11d48)' : 'linear-gradient(135deg, #0ea5e9, #0284c7)';
+                                    @endphp
+                                    <tr class="user-row" 
+                                        data-id="{{ $usr->id }}" 
+                                        data-name="{{ strtolower($usr->name) }}" 
+                                        data-email="{{ strtolower($usr->email) }}" 
+                                        data-role="{{ $roleLower }}">
+                                        <td>
+                                            <span class="user-id-badge">#{{ $usr->id }}</span>
+                                        </td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 10px;">
+                                                <div class="user-avatar-initial" style="background: {{ $avatarBg }};">
+                                                    {{ $initials }}
+                                                </div>
+                                                <div>
+                                                    <div class="table-text-main" style="display: flex; align-items: center; gap: 6px;">
+                                                        <span>{{ $usr->name }}</span>
+                                                        @if($isSelf)
+                                                            <span class="badge-self-user">Anda</span>
+                                                        @endif
+                                                    </div>
+                                                    <div class="table-text-sub">Akun {{ ucfirst($roleLower) }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="table-text-main" style="color: #475569; font-weight: 500;">
+                                                <i class="fa-regular fa-envelope" style="color: #94a3b8; margin-right: 5px;"></i>
+                                                {{ $usr->email }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if($roleLower === 'admin')
+                                                <span class="badge-user-role admin">
+                                                    <i class="fa-solid fa-shield-halved"></i> Admin
+                                                </span>
+                                            @else
+                                                <span class="badge-user-role user">
+                                                    <i class="fa-solid fa-user"></i> User
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <div class="table-text-main" style="font-size: 11px; color: #64748b;">
+                                                {{ $joinedDate }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="user-action-buttons">
+                                                <!-- 1. Tombol Ubah Role -->
+                                                @if($isSelf && $roleLower === 'admin')
+                                                    <button type="button" class="btn-action-btn btn-role-disabled" title="Tidak dapat mengubah role akun sendiri saat login" disabled>
+                                                        <i class="fa-solid fa-lock"></i> Ubah Role
+                                                    </button>
+                                                @else
+                                                    <form action="{{ route('admin.users.updateRole', $usr->id) }}" method="POST" style="margin: 0; display: inline;">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        @if($roleLower === 'admin')
+                                                            <input type="hidden" name="role" value="user">
+                                                            <button type="submit" class="btn-action-btn btn-role-to-user" title="Ubah role pengguna menjadi User biasa" onclick="return confirm('Ubah role {{ addslashes($usr->name) }} menjadi User?')">
+                                                                <i class="fa-solid fa-arrow-down"></i> Ke User
+                                                            </button>
+                                                        @else
+                                                            <input type="hidden" name="role" value="admin">
+                                                            <button type="submit" class="btn-action-btn btn-role-to-admin" title="Tingkatkan role pengguna menjadi Admin" onclick="return confirm('Tingkatkan {{ addslashes($usr->name) }} menjadi Admin?')">
+                                                                <i class="fa-solid fa-arrow-up"></i> Ke Admin
+                                                            </button>
+                                                        @endif
+                                                    </form>
+                                                @endif
+
+                                                <!-- 2. Tombol Edit -->
+                                                <button type="button" class="btn-action-btn btn-edit-user" onclick="openEditUserModal({{ $usr->id }}, '{{ addslashes($usr->name) }}', '{{ addslashes($usr->email) }}', '{{ $roleLower }}')" title="Edit Nama, Email, Role, atau Password">
+                                                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                                                </button>
+
+                                                <!-- 3. Tombol Hapus -->
+                                                @if($isSelf)
+                                                    <button type="button" class="btn-action-btn btn-delete-disabled" title="Tidak dapat menghapus akun sendiri saat login" disabled>
+                                                        <i class="fa-solid fa-trash-can"></i> Hapus
+                                                    </button>
+                                                @else
+                                                    <button type="button" class="btn-action-btn btn-delete-user" onclick="openDeleteUserModal({{ $usr->id }}, '{{ addslashes($usr->name) }}', '{{ $roleLower }}')" title="Hapus Akun Pengguna">
+                                                        <i class="fa-solid fa-trash-can"></i> Hapus
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr id="emptyUserRow">
+                                        <td colspan="6" style="text-align: center; padding: 40px 20px; color: #64748b;">
+                                            <i class="fa-solid fa-users-slash" style="font-size: 32px; color: #94a3b8; margin-bottom: 10px; display: block;"></i>
+                                            Belum ada pengguna yang terdaftar di sistem.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                                <tr id="noSearchResultRow" style="display: none;">
+                                    <td colspan="6" style="text-align: center; padding: 36px 20px; color: #64748b;">
+                                        <i class="fa-solid fa-magnifying-glass" style="font-size: 26px; color: #94a3b8; margin-bottom: 8px; display: block;"></i>
+                                        Tidak ditemukan pengguna yang sesuai dengan pencarian.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            @endif
+
+            @if($isAdmin)
+            <!-- ---------------------------------------------------- -->
             <!-- TAB 4: PENGATURAN PROFIL TAB (KHUSUS ADMIN)          -->
             <!-- ---------------------------------------------------- -->
             <div class="tab-content-pane" id="tab-pengaturan">
@@ -1226,6 +1721,23 @@
                 activateTab(targetTab);
             });
         });
+
+        // URL query parameter tab auto-activator (?tab=users or ?tab=tab-kelola-pengguna)
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabParam = urlParams.get('tab');
+        if (tabParam === 'users' || tabParam === 'tab-kelola-pengguna') {
+            activateTab('tab-kelola-pengguna');
+        } else if (tabParam && document.getElementById(tabParam)) {
+            activateTab(tabParam);
+        }
+
+        // Real-time user management search
+        const userSearchInput = document.getElementById('userSearchInput');
+        if (userSearchInput) {
+            userSearchInput.addEventListener('input', function() {
+                filterUserTable();
+            });
+        }
 
         // Real-time package search filter
         const searchInput = document.getElementById('packageFilterInput');
@@ -2246,16 +2758,123 @@
         }
     }
 
+    // ==========================================
+    // KELOLA PENGGUNA (USER MANAGEMENT) SCRIPT
+    // ==========================================
+    let currentUserRoleFilter = 'all';
+
+    function filterUserRole(role, btnEl) {
+        currentUserRoleFilter = role;
+        document.querySelectorAll('.user-filter-pill').forEach(pill => pill.classList.remove('active'));
+        if (btnEl) btnEl.classList.add('active');
+        filterUserTable();
+    }
+
+    function filterUserTable() {
+        const searchInput = document.getElementById('userSearchInput');
+        const query = (searchInput ? searchInput.value : '').toLowerCase().trim();
+        const rows = document.querySelectorAll('.user-row');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const id = row.getAttribute('data-id') || '';
+            const name = row.getAttribute('data-name') || '';
+            const email = row.getAttribute('data-email') || '';
+            const role = row.getAttribute('data-role') || '';
+
+            const matchesSearch = !query || id.includes(query) || name.includes(query) || email.includes(query);
+            const matchesRole = (currentUserRoleFilter === 'all') || (role === currentUserRoleFilter);
+
+            if (matchesSearch && matchesRole) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        const noResultRow = document.getElementById('noSearchResultRow');
+        if (noResultRow) {
+            if (visibleCount === 0 && rows.length > 0) {
+                noResultRow.style.display = '';
+            } else {
+                noResultRow.style.display = 'none';
+            }
+        }
+    }
+
+    // Modal: Tambah User / Admin
+    function openAddUserModal() {
+        const modal = document.getElementById('addUserModal');
+        if (modal) {
+            modal.classList.add('show');
+            const nameInput = document.getElementById('addUserName');
+            if (nameInput) setTimeout(() => nameInput.focus(), 100);
+        }
+    }
+
+    function closeAddUserModal() {
+        const modal = document.getElementById('addUserModal');
+        if (modal) {
+            modal.classList.remove('show');
+            const form = document.getElementById('addUserForm');
+            if (form) form.reset();
+        }
+    }
+
+    // Modal: Edit User
+    function openEditUserModal(id, name, email, role) {
+        const modal = document.getElementById('editUserModal');
+        const form = document.getElementById('editUserForm');
+        if (!modal || !form) return;
+
+        form.action = `/admin/users/${id}`;
+        document.getElementById('editUserId').value = id;
+        document.getElementById('editUserName').value = name;
+        document.getElementById('editUserEmail').value = email;
+        document.getElementById('editUserPassword').value = '';
+        document.getElementById('editUserRole').value = role;
+
+        modal.classList.add('show');
+        setTimeout(() => document.getElementById('editUserName').focus(), 100);
+    }
+
+    function closeEditUserModal() {
+        const modal = document.getElementById('editUserModal');
+        if (modal) modal.classList.remove('show');
+    }
+
+    // Modal: Delete User
+    function openDeleteUserModal(id, name, role) {
+        const modal = document.getElementById('deleteUserModal');
+        const form = document.getElementById('deleteUserForm');
+        const nameSpan = document.getElementById('deleteUserNameSpan');
+        if (!modal || !form) return;
+
+        form.action = `/admin/users/${id}`;
+        if (nameSpan) nameSpan.textContent = `${name} (${role.toUpperCase()})`;
+
+        modal.classList.add('show');
+    }
+
+    function closeDeleteUserModal() {
+        const modal = document.getElementById('deleteUserModal');
+        if (modal) modal.classList.remove('show');
+    }
+
     // Close modals on backdrop click
     window.addEventListener('click', function(e) {
         const pkgModal = document.getElementById('packageFormModal');
         const logoutModal = document.getElementById('logoutModal');
-        if (e.target === pkgModal) {
-            closePackageModal();
-        }
-        if (e.target === logoutModal) {
-            closeLogoutModal();
-        }
+        const addUserModal = document.getElementById('addUserModal');
+        const editUserModal = document.getElementById('editUserModal');
+        const deleteUserModal = document.getElementById('deleteUserModal');
+
+        if (e.target === pkgModal) closePackageModal();
+        if (e.target === logoutModal) closeLogoutModal();
+        if (e.target === addUserModal) closeAddUserModal();
+        if (e.target === editUserModal) closeEditUserModal();
+        if (e.target === deleteUserModal) closeDeleteUserModal();
     });
 
     // Close modals on Escape key
@@ -2263,9 +2882,148 @@
         if (e.key === 'Escape') {
             closePackageModal();
             closeLogoutModal();
+            closeAddUserModal();
+            closeEditUserModal();
+            closeDeleteUserModal();
         }
     });
 </script>
+
+<!-- ==================== MODAL 1: TAMBAH ADMIN BARU ==================== -->
+<div class="admin-modal-backdrop" id="addUserModal">
+    <div class="admin-modal-box user-form-modal-box">
+        <div class="admin-modal-header">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 38px; height: 38px; border-radius: 10px; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <div>
+                    <h3 class="admin-modal-title" style="margin: 0; font-size: 17px; font-weight: 700; color: #0f172a;">Tambah Admin Baru</h3>
+                    <span style="font-size: 12px; color: #64748b;">Daftarkan akun administrator baru ke sistem Go Travel</span>
+                </div>
+            </div>
+            <button type="button" class="admin-modal-close" onclick="closeAddUserModal()">&times;</button>
+        </div>
+
+        <form action="{{ route('admin.users.store') }}" method="POST" id="addUserForm">
+            @csrf
+            <div class="modal-form-body" style="display: flex; flex-direction: column; gap: 14px;">
+                <div class="form-group-item">
+                    <label class="form-label" for="addUserName">Nama Lengkap <span style="color:#ef4444;">*</span></label>
+                    <input type="text" name="name" id="addUserName" class="form-input-control" placeholder="Contoh: Budi Santoso" required>
+                </div>
+
+                <div class="form-group-item">
+                    <label class="form-label" for="addUserEmail">Alamat Email <span style="color:#ef4444;">*</span></label>
+                    <input type="email" name="email" id="addUserEmail" class="form-input-control" placeholder="admin@gotravel.com" required>
+                </div>
+
+                <div class="form-group-item">
+                    <label class="form-label" for="addUserPassword">Password <span style="color:#ef4444;">*</span></label>
+                    <input type="password" name="password" id="addUserPassword" class="form-input-control" placeholder="Minimal 6 karakter" minlength="6" required>
+                </div>
+
+                <div class="form-group-item">
+                    <label class="form-label" for="addUserRole">Role Pengguna <span style="color:#ef4444;">*</span></label>
+                    <select name="role" id="addUserRole" class="form-input-control" style="cursor: pointer;" required>
+                        <option value="admin" selected>Admin (Hak Akses Penuh)</option>
+                        <option value="user">User (Pengguna Biasa)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="modal-actions-footer" style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; padding-top: 16px; border-top: 1px solid #f1f5f9;">
+                <button type="button" class="btn-modal-cancel" onclick="closeAddUserModal()">Batal</button>
+                <button type="submit" class="btn-modal-submit-admin">
+                    <i class="fa-solid fa-plus" style="margin-right: 6px;"></i> Simpan Admin Baru
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ==================== MODAL 2: EDIT PENGGUNA ==================== -->
+<div class="admin-modal-backdrop" id="editUserModal">
+    <div class="admin-modal-box user-form-modal-box">
+        <div class="admin-modal-header">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 38px; height: 38px; border-radius: 10px; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                    <i class="fa-solid fa-user-pen"></i>
+                </div>
+                <div>
+                    <h3 class="admin-modal-title" style="margin: 0; font-size: 17px; font-weight: 700; color: #0f172a;">Edit Data Pengguna</h3>
+                    <span style="font-size: 12px; color: #64748b;">Perbarui informasi akun, role, atau kata sandi</span>
+                </div>
+            </div>
+            <button type="button" class="admin-modal-close" onclick="closeEditUserModal()">&times;</button>
+        </div>
+
+        <form action="" method="POST" id="editUserForm">
+            @csrf
+            @method('PUT')
+            <input type="hidden" id="editUserId">
+
+            <div class="modal-form-body" style="display: flex; flex-direction: column; gap: 14px;">
+                <div class="form-group-item">
+                    <label class="form-label" for="editUserName">Nama Lengkap <span style="color:#ef4444;">*</span></label>
+                    <input type="text" name="name" id="editUserName" class="form-input-control" required>
+                </div>
+
+                <div class="form-group-item">
+                    <label class="form-label" for="editUserEmail">Alamat Email <span style="color:#ef4444;">*</span></label>
+                    <input type="email" name="email" id="editUserEmail" class="form-input-control" required>
+                </div>
+
+                <div class="form-group-item">
+                    <label class="form-label" for="editUserPassword">Password Baru (Opsional)</label>
+                    <input type="password" name="password" id="editUserPassword" class="form-input-control" placeholder="Biarkan kosong jika tidak ingin mengubah password" minlength="6">
+                </div>
+
+                <div class="form-group-item">
+                    <label class="form-label" for="editUserRole">Role Pengguna <span style="color:#ef4444;">*</span></label>
+                    <select name="role" id="editUserRole" class="form-input-control" style="cursor: pointer;" required>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="modal-actions-footer" style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; padding-top: 16px; border-top: 1px solid #f1f5f9;">
+                <button type="button" class="btn-modal-cancel" onclick="closeEditUserModal()">Batal</button>
+                <button type="submit" class="btn-modal-submit-admin" style="background: #0284c7;">
+                    <i class="fa-solid fa-floppy-disk" style="margin-right: 6px;"></i> Simpan Perubahan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ==================== MODAL 3: KONFIRMASI HAPUS PENGGUNA ==================== -->
+<div class="admin-modal-backdrop" id="deleteUserModal">
+    <div class="admin-modal-box logout-modal-box">
+        <div class="logout-icon-wrapper" style="background: #fee2e2; color: #dc2626;">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 class="logout-modal-title" style="color: #0f172a;">Hapus Pengguna</h3>
+        <p class="logout-modal-desc" style="color: #64748b;">
+            Apakah Anda yakin ingin menghapus pengguna <strong id="deleteUserNameSpan" style="color: #0f172a;"></strong>? Semua data dan hak akses terkait akun ini akan dihapus secara permanen.
+        </p>
+
+        <form action="" method="POST" id="deleteUserForm" style="margin: 0; width: 100%;">
+            @csrf
+            @method('DELETE')
+            <div class="logout-actions-row">
+                <button type="button" class="btn-modal-cancel" onclick="closeDeleteUserModal()">
+                    Batal
+                </button>
+                <button type="submit" class="btn-modal-confirm-logout" style="background: #dc2626; border: none; cursor: pointer;">
+                    <i class="fa-solid fa-trash-can"></i>
+                    <span>Ya, Hapus</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <!-- ==================== MODAL LOGOUT CONFIRMATION ==================== -->
 <div class="admin-modal-backdrop" id="logoutModal">
