@@ -22,23 +22,18 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // 2. Wishlist Heart Button Interactive Toggle
-    const wishlistButtons = document.querySelectorAll('.wishlist-btn');
-    wishlistButtons.forEach(button => {
-        button.addEventListener('click', function (e) {
-            e.preventDefault();
-            this.classList.toggle('active');
-            const heartIcon = this.querySelector('i');
-            if (heartIcon) {
-                if (this.classList.contains('active')) {
-                    heartIcon.classList.remove('fa-regular');
-                    heartIcon.classList.add('fa-solid');
-                } else {
-                    heartIcon.classList.remove('fa-solid');
-                    heartIcon.classList.add('fa-regular');
-                }
-            }
-        });
+    // 2. Wishlist Heart Button Interactive Toggle & Server Synchronization
+    initWishlistStates();
+
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.wishlist-btn');
+        if (!btn) return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        const slug = btn.getAttribute('data-slug') || '';
+        const id = btn.getAttribute('data-id') || '';
+        toggleWishlist(btn, slug || id);
     });
 
     // 3. Live Search in Paket Wisata (Both Hero Search & Main Filter Bar Search)
@@ -520,3 +515,163 @@ function handleFormSubmit(event) {
         }
     });
 }
+
+/**
+ * ========================================================
+ * WISHLIST GLOBAL HANDLERS & ASYNC SYNCHRONIZATION
+ * ========================================================
+ */
+
+function showWishlistToast(message, type = 'info') {
+    let container = document.getElementById('globalToastContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'globalToastContainer';
+        container.style.cssText = 'position:fixed;top:24px;right:24px;z-index:99999;display:flex;flex-direction:column;gap:12px;pointer-events:none;max-width:380px;width:calc(100% - 48px);';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    const isSuccess = type === 'success';
+    const isError = type === 'error';
+    const borderColor = isSuccess ? '#ea580c' : (isError ? '#ef4444' : '#0284c7');
+    const iconClass = isSuccess ? 'fa-heart' : (isError ? 'fa-circle-exclamation' : 'fa-circle-info');
+    const iconColor = borderColor;
+
+    toast.style.cssText = `background:#ffffff;color:#0f172a;border-radius:16px;padding:14px 18px;box-shadow:0 12px 32px rgba(15,23,42,0.18);display:flex;align-items:center;gap:12px;border-left:5px solid ${borderColor};font-size:13.5px;font-weight:600;pointer-events:auto;transform:translateX(120%);opacity:0;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);font-family:inherit;`;
+    toast.innerHTML = `
+        <i class="fa-solid ${iconClass}" style="color:${iconColor};font-size:18px;flex-shrink:0;"></i>
+        <div style="flex:1;line-height:1.4;">${message}</div>
+    `;
+
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => {
+        toast.style.transform = 'translateX(0)';
+        toast.style.opacity = '1';
+    });
+
+    setTimeout(() => {
+        toast.style.transform = 'translateX(120%)';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 350);
+    }, 3500);
+}
+
+function updateHeartIconState(btn, isActive) {
+    if (isActive) {
+        btn.classList.add('active');
+        const icon = btn.querySelector('i');
+        if (icon) {
+            icon.classList.remove('fa-regular');
+            icon.classList.add('fa-solid');
+            icon.style.color = '#ef4444';
+        }
+    } else {
+        btn.classList.remove('active');
+        const icon = btn.querySelector('i');
+        if (icon) {
+            icon.classList.remove('fa-solid');
+            icon.classList.add('fa-regular');
+            icon.style.color = '';
+        }
+    }
+}
+
+async function toggleWishlist(btnElement, packageIdentifier) {
+    if (!packageIdentifier) {
+        if (btnElement) {
+            packageIdentifier = btnElement.getAttribute('data-slug') || btnElement.getAttribute('data-id');
+        }
+    }
+
+    if (!packageIdentifier) {
+        showWishlistToast('Identifikasi paket wisata tidak ditemukan.', 'error');
+        return;
+    }
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    try {
+        if (btnElement) {
+            btnElement.style.pointerEvents = 'none';
+            btnElement.style.transform = 'scale(0.85)';
+        }
+
+        const response = await fetch('/wishlist/toggle', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ slug: packageIdentifier })
+        });
+
+        const data = await response.json();
+
+        if (response.status === 401 || data.logged_in === false) {
+            showWishlistToast('Silakan login terlebih dahulu untuk menyimpan paket ke wishlist!', 'error');
+            setTimeout(() => {
+                if (window.location.pathname !== '/login') {
+                    window.location.href = '/login?redirect=' + encodeURIComponent(window.location.href);
+                }
+            }, 1200);
+            return;
+        }
+
+        if (data.success) {
+            const isAdded = data.status === 'added';
+            const allMatchingButtons = document.querySelectorAll(`.wishlist-btn[data-slug="${data.slug}"], .wishlist-btn[data-id="${data.package_id}"]`);
+            
+            allMatchingButtons.forEach(btn => updateHeartIconState(btn, isAdded));
+            if (btnElement && !allMatchingButtons.length) {
+                updateHeartIconState(btnElement, isAdded);
+            }
+
+            showWishlistToast(data.message, isAdded ? 'success' : 'info');
+
+            // Dispatch global event agar halaman profil atau admin dapat mengupdate list tanpa refresh
+            window.dispatchEvent(new CustomEvent('wishlist-updated', { detail: data }));
+        } else {
+            showWishlistToast(data.message || 'Gagal memperbarui wishlist.', 'error');
+        }
+    } catch (err) {
+        console.error('Wishlist toggle error:', err);
+        showWishlistToast('Terjadi kesalahan jaringan saat memperbarui wishlist.', 'error');
+    } finally {
+        if (btnElement) {
+            btnElement.style.pointerEvents = '';
+            btnElement.style.transform = '';
+        }
+    }
+}
+
+async function initWishlistStates() {
+    try {
+        const response = await fetch('/wishlist/user-ids', {
+            headers: { 'Accept': 'application/json' }
+        });
+        if (!response.ok) return;
+
+        const data = await response.json();
+        if (!data.logged_in || !Array.isArray(data.wishlist_slugs)) return;
+
+        const activeSlugs = new Set(data.wishlist_slugs.map(s => String(s).toLowerCase()));
+        const activeIds = new Set((data.wishlist_ids || []).map(id => String(id)));
+
+        document.querySelectorAll('.wishlist-btn').forEach(btn => {
+            const slug = (btn.getAttribute('data-slug') || '').toLowerCase();
+            const id = String(btn.getAttribute('data-id') || '');
+
+            if ((slug && activeSlugs.has(slug)) || (id && activeIds.has(id))) {
+                updateHeartIconState(btn, true);
+            } else {
+                updateHeartIconState(btn, false);
+            }
+        });
+    } catch (err) {
+        // Silently fail if guest or offline
+    }
+}
+

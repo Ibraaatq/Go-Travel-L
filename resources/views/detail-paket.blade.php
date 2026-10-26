@@ -36,7 +36,7 @@
                 <div class="detail-info-header">
                     <div class="detail-header-top">
                         <h1 class="detail-title">{{ $paket['name'] }}</h1>
-                        <button class="wishlist-btn detail-wishlist-btn" aria-label="Simpan ke Wishlist">
+                        <button class="wishlist-btn detail-wishlist-btn" aria-label="Simpan ke Wishlist" data-slug="{{ $paket['slug'] ?? '' }}" data-id="{{ $paket['id'] ?? '' }}">
                             <i class="fa-regular fa-heart"></i>
                         </button>
                     </div>
@@ -190,17 +190,19 @@
                         @foreach($paket['itinerary'] as $dayIndex => $dayData)
                             <div class="itinerary-day-block">
                                 <div class="itinerary-day-badge">
-                                    <span class="day-num-tag">{{ $dayData['day'] }}</span>
-                                    <span class="day-title-text">{{ $dayData['title'] }}</span>
+                                    <span class="day-num-tag">{{ $dayData['day'] ?? ('Hari ' . ($loop->iteration)) }}</span>
+                                    @if(!empty($dayData['title']))
+                                        <span class="day-title-text">{{ $dayData['title'] }}</span>
+                                    @endif
                                 </div>
 
                                 <div class="itinerary-timeline">
-                                    @foreach($dayData['schedules'] as $sch)
+                                    @foreach($dayData['schedules'] ?? ($dayData['slots'] ?? []) as $sch)
                                         <div class="timeline-event">
                                             <div class="timeline-dot"></div>
                                             <div class="timeline-content">
-                                                <span class="timeline-time">{{ $sch['time'] }}</span>
-                                                <p class="timeline-desc">{{ $sch['activity'] }}</p>
+                                                <span class="timeline-time">{{ $sch['time'] ?? 'Jadwal Wisata' }}</span>
+                                                <p class="timeline-desc">{{ $sch['activity'] ?? ($sch['kegiatan'] ?? '-') }}</p>
                                             </div>
                                         </div>
                                     @endforeach

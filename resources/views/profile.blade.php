@@ -134,6 +134,146 @@
             background: #e0f2fe;
             color: #0369a1;
         }
+
+        /* Wishlist Cards Grid in Profile */
+        .wishlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 16px;
+        }
+        .wishlist-card {
+            background: #ffffff;
+            border-radius: 18px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+        }
+        .wishlist-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+            border-color: #fdba74;
+        }
+        .wishlist-card-media {
+            position: relative;
+            height: 170px;
+            background: #f1f5f9;
+            overflow: hidden;
+        }
+        .wishlist-card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .wishlist-card:hover .wishlist-card-img {
+            transform: scale(1.05);
+        }
+        .wishlist-badge-duration {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(6px);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            letter-spacing: 0.3px;
+        }
+        .wishlist-btn-remove {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            color: #ef4444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .wishlist-btn-remove:hover {
+            background: #ef4444;
+            color: #ffffff;
+            transform: scale(1.1);
+        }
+        .wishlist-card-body {
+            padding: 16px 18px 18px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .wishlist-card-category {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #ea580c;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .wishlist-card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.35;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .wishlist-card-dest {
+            font-size: 12px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+        .wishlist-card-footer {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f1f5f9;
+        }
+        .wishlist-price-tag {
+            font-size: 15px;
+            font-weight: 800;
+            color: #ea580c;
+        }
+        .btn-wishlist-view {
+            padding: 8px 14px;
+            border-radius: 9999px;
+            background: #ea580c;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-wishlist-view:hover {
+            background: #c2410c;
+            transform: translateY(-1px);
+            color: #ffffff;
+        }
     </style>
 @endsection
 
@@ -200,6 +340,12 @@
                             <i class="fa-solid fa-id-card"></i>
                             <span>Profil Saya</span>
                         </button>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="#userWishlistSection" class="sidebar-nav-link" style="text-decoration: none;">
+                            <i class="fa-solid fa-heart" style="color: #ef4444;"></i>
+                            <span>Wishlist Saya</span>
+                        </a>
                     </li>
                     @if($isAdmin)
                         <li class="sidebar-nav-item">
@@ -361,6 +507,76 @@
                 @endif
             </div>
 
+            <!-- Wishlist Paket Wisata Saya -->
+            <div class="user-info-card" id="userWishlistSection">
+                <div class="admin-card-header" style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                    <div>
+                        <h3 class="admin-card-title" style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-heart" style="color: #ef4444;"></i>
+                            <span>Wishlist Paket Wisata Saya</span>
+                        </h3>
+                        <p style="font-size: 13px; color: #64748b; margin: 4px 0 0 0;">
+                            Daftar destinasi dan paket liburan impian yang Anda simpan.
+                        </p>
+                    </div>
+                    <span class="badge-status" id="wishlistCountBadge" style="background: #fff2eb; color: #ea580c; border: 1px solid #ffd8c4; font-size: 12px; font-weight: 700;">
+                        Total: {{ $userWishlists->count() }} Paket
+                    </span>
+                </div>
+
+                @if($userWishlists->count() > 0)
+                    <div class="wishlist-grid" id="profileWishlistGrid">
+                        @foreach($userWishlists as $wish)
+                            @php
+                                $pkg = $wish->package;
+                            @endphp
+                            @if($pkg)
+                                <div class="wishlist-card" id="wishlistCard-{{ $pkg->slug }}" data-slug="{{ $pkg->slug }}">
+                                    <div class="wishlist-card-media">
+                                        <img src="{{ asset($pkg->gambar_url) }}" alt="{{ $pkg->nama_paket }}" class="wishlist-card-img" onerror="this.onerror=null;this.src='{{ asset('img/no-image.jpg') }}';">
+                                        <span class="wishlist-badge-duration">{{ strtoupper($pkg->durasi ?? '1 HARI') }}</span>
+                                        <button type="button" class="wishlist-btn-remove" title="Hapus dari Wishlist" aria-label="Hapus dari Wishlist" onclick="removeFromProfileWishlist('{{ $pkg->slug }}')">
+                                            <i class="fa-solid fa-heart-crack"></i>
+                                        </button>
+                                    </div>
+                                    <div class="wishlist-card-body">
+                                        <span class="wishlist-card-category">{{ $pkg->kategori ?? 'Tour Wisata' }}</span>
+                                        <h4 class="wishlist-card-title" title="{{ $pkg->nama_paket }}">{{ $pkg->nama_paket }}</h4>
+                                        <div class="wishlist-card-dest">
+                                            <i class="fa-solid fa-location-dot" style="color: #ea580c;"></i>
+                                            <span>{{ $pkg->destinasi ?? 'Indonesia' }}</span>
+                                        </div>
+                                        <div class="wishlist-card-footer">
+                                            <div>
+                                                <div style="font-size: 11px; color: #64748b; font-weight: 600;">Mulai dari</div>
+                                                <div class="wishlist-price-tag">Rp. {{ number_format($pkg->harga, 0, ',', '.') }}</div>
+                                            </div>
+                                            <a href="{{ url('/paket-wisata/' . $pkg->slug) }}" class="btn-wishlist-view">
+                                                <span>Lihat</span>
+                                                <i class="fa-solid fa-arrow-right" style="font-size: 11px;"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                @else
+                    <div id="profileWishlistEmptyState" style="text-align: center; padding: 36px 16px; color: #64748b;">
+                        <div style="width: 56px; height: 56px; border-radius: 50%; background: #fff2eb; color: #ea580c; display: inline-flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 12px;">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                        <h4 style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Belum ada paket wisata di Wishlist</h4>
+                        <p style="margin: 0; font-size: 13px; color: #64748b; max-width: 360px; margin: 0 auto;">
+                            Klik tanda cinta/love di paket wisata manapun untuk menyimpannya ke daftar wishlist Anda.
+                        </p>
+                        <a href="{{ url('/paket-wisata') }}" class="btn-step-primary" style="display: inline-flex; margin-top: 16px; text-decoration: none; padding: 10px 22px; font-size: 13px;">
+                            <i class="fa-solid fa-compass" style="margin-right: 6px;"></i> Jelajahi Paket Wisata
+                        </a>
+                    </div>
+                @endif
+            </div>
+
             <!-- Action Area: Logout Pop-up Button -->
             <div class="admin-section-card" style="text-align: center; padding: 32px 24px;">
                 <h3 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">
@@ -430,5 +646,47 @@
             closeLogoutModal();
         }
     });
+
+    async function removeFromProfileWishlist(slug) {
+        if (!confirm('Hapus paket ini dari Wishlist Anda?')) return;
+        const card = document.getElementById('wishlistCard-' + slug);
+        if (card) {
+            card.style.opacity = '0.4';
+            card.style.pointerEvents = 'none';
+        }
+        if (typeof toggleWishlist === 'function') {
+            await toggleWishlist(null, slug);
+            if (card) {
+                card.style.transition = 'all 0.3s ease';
+                card.style.transform = 'scale(0.8)';
+                card.style.opacity = '0';
+                setTimeout(() => {
+                    card.remove();
+                    const grid = document.getElementById('profileWishlistGrid');
+                    const badge = document.getElementById('wishlistCountBadge');
+                    if (grid) {
+                        const remaining = grid.querySelectorAll('.wishlist-card').length;
+                        if (badge) badge.textContent = `Total: ${remaining} Paket`;
+                        if (remaining === 0) {
+                            grid.innerHTML = `
+                                <div id="profileWishlistEmptyState" style="text-align: center; padding: 36px 16px; color: #64748b; grid-column: 1 / -1;">
+                                    <div style="width: 56px; height: 56px; border-radius: 50%; background: #fff2eb; color: #ea580c; display: inline-flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 12px;">
+                                        <i class="fa-regular fa-heart"></i>
+                                    </div>
+                                    <h4 style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Belum ada paket wisata di Wishlist</h4>
+                                    <p style="margin: 0; font-size: 13px; color: #64748b; max-width: 360px; margin: 0 auto;">
+                                        Klik tanda cinta/love di paket wisata manapun untuk menyimpannya ke daftar wishlist Anda.
+                                    </p>
+                                    <a href="/paket-wisata" class="btn-step-primary" style="display: inline-flex; margin-top: 16px; text-decoration: none; padding: 10px 22px; font-size: 13px;">
+                                        <i class="fa-solid fa-compass" style="margin-right: 6px;"></i> Jelajahi Paket Wisata
+                                    </a>
+                                </div>
+                            `;
+                        }
+                    }
+                }, 300);
+            }
+        }
+    }
 </script>
 @endsection

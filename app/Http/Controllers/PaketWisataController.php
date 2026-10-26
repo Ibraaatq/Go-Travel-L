@@ -646,7 +646,7 @@ class PaketWisataController extends Controller
                 'location' => $dbPackage->destinasi,
                 'rating' => $staticPaket['rating'] ?? 4.9,
                 'reviews_count' => $staticPaket['reviews_count'] ?? 120,
-                'image' => $dbPackage->gambar ? (str_starts_with($dbPackage->gambar, 'images/') ? $dbPackage->gambar : 'storage/' . $dbPackage->gambar) : 'images/jogja.jpg',
+                'image' => $dbPackage->gambar_url,
                 'category' => $dbPackage->kategori,
                 'description' => $dbPackage->deskripsi,
                 'highlights' => $staticPaket['highlights'] ?? ['Destinasi Populer Terbaik', 'Pemandangan Memukau', 'Kuliner Khas Lokal', 'Wisata Belanja & Oleh-oleh'],
@@ -675,7 +675,46 @@ class PaketWisataController extends Controller
                     'Dianjurkan membawa obat-obatan pribadi jika memiliki riwayat tertentu.',
                     'Waktu berkumpul di titik temu maksimal 15 menit sebelum keberangkatan.',
                 ],
-                'itinerary' => $dbPackage->itinerary ?: ($staticPaket['itinerary'] ?? []),
+                'itinerary' => (function() use ($dbPackage, $staticPaket) {
+                    $rawItinerary = $dbPackage->itinerary ?: ($staticPaket['itinerary'] ?? []);
+                    if (!is_array($rawItinerary)) {
+                        return [];
+                    }
+
+                    $normalized = [];
+                    foreach ($rawItinerary as $idx => $item) {
+                        if (!is_array($item)) continue;
+
+                        // Day label (e.g. 'Hari 1' or 1)
+                        $dayLabel = isset($item['day']) 
+                            ? (is_numeric($item['day']) ? 'Hari ' . $item['day'] : $item['day'])
+                            : 'Hari ' . ($idx + 1);
+
+                        // Title / Rangkuman Hari
+                        $title = $item['title'] ?? ($item['deskripsi'] ?? 'Rencana Perjalanan');
+
+                        // Schedules / Slots
+                        $schedules = [];
+                        if (!empty($item['schedules']) && is_array($item['schedules'])) {
+                            $schedules = $item['schedules'];
+                        } elseif (!empty($item['slots']) && is_array($item['slots'])) {
+                            $schedules = $item['slots'];
+                        } elseif (!empty($item['time']) || !empty($item['activity'])) {
+                            $schedules[] = [
+                                'time' => $item['time'] ?? '08.00 - Selesai',
+                                'activity' => $item['activity'] ?? 'Aktivitas Wisata'
+                            ];
+                        }
+
+                        $normalized[] = [
+                            'day' => $dayLabel,
+                            'title' => $title,
+                            'schedules' => $schedules,
+                        ];
+                    }
+
+                    return $normalized;
+                })(),
             ];
 
             return view('detail-paket', compact('paket'));

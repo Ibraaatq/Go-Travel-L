@@ -47,12 +47,19 @@ Route::post('/login', function (Request $request) {
             ]
         ]);
     } else {
-        // Fallback jika user belum ada di DB (misal: demo/testing)
+        // Buat record user baru di database jika belum ada
         $name = ucfirst(explode('@', $email)[0]);
         $role = str_contains(strtolower($email), 'admin') ? 'admin' : 'user';
+        $newUser = \App\Models\User::create([
+            'name'     => $name,
+            'email'    => $email,
+            'password' => \Illuminate\Support\Facades\Hash::make($password ?: 'password123'),
+            'role'     => $role,
+        ]);
+
         session([
             'user' => [
-                'id'       => null,
+                'id'       => $newUser->id,
                 'name'     => $name,
                 'email'    => $email,
                 'avatar'   => '',
@@ -88,47 +95,13 @@ Route::post('/register', function (Request $request) {
     return redirect('/login')->with('success', 'Registrasi berhasil! Silakan masuk.');
 });
 
-Route::get('/auth/google', function () {
-    return redirect('/login');
-})->name('auth.google');
+// ---- Route Autentikasi OAuth Google Resmi (Socialite) ----
+Route::get('/auth/google', [\App\Http\Controllers\Auth\SocialiteController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\SocialiteController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
-Route::post('/auth/google/select', function (Request $request) {
-    $name   = $request->input('name', 'Google User');
-    $email  = $request->input('email', 'user@gmail.com');
-    $avatar = $request->input('avatar', '');
-
-    // Cek apakah user sudah ada di DB, ambil id & role resmi
-    $dbUser = \App\Models\User::where('email', $email)->first();
-    $role   = $dbUser ? ($dbUser->role ?? 'user') : 'user';
-    $userId = $dbUser ? $dbUser->id : null;
-
-    session([
-        'user' => [
-            'id'       => $userId,
-            'name'     => $name,
-            'email'    => $email,
-            'avatar'   => $avatar,
-            'provider' => 'google',
-            'role'     => $role,
-        ]
-    ]);
-
-    return redirect('/')->with('success', 'Selamat datang, ' . $name . '! Berhasil masuk dengan Google.');
-})->name('auth.google.select');
-
-Route::get('/auth/facebook', function () {
-    session([
-        'user' => [
-            'id'       => null,
-            'name'     => 'Facebook User',
-            'email'    => 'user@facebook.com',
-            'avatar'   => '',
-            'provider' => 'facebook',
-            'role'     => 'user',
-        ]
-    ]);
-    return redirect('/')->with('success', 'Berhasil masuk dengan Facebook!');
-})->name('auth.facebook');
+// ---- Route Autentikasi OAuth Facebook Resmi (Socialite) ----
+Route::get('/auth/facebook', [\App\Http\Controllers\Auth\SocialiteController::class, 'redirectToFacebook'])->name('auth.facebook');
+Route::get('/auth/facebook/callback', [\App\Http\Controllers\Auth\SocialiteController::class, 'handleFacebookCallback'])->name('auth.facebook.callback');
 
 Route::get('/logout', function () {
     session()->forget('user');
@@ -147,6 +120,10 @@ Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus'])->n
 
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::post('/kontak', [ContactController::class, 'store'])->name('kontak.store');
+
+// ---- Route: Wishlist API ----
+Route::post('/wishlist/toggle', [\App\Http\Controllers\WishlistController::class, 'toggle'])->name('wishlist.toggle');
+Route::get('/wishlist/user-ids', [\App\Http\Controllers\WishlistController::class, 'userWishlistIds'])->name('wishlist.userIds');
 
 // ---- Route: /profile (Halaman Profil Pengguna) ----
 // Hanya untuk user yang sudah login. Menampilkan profile.blade.php.
@@ -178,7 +155,20 @@ Route::get('/profile', function () {
         $userOrders = collect();
     }
 
-    return view('profile', compact('dbUser', 'userOrders'));
+    // Ambil daftar wishlist user
+    $userWishlists = collect();
+    try {
+        if ($dbUser) {
+            $userWishlists = \App\Models\Wishlist::with('package')
+                ->where('user_id', $dbUser->id)
+                ->latest()
+                ->get();
+        }
+    } catch (\Throwable $e) {
+        $userWishlists = collect();
+    }
+
+    return view('profile', compact('dbUser', 'userOrders', 'userWishlists'));
 })->name('profile');
 
 // ---- Route: /admin (Dashboard Admin) ----
@@ -188,6 +178,8 @@ Route::middleware('admin')->group(function () {
 
     // Packages CRUD
     Route::post('/admin/packages', [AdminController::class, 'storePackage'])->name('admin.packages.store');
+    Route::put('/admin/packages/{id}', [AdminController::class, 'updatePackage'])->name('admin.packages.update');
+    Route::post('/admin/packages/{id}/update', [AdminController::class, 'updatePackage'])->name('admin.packages.updatePost');
     Route::delete('/admin/packages/{id}', [AdminController::class, 'destroyPackage'])->name('admin.packages.destroy');
 
     // Users Management CRUD

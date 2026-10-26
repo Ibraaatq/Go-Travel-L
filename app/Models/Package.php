@@ -59,6 +59,11 @@ class Package extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class, 'package_id');
+    }
+
     /**
      * Scope: hanya paket aktif.
      */
@@ -75,10 +80,16 @@ class Package extends Model
         if (!$this->gambar) {
             return asset('images/jogja.jpg');
         }
-        if (str_starts_with($this->gambar, 'images/') || str_starts_with($this->gambar, 'http://') || str_starts_with($this->gambar, 'https://')) {
+        if (str_starts_with($this->gambar, 'http://') || str_starts_with($this->gambar, 'https://')) {
+            return $this->gambar;
+        }
+        if (str_starts_with($this->gambar, 'images/')) {
             return asset($this->gambar);
         }
-        return asset('storage/' . $this->gambar);
+        if (str_starts_with($this->gambar, 'storage/')) {
+            return asset($this->gambar);
+        }
+        return asset('storage/' . ltrim($this->gambar, '/'));
     }
 
     /**

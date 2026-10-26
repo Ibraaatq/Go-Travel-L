@@ -60,6 +60,13 @@
                 </div>
             @endif
 
+            @if(session('error'))
+                <div style="background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-circle-exclamation" style="color: #ef4444;"></i>
+                    <span>{{ session('error') }}</span>
+                </div>
+            @endif
+
             <!-- Form Login -->
             <form action="{{ url('/login') }}" method="POST" id="loginForm">
                 @csrf

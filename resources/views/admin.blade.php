@@ -461,6 +461,12 @@
                             </button>
                         </li>
                         <li class="sidebar-nav-item">
+                            <button type="button" class="sidebar-nav-link" data-tab="tab-wishlist-saya">
+                                <i class="fa-solid fa-heart"></i>
+                                <span>Wishlist Saya</span>
+                            </button>
+                        </li>
+                        <li class="sidebar-nav-item">
                             <button type="button" class="sidebar-nav-link" data-tab="tab-pengaturan">
                                 <i class="fa-solid fa-gear"></i>
                                 <span>Pengaturan</span>
@@ -473,11 +479,17 @@
                             </button>
                         </li>
                     @else
-                        {{-- MENU KHUSUS USER BIASA: HANYA RIWAYAT DAN LOGOUT --}}
+                        {{-- MENU KHUSUS USER BIASA: RIWAYAT, WISHLIST DAN LOGOUT --}}
                         <li class="sidebar-nav-item">
                             <button type="button" class="sidebar-nav-link active" data-tab="tab-riwayat-pemesanan">
                                 <i class="fa-solid fa-clock-rotate-left"></i>
                                 <span>Riwayat Pemesanan</span>
+                            </button>
+                        </li>
+                        <li class="sidebar-nav-item">
+                            <button type="button" class="sidebar-nav-link" data-tab="tab-wishlist-saya">
+                                <i class="fa-solid fa-heart"></i>
+                                <span>Wishlist Saya</span>
                             </button>
                         </li>
                         <li class="sidebar-nav-item">
@@ -493,6 +505,18 @@
 
         <!-- ==================== KOLOM KANAN: DASHBOARD CONTENT ==================== -->
         <main class="admin-main-content">
+
+            {{-- Global Flash Messages --}}
+            @if(session('success'))
+                <div class="pkg-alert-success" style="background:#f0fdf4;border:1px solid #bbf7d0;border-left:5px solid #16a34a;color:#15803d;padding:14px 18px;border-radius:14px;margin-bottom:20px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:12px;">
+                    <i class="fa-solid fa-circle-check"></i> <span>{{ session('success') }}</span>
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="pkg-alert-error" style="background:#fef2f2;border:1px solid #fecaca;border-left:5px solid #ef4444;color:#b91c1c;padding:14px 18px;border-radius:14px;margin-bottom:20px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:12px;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> <span>{{ session('error') }}</span>
+                </div>
+            @endif
 
             @if($isAdmin)
             <!-- ---------------------------------------------------- -->
@@ -549,62 +573,37 @@
                     </div>
 
                     <div class="packages-horizontal-list" id="dashboardPackagesList">
-                        @php
-                            $dashboardPackages = [
-                                [
-                                    'name' => 'Jogja Tour 2 Hari',
-                                    'location' => 'Yogyakarta',
-                                    'price' => 'Rp.2.200.000',
-                                    'duration' => 'Durasi 2 Hari 1 Malam',
-                                    'image' => asset('images/jogja.jpg'),
-                                    'slug' => 'jogja'
-                                ],
-                                [
-                                    'name' => 'Bromo Tour 1 Hari',
-                                    'location' => 'Jawa Timur',
-                                    'price' => 'Rp.499.000',
-                                    'duration' => 'Durasi 1 Hari',
-                                    'image' => asset('images/bromo.jpg'),
-                                    'slug' => 'bromo'
-                                ],
-                                [
-                                    'name' => 'Lampung Tour 3 Hari',
-                                    'location' => 'Lampung',
-                                    'price' => 'Rp.975.000',
-                                    'duration' => 'Durasi 3 Hari 2 Malam',
-                                    'image' => asset('images/lampung.jpg'),
-                                    'slug' => 'lampung'
-                                ]
-                            ];
-                        @endphp
-
-                        @foreach($dashboardPackages as $item)
-                            <div class="package-item-card" data-package-slug="{{ $item['slug'] }}" data-title="{{ strtolower($item['name']) }}" data-loc="{{ strtolower($item['location']) }}">
+                        @forelse($packages->take(5) as $pkg)
+                            <div class="package-item-card" data-package-id="{{ $pkg->id }}" data-package-slug="{{ $pkg->slug }}" data-title="{{ strtolower($pkg->nama_paket) }}" data-loc="{{ strtolower($pkg->destinasi) }}">
                                 <div class="package-item-left">
-                                    <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="package-item-thumb" loading="lazy">
+                                    <img src="{{ $pkg->gambar_url }}" alt="{{ $pkg->nama_paket }}" class="package-item-thumb" loading="lazy">
                                     <div class="package-item-meta">
-                                        <h4 class="package-item-name">{{ $item['name'] }}</h4>
-                                        <span class="package-item-location">{{ $item['location'] }}</span>
+                                        <h4 class="package-item-name">{{ $pkg->nama_paket }}</h4>
+                                        <span class="package-item-location">{{ $pkg->destinasi }}</span>
                                     </div>
                                 </div>
                                 <div class="package-item-right">
                                     <div class="package-item-pricing">
-                                        <span class="package-item-price">{{ $item['price'] }}</span>
+                                        <span class="package-item-price">{{ $pkg->formatted_harga }}</span>
                                         <span class="package-item-duration">
-                                            <i class="fa-regular fa-clock"></i> {{ $item['duration'] }}
+                                            <i class="fa-regular fa-clock"></i> {{ $pkg->durasi }}
                                         </span>
                                     </div>
                                     <div class="package-item-actions">
-                                        <button type="button" class="btn-action-icon edit" title="Edit Paket" onclick="openEditPackageView('{{ $item['slug'] }}', 'tab-dashboard')">
+                                        <button type="button" class="btn-action-icon edit" title="Edit Paket" onclick="openEditPackageView('{{ $pkg->slug }}', 'tab-dashboard')">
                                             <i class="fa-solid fa-pen"></i>
                                         </button>
-                                        <button type="button" class="btn-action-icon delete" title="Hapus Paket" onclick="deletePackageConfirm('{{ $item['slug'] }}', '{{ addslashes($item['name']) }}')">
+                                        <button type="button" class="btn-action-icon delete" title="Hapus Paket" onclick="deletePackageConfirm('{{ $pkg->slug }}', '{{ addslashes($pkg->nama_paket) }}', {{ $pkg->id }})">
                                             <i class="fa-regular fa-trash-can"></i>
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
+                        @empty
+                            <div style="padding: 24px; text-align: center; color: #64748b; width: 100%;">
+                                Belum ada paket wisata di database.
+                            </div>
+                        @endforelse
                     </div>
                 </div>
 
@@ -682,7 +681,7 @@
                         <h2 class="admin-card-title">Daftar Paket Wisata</h2>
                         <div class="header-badge-count">
                             <i class="fa-solid fa-briefcase"></i>
-                            <span id="packageBadgeCount">8</span>
+                            <span id="packageBadgeCount">{{ $packages->count() }}</span>
                         </div>
                     </div>
 
@@ -698,104 +697,39 @@
                         </button>
                     </div>
 
-                    <!-- Full Horizontal Package List (8 Packages) -->
+                    <!-- Full Horizontal Package List (Dynamic from Database) -->
                     <div class="packages-horizontal-list" id="fullPackagesList">
-                        @php
-                            $allFullPackages = [
-                                [
-                                    'name' => 'Jogja Tour 2 Hari',
-                                    'location' => 'Yogyakarta',
-                                    'price' => 'Rp.2.200.000',
-                                    'duration' => 'Durasi 2 Hari 1 Malam',
-                                    'image' => asset('images/jogja.jpg'),
-                                    'slug' => 'jogja'
-                                ],
-                                [
-                                    'name' => 'Bromo Tour 1 Hari',
-                                    'location' => 'Jawa Timur',
-                                    'price' => 'Rp.499.000',
-                                    'duration' => 'Durasi 1 Hari',
-                                    'image' => asset('images/bromo.jpg'),
-                                    'slug' => 'bromo'
-                                ],
-                                [
-                                    'name' => 'Lampung Tour 3 Hari',
-                                    'location' => 'Lampung',
-                                    'price' => 'Rp.975.000',
-                                    'duration' => 'Durasi 3 Hari 2 Malam',
-                                    'image' => asset('images/lampung.jpg'),
-                                    'slug' => 'lampung'
-                                ],
-                                [
-                                    'name' => 'Bali Tour 5 Hari',
-                                    'location' => 'Bali',
-                                    'price' => 'Rp.2.750.000',
-                                    'duration' => 'Durasi 5 Hari 4 Malam',
-                                    'image' => asset('images/bali.jpg'),
-                                    'slug' => 'bali'
-                                ],
-                                [
-                                    'name' => 'Bandung Tour 4 Hari',
-                                    'location' => 'Bandung',
-                                    'price' => 'Rp.1.800.000',
-                                    'duration' => 'Durasi 4 Hari 3 Malam',
-                                    'image' => asset('images/bandung.jpg'),
-                                    'slug' => 'bandung'
-                                ],
-                                [
-                                    'name' => 'Malioboro Tour 1 Hari',
-                                    'location' => 'Yogyakarta',
-                                    'price' => 'Rp.249.000',
-                                    'duration' => 'Durasi 1 Hari',
-                                    'image' => asset('images/malioboro.jpg'),
-                                    'slug' => 'malioboro'
-                                ],
-                                [
-                                    'name' => 'Tangkuban Perahu Tour 1 Hari',
-                                    'location' => 'Jawa Barat',
-                                    'price' => 'Rp.200.000',
-                                    'duration' => 'Durasi 1 Hari',
-                                    'image' => asset('images/tangkuban.jpg'),
-                                    'slug' => 'tangkuban-perahu'
-                                ],
-                                [
-                                    'name' => 'Pantai Pandawa 1 Hari',
-                                    'location' => 'Bali',
-                                    'price' => 'Rp.175.000',
-                                    'duration' => 'Durasi 1 Hari',
-                                    'image' => asset('images/pandawa.jpg'),
-                                    'slug' => 'pantai-pandawa'
-                                ],
-                            ];
-                        @endphp
-
-                        @foreach($allFullPackages as $pkg)
-                            <div class="package-item-card full-package-card" data-package-slug="{{ $pkg['slug'] }}" data-title="{{ strtolower($pkg['name']) }}" data-loc="{{ strtolower($pkg['location']) }}">
+                        @forelse($packages as $pkg)
+                            <div class="package-item-card full-package-card" data-package-id="{{ $pkg->id }}" data-package-slug="{{ $pkg->slug }}" data-title="{{ strtolower($pkg->nama_paket) }}" data-loc="{{ strtolower($pkg->destinasi) }}">
                                 <div class="package-item-left">
-                                    <img src="{{ $pkg['image'] }}" alt="{{ $pkg['name'] }}" class="package-item-thumb" loading="lazy">
+                                    <img src="{{ $pkg->gambar_url }}" alt="{{ $pkg->nama_paket }}" class="package-item-thumb" loading="lazy">
                                     <div class="package-item-meta">
-                                        <h4 class="package-item-name">{{ $pkg['name'] }}</h4>
-                                        <span class="package-item-location">{{ $pkg['location'] }}</span>
+                                        <h4 class="package-item-name">{{ $pkg->nama_paket }}</h4>
+                                        <span class="package-item-location">{{ $pkg->destinasi }}</span>
                                     </div>
                                 </div>
                                 <div class="package-item-right">
                                     <div class="package-item-pricing">
-                                        <span class="package-item-price">{{ $pkg['price'] }}</span>
+                                        <span class="package-item-price">{{ $pkg->formatted_harga }}</span>
                                         <span class="package-item-duration">
-                                            <i class="fa-regular fa-clock"></i> {{ $pkg['duration'] }}
+                                            <i class="fa-regular fa-clock"></i> {{ $pkg->durasi }}
                                         </span>
                                     </div>
                                     <div class="package-item-actions">
-                                        <button type="button" class="btn-action-icon edit" title="Edit Paket" onclick="openEditPackageView('{{ $pkg['slug'] }}', 'tab-paket-wisata')">
+                                        <button type="button" class="btn-action-icon edit" title="Edit Paket" onclick="openEditPackageView('{{ $pkg->slug }}', 'tab-paket-wisata')">
                                             <i class="fa-solid fa-pen"></i>
                                         </button>
-                                        <button type="button" class="btn-action-icon delete" title="Hapus Paket" onclick="deletePackageConfirm('{{ $pkg['slug'] }}', '{{ addslashes($pkg['name']) }}')">
+                                        <button type="button" class="btn-action-icon delete" title="Hapus Paket" onclick="deletePackageConfirm('{{ $pkg->slug }}', '{{ addslashes($pkg->nama_paket) }}', {{ $pkg->id }})">
                                             <i class="fa-regular fa-trash-can"></i>
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
+                        @empty
+                            <div style="padding: 30px; text-align: center; color: #64748b; width: 100%;">
+                                Belum ada paket wisata di database.
+                            </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -814,6 +748,18 @@
                 @if(session('error'))
                     <div class="pkg-alert-error" style="background:#fef2f2;border:1px solid #fecaca;border-left:5px solid #ef4444;color:#b91c1c;padding:14px 18px;border-radius:14px;margin-bottom:20px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:12px;">
                         <i class="fa-solid fa-triangle-exclamation"></i> <span>{{ session('error') }}</span>
+                    </div>
+                @endif
+                @if(isset($errors) && $errors->any())
+                    <div class="pkg-alert-error" style="background:#fef2f2;border:1px solid #fecaca;border-left:5px solid #ef4444;color:#b91c1c;padding:14px 18px;border-radius:14px;margin-bottom:20px;font-size:14px;">
+                        <div style="font-weight: 700; display:flex; align-items:center; gap:8px; margin-bottom: 6px;">
+                            <i class="fa-solid fa-circle-exclamation"></i> <span>Terdapat kesalahan validasi input:</span>
+                        </div>
+                        <ul style="margin: 0; padding-left: 24px; font-weight: 500;">
+                            @foreach($errors->all() as $err)
+                                <li>{{ $err }}</li>
+                            @endforeach
+                        </ul>
                     </div>
                 @endif
 
@@ -976,15 +922,19 @@
             <div class="tab-content-pane" id="tab-edit-paket">
                 <h2 class="edit-package-title" id="editPageMainTitle">Edit Paket Wisata - Jogja Tour 2 Hari</h2>
 
-                <form id="editPackageForm" onsubmit="event.preventDefault(); handleSaveEditPackageForm();" class="package-form-container">
-                    <input type="hidden" id="editPkgSlug" value="jogja">
+                <form id="editPackageForm" action="" method="POST" enctype="multipart/form-data" onsubmit="return handleSaveEditPackageForm(event);" class="package-form-container">
+                    @csrf
+                    <input type="hidden" name="_method" value="PUT">
+                    <input type="hidden" id="editPkgId" name="id" value="">
+                    <input type="hidden" id="editPkgSlug" name="slug" value="jogja">
                     <input type="hidden" id="editFromTab" value="tab-paket-wisata">
+                    <input type="hidden" id="editItineraryJsonInput" name="itinerary" value="">
 
                     <!-- 1. Ubah Gambar -->
                     <div class="package-form-card">
                         <h3 class="form-section-heading">1. Ubah Gambar</h3>
                         <div class="upload-dropzone" id="editPackageDropzone" onclick="document.getElementById('editPackageImageInput').click();">
-                            <input type="file" id="editPackageImageInput" accept="image/png, image/jpeg, image/webp" style="display: none;" onchange="handleEditPackageImageSelect(this)">
+                            <input type="file" id="editPackageImageInput" name="gambar" accept="image/png, image/jpeg, image/webp" style="display: none;" onchange="handleEditPackageImageSelect(this)">
                             
                             <div class="upload-dropzone-content" id="editUploadPlaceholderContent" style="display: none;">
                                 <div class="upload-icon-circle">
@@ -1014,20 +964,20 @@
                             <!-- Nama Paket Wisata -->
                             <div class="form-field-group">
                                 <label class="form-field-label">Nama Paket Wisata</label>
-                                <input type="text" id="editFormPkgName" class="form-text-input" placeholder="Ubah nama paket wisata" required>
+                                <input type="text" id="editFormPkgName" name="nama_paket" class="form-text-input" placeholder="Ubah nama paket wisata" required>
                             </div>
 
                             <!-- Harga Mulai (Rp) -->
                             <div class="form-field-group">
                                 <label class="form-field-label">Harga Mulai (Rp)</label>
-                                <input type="text" id="editFormPkgPrice" class="form-text-input" placeholder="Ubah harga" required>
+                                <input type="text" id="editFormPkgPrice" name="harga" class="form-text-input" placeholder="Ubah harga" required>
                             </div>
 
                             <!-- Destinasi -->
                             <div class="form-field-group">
                                 <label class="form-field-label">Destinasi</label>
                                 <div class="custom-select-wrapper">
-                                    <select id="editFormPkgDest" class="form-select-control" required>
+                                    <select id="editFormPkgDest" name="destinasi" class="form-select-control" required>
                                         <option value="" disabled>Ubah destinasi</option>
                                         <option value="Yogyakarta" selected>Yogyakarta</option>
                                         <option value="Jawa Timur">Jawa Timur</option>
@@ -1047,7 +997,7 @@
                             <div class="form-field-group">
                                 <label class="form-field-label">Kategori Paket</label>
                                 <div class="custom-select-wrapper">
-                                    <select id="editFormPkgCategory" class="form-select-control" required>
+                                    <select id="editFormPkgCategory" name="kategori" class="form-select-control" required>
                                         <option value="" disabled>Ubah kategori paket</option>
                                         <option value="Wisata Alam">Wisata Alam</option>
                                         <option value="Wisata Budaya" selected>Wisata Budaya</option>
@@ -1063,19 +1013,19 @@
                             <!-- Durasi -->
                             <div class="form-field-group">
                                 <label class="form-field-label">Durasi</label>
-                                <input type="text" id="editFormPkgDuration" class="form-text-input" placeholder="Ubah durasi perjalanan" required>
+                                <input type="text" id="editFormPkgDuration" name="durasi" class="form-text-input" placeholder="Ubah durasi perjalanan" required>
                             </div>
 
                             <!-- Makan -->
                             <div class="form-field-group">
                                 <label class="form-field-label">Makan</label>
-                                <input type="text" id="editFormPkgMeal" class="form-text-input" placeholder="Ubah makan yang didapatkan">
+                                <input type="text" id="editFormPkgMeal" name="makan" class="form-text-input" placeholder="Ubah makan yang didapatkan">
                             </div>
 
                             <!-- Deskripsi -->
                             <div class="form-field-group full-width">
                                 <label class="form-field-label">Deskripsi</label>
-                                <textarea id="editFormPkgDesc" class="form-textarea-control" placeholder="Ubah deskripsi paket wisata" rows="3"></textarea>
+                                <textarea id="editFormPkgDesc" name="deskripsi" class="form-textarea-control" placeholder="Ubah deskripsi paket wisata" rows="3"></textarea>
                             </div>
                         </div>
                     </div>
@@ -1416,6 +1366,85 @@
                             <i class="fa-solid fa-floppy-disk" style="margin-right: 6px;"></i> Simpan Perubahan
                         </button>
                     </form>
+                </div>
+            </div>
+            <!-- ---------------------------------------------------- -->
+            <!-- TAB: WISHLIST SAYA                                  -->
+            <!-- ---------------------------------------------------- -->
+            <div class="tab-content-pane" id="tab-wishlist-saya">
+                <div class="admin-section-card">
+                    <div class="admin-card-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                        <div>
+                            <h2 class="admin-card-title" style="display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-heart" style="color: #ef4444;"></i>
+                                <span>Wishlist Saya</span>
+                            </h2>
+                            <p style="font-size: 13px; color: #64748b; margin: 4px 0 0 0;">
+                                Daftar paket wisata impian yang Anda sukai dan simpan.
+                            </p>
+                        </div>
+                        <span class="badge-status" id="adminWishlistBadge" style="background: #fff2eb; color: #ea580c; border: 1px solid #ffd8c4; font-size: 12px; font-weight: 700;">
+                            Total: {{ ($adminWishlists ?? collect())->count() }} Paket
+                        </span>
+                    </div>
+
+                    @if(isset($adminWishlists) && $adminWishlists->count() > 0)
+                        <div class="wishlist-grid" id="adminWishlistGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 18px;">
+                            @foreach($adminWishlists as $wish)
+                                @php
+                                    $pkg = $wish->package;
+                                @endphp
+                                @if($pkg)
+                                    <div class="wishlist-card" id="adminWishlistCard-{{ $pkg->slug }}" data-slug="{{ $pkg->slug }}" style="background: #ffffff; border-radius: 18px; border: 1px solid #e2e8f0; overflow: hidden; display: flex; flex-direction: column; transition: all 0.3s ease; position: relative; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);">
+                                        <div style="position: relative; height: 170px; background: #f1f5f9; overflow: hidden;">
+                                            <img src="{{ asset($pkg->gambar_url) }}" alt="{{ $pkg->nama_paket }}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null;this.src='{{ asset('img/no-image.jpg') }}';">
+                                            <span style="position: absolute; top: 12px; left: 12px; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); color: #ffffff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">
+                                                {{ strtoupper($pkg->durasi ?? '1 HARI') }}
+                                            </span>
+                                            <button type="button" title="Hapus dari Wishlist" aria-label="Hapus dari Wishlist" onclick="removeFromAdminWishlist('{{ $pkg->slug }}')" style="position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(6px); border: 1px solid rgba(226, 232, 240, 0.8); color: #ef4444; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+                                                <i class="fa-solid fa-heart-crack"></i>
+                                            </button>
+                                        </div>
+                                        <div style="padding: 16px 18px 18px; display: flex; flex-direction: column; flex: 1;">
+                                            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #ea580c; letter-spacing: 0.5px; margin-bottom: 4px;">
+                                                {{ $pkg->kategori ?? 'Tour Wisata' }}
+                                            </span>
+                                            <h4 style="font-size: 15px; font-weight: 700; color: #0f172a; line-height: 1.35; margin-bottom: 8px;" title="{{ $pkg->nama_paket }}">
+                                                {{ $pkg->nama_paket }}
+                                            </h4>
+                                            <div style="font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 6px; margin-bottom: 14px;">
+                                                <i class="fa-solid fa-location-dot" style="color: #ea580c;"></i>
+                                                <span>{{ $pkg->destinasi ?? 'Indonesia' }}</span>
+                                            </div>
+                                            <div style="margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 12px; border-top: 1px solid #f1f5f9;">
+                                                <div>
+                                                    <div style="font-size: 11px; color: #64748b; font-weight: 600;">Mulai dari</div>
+                                                    <div style="font-size: 15px; font-weight: 800; color: #ea580c;">Rp. {{ number_format($pkg->harga, 0, ',', '.') }}</div>
+                                                </div>
+                                                <a href="{{ url('/paket-wisata/' . $pkg->slug) }}" target="_blank" style="padding: 8px 14px; border-radius: 9999px; background: #ea580c; color: #ffffff; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                                                    <span>Lihat</span>
+                                                    <i class="fa-solid fa-arrow-right" style="font-size: 11px;"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    @else
+                        <div id="adminWishlistEmptyState" style="text-align: center; padding: 48px 16px; color: #64748b;">
+                            <div style="width: 60px; height: 60px; border-radius: 50%; background: #fff2eb; color: #ea580c; display: inline-flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 14px;">
+                                <i class="fa-regular fa-heart"></i>
+                            </div>
+                            <h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Belum ada paket wisata di Wishlist</h4>
+                            <p style="margin: 0; font-size: 13.5px; color: #64748b; max-width: 400px; margin: 0 auto;">
+                                Klik ikon love pada paket wisata untuk menambahkannya ke daftar wishlist Anda.
+                            </p>
+                            <a href="{{ url('/paket-wisata') }}" class="btn-step-primary" style="display: inline-flex; margin-top: 18px; text-decoration: none; padding: 10px 24px; font-size: 13px;">
+                                <i class="fa-solid fa-compass" style="margin-right: 6px;"></i> Jelajahi Paket Wisata
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
             @endif
@@ -1828,7 +1857,7 @@
     }
 
     // ==========================================
-    // MASTER DATASET OF PACKAGES
+    // MASTER DATASET OF PACKAGES (DARI DATABASE + FALLBACK)
     // ==========================================
     const packagesDatabase = {
         'jogja': {
@@ -2027,6 +2056,26 @@
             ]
         }
     };
+
+    // Sinkronkan paket dari database ke objek JavaScript packagesDatabase
+    @if(isset($packages) && count($packages) > 0)
+        @foreach($packages as $dbPkg)
+            packagesDatabase['{{ $dbPkg->slug }}'] = {
+                id: {{ $dbPkg->id }},
+                slug: '{{ $dbPkg->slug }}',
+                name: {!! json_encode($dbPkg->nama_paket) !!},
+                price: {!! json_encode($dbPkg->formatted_harga) !!},
+                location: {!! json_encode($dbPkg->destinasi) !!},
+                destination: {!! json_encode($dbPkg->destinasi) !!},
+                category: {!! json_encode($dbPkg->kategori ?: 'Wisata Alam') !!},
+                duration: {!! json_encode($dbPkg->durasi) !!},
+                meal: {!! json_encode($dbPkg->makan ?: 'Makan Sesuai Program') !!},
+                image: {!! json_encode($dbPkg->gambar_url) !!},
+                description: {!! json_encode($dbPkg->deskripsi ?: '') !!},
+                itinerary: {!! json_encode($dbPkg->itinerary ?: []) !!}
+            };
+        @endforeach
+    @endif
 
     // ==========================================
     // ITINERARY SLOTS & DAY BUILDER HELPERS
@@ -2313,8 +2362,15 @@
         }
 
         document.getElementById('editPkgSlug').value = slugOrName;
+        document.getElementById('editPkgId').value = pkg.id || '';
         document.getElementById('editFromTab').value = fromTab;
         document.getElementById('editPageMainTitle').textContent = `Edit Paket Wisata - ${pkg.name}`;
+
+        // Set action form dinamis
+        const editForm = document.getElementById('editPackageForm');
+        if (editForm) {
+            editForm.action = pkg.id ? `/admin/packages/${pkg.id}` : `/admin/packages/${slugOrName}`;
+        }
 
         // Populate fields
         document.getElementById('editFormPkgName').value = pkg.name;
@@ -2353,6 +2409,8 @@
             pkg.itinerary.forEach(item => {
                 if (item.slots && Array.isArray(item.slots)) {
                     addEditItineraryDay(item.slots);
+                } else if (item.schedules && Array.isArray(item.schedules)) {
+                    addEditItineraryDay(item.schedules);
                 } else if (item.time || item.activity) {
                     addEditItineraryDay([{ time: item.time || '', activity: item.activity || '' }]);
                 }
@@ -2447,7 +2505,9 @@
         }
     }
 
-    function handleSaveEditPackageForm() {
+    function handleSaveEditPackageForm(event) {
+        if (event) event.preventDefault();
+
         const slug = document.getElementById('editPkgSlug').value;
         const fromTab = document.getElementById('editFromTab').value || 'tab-paket-wisata';
 
@@ -2456,80 +2516,75 @@
         const dest = document.getElementById('editFormPkgDest').value;
         const category = document.getElementById('editFormPkgCategory').value;
         const duration = document.getElementById('editFormPkgDuration').value.trim();
-        const meal = document.getElementById('editFormPkgMeal').value.trim();
-        const desc = document.getElementById('editFormPkgDesc').value.trim();
 
         if (!name || !price || !dest) {
             showToast('Mohon lengkapi nama paket, harga, dan destinasi!', 'info');
-            return;
-        }
-
-        if (!price.toLowerCase().startsWith('rp')) {
-            price = 'Rp.' + price;
+            return false;
         }
 
         // Collect structured edit itinerary
         const itineraryList = collectItineraryFromContainer('editItineraryDaysContainer');
+        const itineraryHidden = document.getElementById('editItineraryJsonInput');
+        if (itineraryHidden) {
+            itineraryHidden.value = JSON.stringify(itineraryList);
+        }
 
-        // Update database object
-        packagesDatabase[slug] = {
-            slug: slug,
-            name: name,
-            price: price,
-            location: dest,
-            destination: dest,
-            category: category,
-            duration: duration,
-            meal: meal,
-            image: editUploadedPackageImageSrc,
-            description: desc,
-            itinerary: itineraryList
-        };
+        const editForm = document.getElementById('editPackageForm');
+        if (editForm) {
+            showToast(`Menyimpan perubahan paket "${name}"...`, 'info');
+            editForm.submit();
+        }
 
-        // Update DOM cards in both lists
-        const matchingCards = document.querySelectorAll(`[data-package-slug="${slug}"]`);
-        matchingCards.forEach(card => {
-            const nameEl = card.querySelector('.package-item-name');
-            const locEl = card.querySelector('.package-item-location');
-            const priceEl = card.querySelector('.package-item-price');
-            const durEl = card.querySelector('.package-item-duration');
-            const imgEl = card.querySelector('.package-item-thumb');
-
-            if (nameEl) nameEl.textContent = name;
-            if (locEl) locEl.textContent = dest;
-            if (priceEl) priceEl.textContent = price;
-            if (durEl) durEl.innerHTML = `<i class="fa-regular fa-clock"></i> ${duration}`;
-            if (imgEl && editUploadedPackageImageSrc) imgEl.src = editUploadedPackageImageSrc;
-
-            card.setAttribute('data-title', name.toLowerCase());
-            card.setAttribute('data-loc', dest.toLowerCase());
-        });
-
-        showToast(`Paket wisata "${name}" berhasil diperbarui!`, 'success');
-        activateTab(fromTab);
+        return false;
     }
 
     // ==========================================
     // 3. HAPUS PAKET WISATA HANDLER
     // ==========================================
-    function deletePackageConfirm(slugOrName, displayName) {
+    function deletePackageConfirm(slugOrName, displayName, packageId = null) {
         displayName = displayName || slugOrName;
-        if (confirm(`Apakah Anda yakin ingin menghapus paket "${displayName}"?`)) {
+        if (!confirm(`Apakah Anda yakin ingin menghapus paket "${displayName}"?`)) {
+            return;
+        }
+
+        // Cari ID paket jika belum dipass
+        if (!packageId && packagesDatabase[slugOrName] && packagesDatabase[slugOrName].id) {
+            packageId = packagesDatabase[slugOrName].id;
+        }
+
+        if (packageId) {
+            // Buat form dinamis untuk submit DELETE ke server
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/admin/packages/${packageId}`;
+            form.style.display = 'none';
+
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = '{{ csrf_token() }}';
+            form.appendChild(csrfInput);
+
+            const methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = '_method';
+            methodInput.value = 'DELETE';
+            form.appendChild(methodInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        } else {
+            // Fallback client-side remove jika tidak ada ID
             if (packagesDatabase[slugOrName]) {
                 delete packagesDatabase[slugOrName];
             }
-
-            // Remove card from lists
             const matchingCards = document.querySelectorAll(`[data-package-slug="${slugOrName}"]`);
             matchingCards.forEach(card => card.remove());
-
-            // Update badge count
             const badge = document.getElementById('packageBadgeCount');
             if (badge) {
                 const remaining = document.querySelectorAll('#fullPackagesList .package-item-card').length;
                 badge.textContent = remaining;
             }
-
             showToast(`Paket wisata "${displayName}" berhasil dihapus.`, 'info');
         }
     }
@@ -3046,4 +3101,48 @@
         </div>
     </div>
 </div>
+
+<script>
+    async function removeFromAdminWishlist(slug) {
+        if (!confirm('Hapus paket ini dari Wishlist Anda?')) return;
+        const card = document.getElementById('adminWishlistCard-' + slug);
+        if (card) {
+            card.style.opacity = '0.4';
+            card.style.pointerEvents = 'none';
+        }
+        if (typeof toggleWishlist === 'function') {
+            await toggleWishlist(null, slug);
+            if (card) {
+                card.style.transition = 'all 0.3s ease';
+                card.style.transform = 'scale(0.8)';
+                card.style.opacity = '0';
+                setTimeout(() => {
+                    card.remove();
+                    const grid = document.getElementById('adminWishlistGrid');
+                    const badge = document.getElementById('adminWishlistBadge');
+                    if (grid) {
+                        const remaining = grid.querySelectorAll('.wishlist-card').length;
+                        if (badge) badge.textContent = `Total: ${remaining} Paket`;
+                        if (remaining === 0) {
+                            grid.innerHTML = `
+                                <div id="adminWishlistEmptyState" style="text-align: center; padding: 48px 16px; color: #64748b; grid-column: 1 / -1;">
+                                    <div style="width: 60px; height: 60px; border-radius: 50%; background: #fff2eb; color: #ea580c; display: inline-flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 14px;">
+                                        <i class="fa-regular fa-heart"></i>
+                                    </div>
+                                    <h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Belum ada paket wisata di Wishlist</h4>
+                                    <p style="margin: 0; font-size: 13.5px; color: #64748b; max-width: 400px; margin: 0 auto;">
+                                        Klik ikon love pada paket wisata untuk menambahkannya ke daftar wishlist Anda.
+                                    </p>
+                                    <a href="/paket-wisata" class="btn-step-primary" style="display: inline-flex; margin-top: 18px; text-decoration: none; padding: 10px 24px; font-size: 13px;">
+                                        <i class="fa-solid fa-compass" style="margin-right: 6px;"></i> Jelajahi Paket Wisata
+                                    </a>
+                                </div>
+                            `;
+                        }
+                    }
+                }, 300);
+            }
+        }
+    }
+</script>
 @endsection
