@@ -98,6 +98,7 @@ Route::post('/register', function (Request $request) {
 // ---- Route Autentikasi OAuth Google Resmi (Socialite) ----
 Route::get('/auth/google', [\App\Http\Controllers\Auth\SocialiteController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\SocialiteController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+Route::post('/auth/google/select', [\App\Http\Controllers\Auth\SocialiteController::class, 'selectGoogleAccount'])->name('auth.google.select');
 
 // ---- Route Autentikasi OAuth Facebook Resmi (Socialite) ----
 Route::get('/auth/facebook', [\App\Http\Controllers\Auth\SocialiteController::class, 'redirectToFacebook'])->name('auth.facebook');

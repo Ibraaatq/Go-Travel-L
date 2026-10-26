@@ -102,7 +102,7 @@
         </div>
 
         <!-- Hidden Form to submit selected Google Account to Laravel -->
-        <form id="googleAuthSubmitForm" action="{{ route('auth.google.select') }}" method="POST" style="display: none;">
+        <form id="googleAuthSubmitForm" action="{{ Route::has('auth.google.select') ? route('auth.google.select') : url('/auth/google/select') }}" method="POST" style="display: none;">
             @csrf
             <input type="hidden" name="name" id="hiddenGoogleName">
             <input type="hidden" name="email" id="hiddenGoogleEmail">

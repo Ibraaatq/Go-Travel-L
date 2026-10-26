@@ -1,391 +1,430 @@
 @extends('layouts.app')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
-    <style>
-        /* Toast notification styling */
-        .admin-toast-container {
-            position: fixed;
-            top: 24px;
-            right: 24px;
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            pointer-events: none;
-        }
-        .admin-toast {
-            min-width: 300px;
-            max-width: 420px;
-            background: #ffffff;
-            color: #0f172a;
-            border-radius: 16px;
-            padding: 14px 18px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-left: 5px solid #16a34a;
-            font-size: 13.5px;
-            font-weight: 600;
-            pointer-events: auto;
-            transform: translateX(120%);
-            opacity: 0;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
-        }
-        .admin-toast.show {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        .admin-toast.toast-success {
-            border-left-color: #16a34a;
-        }
-        .admin-toast.toast-info {
-            border-left-color: #0284c7;
-        }
-        .admin-toast-icon {
-            font-size: 18px;
-            color: #16a34a;
-        }
-        .admin-toast.toast-info .admin-toast-icon {
-            color: #0284c7;
-        }
-        .badge-status {
-            transition: all 0.25s ease;
-        }
-        .btn-detail-approve {
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            user-select: none;
-        }
-        .btn-detail-approve.completed,
-        .btn-detail-approve.approved {
-            background: #16a34a !important;
-            box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35) !important;
-            color: #ffffff !important;
-        }
-        .btn-detail-approve.completed:hover,
-        .btn-detail-approve.approved:hover {
-            background: #15803d !important;
-            box-shadow: 0 6px 18px rgba(22, 163, 74, 0.45) !important;
-        }
+<link rel="stylesheet" href="{{ asset('css/profile.css') }}">
+<style>
+    /* Toast notification styling */
+    .admin-toast-container {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: none;
+    }
 
-        /* ==========================================================
+    .admin-toast {
+        min-width: 300px;
+        max-width: 420px;
+        background: #ffffff;
+        color: #0f172a;
+        border-radius: 16px;
+        padding: 14px 18px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-left: 5px solid #16a34a;
+        font-size: 13.5px;
+        font-weight: 600;
+        pointer-events: auto;
+        transform: translateX(120%);
+        opacity: 0;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    }
+
+    .admin-toast.show {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    .admin-toast.toast-success {
+        border-left-color: #16a34a;
+    }
+
+    .admin-toast.toast-info {
+        border-left-color: #0284c7;
+    }
+
+    .admin-toast-icon {
+        font-size: 18px;
+        color: #16a34a;
+    }
+
+    .admin-toast.toast-info .admin-toast-icon {
+        color: #0284c7;
+    }
+
+    .badge-status {
+        transition: all 0.25s ease;
+    }
+
+    .btn-detail-approve {
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        user-select: none;
+    }
+
+    .btn-detail-approve.completed,
+    .btn-detail-approve.approved {
+        background: #16a34a !important;
+        box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35) !important;
+        color: #ffffff !important;
+    }
+
+    .btn-detail-approve.completed:hover,
+    .btn-detail-approve.approved:hover {
+        background: #15803d !important;
+        box-shadow: 0 6px 18px rgba(22, 163, 74, 0.45) !important;
+    }
+
+    /* ==========================================================
            KELOLA PENGGUNA (USER MANAGEMENT) STYLES
            ========================================================== */
-        .btn-add-admin {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, #0284c7, #0369a1);
-            color: #ffffff;
-            font-size: 13px;
-            font-weight: 700;
-            padding: 9px 18px;
-            border-radius: 12px;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .btn-add-admin:hover {
-            background: linear-gradient(135deg, #0369a1, #075985);
-            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.45);
-            transform: translateY(-1px);
-        }
-        .btn-add-admin:active {
-            transform: translateY(0);
-        }
+    .btn-add-admin {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #0284c7, #0369a1);
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 9px 18px;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-        .user-controls-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-            padding: 12px 16px;
-            background: #f8fafc;
-            border-radius: 14px;
-            border: 1px solid #e2e8f0;
-        }
-        .user-stats-pills {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .user-filter-pill {
-            display: inline-flex;
-            align-items: center;
-            padding: 6px 14px;
-            border-radius: 9999px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #475569;
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .user-filter-pill:hover {
-            border-color: #0284c7;
-            color: #0284c7;
-        }
-        .user-filter-pill.active {
-            background: #0284c7;
-            border-color: #0284c7;
-            color: #ffffff;
-            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
-        }
-        .user-filter-pill .pill-count {
-            display: inline-block;
-            margin-left: 6px;
-            padding: 1px 7px;
-            border-radius: 9999px;
-            font-size: 11px;
-            font-weight: 700;
-            background: rgba(0, 0, 0, 0.08);
-        }
-        .user-filter-pill.active .pill-count {
-            background: rgba(255, 255, 255, 0.25);
-            color: #ffffff;
-        }
+    .btn-add-admin:hover {
+        background: linear-gradient(135deg, #0369a1, #075985);
+        box-shadow: 0 6px 18px rgba(2, 132, 199, 0.45);
+        transform: translateY(-1px);
+    }
 
-        .user-search-wrapper {
-            position: relative;
-            min-width: 250px;
-            flex: 1;
-            max-width: 360px;
-        }
-        .user-search-wrapper .search-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #94a3b8;
-            font-size: 13px;
-        }
-        .user-search-input {
-            width: 100%;
-            padding: 8px 12px 8px 34px;
-            border-radius: 10px;
-            border: 1px solid #cbd5e1;
-            font-size: 12.5px;
-            background: #ffffff;
-            color: #0f172a;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-        .user-search-input:focus {
-            border-color: #0284c7;
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
-        }
+    .btn-add-admin:active {
+        transform: translateY(0);
+    }
 
-        .user-id-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            background: #f1f5f9;
-            color: #475569;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 11px;
-            letter-spacing: 0.3px;
-        }
+    .user-controls-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 12px 16px;
+        background: #f8fafc;
+        border-radius: 14px;
+        border: 1px solid #e2e8f0;
+    }
 
-        .user-avatar-initial {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 12.5px;
-            flex-shrink: 0;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-        }
+    .user-stats-pills {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
 
-        .badge-self-user {
-            display: inline-block;
-            padding: 1px 7px;
-            background: #dcfce7;
-            color: #166534;
-            border-radius: 9999px;
-            font-size: 9.5px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border: 1px solid #bbf7d0;
-        }
+    .user-filter-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 14px;
+        border-radius: 9999px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #475569;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
 
-        .badge-user-role {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 3px 10px;
-            border-radius: 9999px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-            white-space: nowrap;
-        }
-        .badge-user-role.admin {
-            background: #fee2e2;
-            color: #dc2626;
-            border: 1px solid #fecaca;
-        }
-        .badge-user-role.user {
-            background: #e0f2fe;
-            color: #0284c7;
-            border: 1px solid #bae6fd;
-        }
+    .user-filter-pill:hover {
+        border-color: #0284c7;
+        color: #0284c7;
+    }
 
-        .user-action-buttons {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-        .btn-action-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            white-space: nowrap;
-            text-decoration: none;
-            background: transparent;
-        }
-        .btn-action-btn:disabled {
-            opacity: 0.45;
-            cursor: not-allowed;
-        }
-        .btn-role-to-user {
-            background: #fef2f2;
-            color: #dc2626;
-            border-color: #fecaca;
-        }
-        .btn-role-to-user:hover:not(:disabled) {
-            background: #fee2e2;
-            border-color: #f87171;
-            transform: translateY(-1px);
-        }
-        .btn-role-to-admin {
-            background: #eff6ff;
-            color: #2563eb;
-            border-color: #bfdbfe;
-        }
-        .btn-role-to-admin:hover:not(:disabled) {
-            background: #dbeafe;
-            border-color: #93c5fd;
-            transform: translateY(-1px);
-        }
-        .btn-role-disabled {
-            background: #f1f5f9;
-            color: #94a3b8;
-            border-color: #e2e8f0;
-        }
-        .btn-edit-user {
-            background: #f8fafc;
-            color: #0f172a;
-            border-color: #cbd5e1;
-        }
-        .btn-edit-user:hover {
-            background: #f1f5f9;
-            border-color: #94a3b8;
-            color: #0284c7;
-            transform: translateY(-1px);
-        }
-        .btn-delete-user {
-            background: #fef2f2;
-            color: #dc2626;
-            border-color: #fecaca;
-        }
-        .btn-delete-user:hover:not(:disabled) {
-            background: #dc2626;
-            color: #ffffff;
-            border-color: #dc2626;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
-        }
-        .btn-delete-disabled {
-            background: #f1f5f9;
-            color: #94a3b8;
-            border-color: #e2e8f0;
-        }
+    .user-filter-pill.active {
+        background: #0284c7;
+        border-color: #0284c7;
+        color: #ffffff;
+        box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+    }
 
-        .user-form-modal-box {
-            max-width: 480px;
-        }
-        .form-group-item {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .form-group-item .form-label {
-            font-size: 12.5px;
-            font-weight: 600;
-            color: #334155;
-        }
-        .btn-modal-submit-admin {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: linear-gradient(135deg, #0284c7, #0369a1);
-            color: #ffffff;
-            padding: 9px 18px;
-            border-radius: 10px;
-            border: none;
-            font-size: 12.5px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
-            transition: all 0.2s ease;
-        }
-        .btn-modal-submit-admin:hover {
-            background: linear-gradient(135deg, #0369a1, #075985);
-            box-shadow: 0 6px 16px rgba(2, 132, 199, 0.4);
-            transform: translateY(-1px);
-        }
-    </style>
+    .user-filter-pill .pill-count {
+        display: inline-block;
+        margin-left: 6px;
+        padding: 1px 7px;
+        border-radius: 9999px;
+        font-size: 11px;
+        font-weight: 700;
+        background: rgba(0, 0, 0, 0.08);
+    }
+
+    .user-filter-pill.active .pill-count {
+        background: rgba(255, 255, 255, 0.25);
+        color: #ffffff;
+    }
+
+    .user-search-wrapper {
+        position: relative;
+        min-width: 250px;
+        flex: 1;
+        max-width: 360px;
+    }
+
+    .user-search-wrapper .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 13px;
+    }
+
+    .user-search-input {
+        width: 100%;
+        padding: 8px 12px 8px 34px;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        font-size: 12.5px;
+        background: #ffffff;
+        color: #0f172a;
+        outline: none;
+        transition: all 0.2s ease;
+    }
+
+    .user-search-input:focus {
+        border-color: #0284c7;
+        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+
+    .user-id-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        background: #f1f5f9;
+        color: #475569;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 11px;
+        letter-spacing: 0.3px;
+    }
+
+    .user-avatar-initial {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 12.5px;
+        flex-shrink: 0;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    }
+
+    .badge-self-user {
+        display: inline-block;
+        padding: 1px 7px;
+        background: #dcfce7;
+        color: #166534;
+        border-radius: 9999px;
+        font-size: 9.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: 1px solid #bbf7d0;
+    }
+
+    .badge-user-role {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 10px;
+        border-radius: 9999px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+    }
+
+    .badge-user-role.admin {
+        background: #fee2e2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+    }
+
+    .badge-user-role.user {
+        background: #e0f2fe;
+        color: #0284c7;
+        border: 1px solid #bae6fd;
+    }
+
+    .user-action-buttons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .btn-action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 10px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        white-space: nowrap;
+        text-decoration: none;
+        background: transparent;
+    }
+
+    .btn-action-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+    }
+
+    .btn-role-to-user {
+        background: #fef2f2;
+        color: #dc2626;
+        border-color: #fecaca;
+    }
+
+    .btn-role-to-user:hover:not(:disabled) {
+        background: #fee2e2;
+        border-color: #f87171;
+        transform: translateY(-1px);
+    }
+
+    .btn-role-to-admin {
+        background: #eff6ff;
+        color: #2563eb;
+        border-color: #bfdbfe;
+    }
+
+    .btn-role-to-admin:hover:not(:disabled) {
+        background: #dbeafe;
+        border-color: #93c5fd;
+        transform: translateY(-1px);
+    }
+
+    .btn-role-disabled {
+        background: #f1f5f9;
+        color: #94a3b8;
+        border-color: #e2e8f0;
+    }
+
+    .btn-edit-user {
+        background: #f8fafc;
+        color: #0f172a;
+        border-color: #cbd5e1;
+    }
+
+    .btn-edit-user:hover {
+        background: #f1f5f9;
+        border-color: #94a3b8;
+        color: #0284c7;
+        transform: translateY(-1px);
+    }
+
+    .btn-delete-user {
+        background: #fef2f2;
+        color: #dc2626;
+        border-color: #fecaca;
+    }
+
+    .btn-delete-user:hover:not(:disabled) {
+        background: #dc2626;
+        color: #ffffff;
+        border-color: #dc2626;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+    }
+
+    .btn-delete-disabled {
+        background: #f1f5f9;
+        color: #94a3b8;
+        border-color: #e2e8f0;
+    }
+
+    .user-form-modal-box {
+        max-width: 480px;
+    }
+
+    .form-group-item {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .form-group-item .form-label {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #334155;
+    }
+
+    .btn-modal-submit-admin {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(135deg, #0284c7, #0369a1);
+        color: #ffffff;
+        padding: 9px 18px;
+        border-radius: 10px;
+        border: none;
+        font-size: 12.5px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+        transition: all 0.2s ease;
+    }
+
+    .btn-modal-submit-admin:hover {
+        background: linear-gradient(135deg, #0369a1, #075985);
+        box-shadow: 0 6px 16px rgba(2, 132, 199, 0.4);
+        transform: translateY(-1px);
+    }
+</style>
 @endsection
 
 @php
-    $userRole = session('user.role', 'admin');
-    // If not explicitly 'user', default to 'admin' (or if session user has admin credentials)
-    $isAdmin = ($userRole === 'admin');
+$userRole = session('user.role', 'admin');
+// If not explicitly 'user', default to 'admin' (or if session user has admin credentials)
+$isAdmin = ($userRole === 'admin');
 
-    if (!isset($orders)) {
-        try {
-            $orders = \App\Models\Order::latest()->get();
-            $totalOrders = $orders->count();
-            $completedOrders = $orders->filter(function($o) {
-                return in_array(strtolower($o->status), ['selesai', 'disetujui']);
-            })->count();
-            $pendingOrders = $orders->filter(function($o) {
-                return in_array(strtolower($o->status), ['dipending', 'pending']);
-            })->count();
-        } catch (\Throwable $e) {
-            $orders = collect();
-            $totalOrders = 0;
-            $completedOrders = 0;
-            $pendingOrders = 0;
-        }
-    }
+if (!isset($orders)) {
+try {
+$orders = \App\Models\Order::latest()->get();
+$totalOrders = $orders->count();
+$completedOrders = $orders->filter(function($o) {
+return in_array(strtolower($o->status), ['selesai', 'disetujui']);
+})->count();
+$pendingOrders = $orders->filter(function($o) {
+return in_array(strtolower($o->status), ['dipending', 'pending']);
+})->count();
+} catch (\Throwable $e) {
+$orders = collect();
+$totalOrders = 0;
+$completedOrders = 0;
+$pendingOrders = 0;
+}
+}
 
-    if (!isset($users)) {
-        try {
-            $users = \App\Models\User::latest()->get();
-        } catch (\Throwable $e) {
-            $users = collect();
-        }
-    }
+if (!isset($users)) {
+try {
+$users = \App\Models\User::latest()->get();
+} catch (\Throwable $e) {
+$users = collect();
+}
+}
 @endphp
 
 @section('content')
@@ -413,9 +452,9 @@
             <div class="sidebar-user-header">
                 <div class="sidebar-avatar-circle">
                     @if(session()->has('user.avatar') && !empty(session('user.avatar')))
-                        <img src="{{ session('user.avatar') }}" alt="{{ session('user.name') }}">
+                    <img src="{{ session('user.avatar') }}" alt="{{ session('user.name') }}">
                     @else
-                        <i class="fa-solid fa-user"></i>
+                    <i class="fa-solid fa-user"></i>
                     @endif
                 </div>
                 <h2 class="sidebar-user-name">
@@ -425,9 +464,15 @@
                     {{ session('user.email', 'ikasafitrioktavia@gmail.com') }}
                 </p>
                 <div style="margin-top: 6px;">
-                    <span style="display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; {{ $isAdmin ? 'background: #fee2e2; color: #dc2626;' : 'background: #e0f2fe; color: #0284c7;' }}">
-                        {{ $isAdmin ? 'Admin' : 'User' }}
+                    @if($isAdmin)
+                    <span style="display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; background: #fee2e2; color: #dc2626;">
+                        Admin
                     </span>
+                    @else
+                    <span style="display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; background: #e0f2fe; color: #0284c7;">
+                        User
+                    </span>
+                    @endif
                 </div>
             </div>
 
@@ -435,69 +480,69 @@
             <nav>
                 <ul class="sidebar-nav-list">
                     @if($isAdmin)
-                        {{-- MENU LENGKAP UNTUK ADMIN --}}
-                        <li class="sidebar-nav-item">
-                            <button type="button" class="sidebar-nav-link active" data-tab="tab-dashboard">
-                                <i class="fa-solid fa-house"></i>
-                                <span>Dashboard</span>
-                            </button>
-                        </li>
-                        <li class="sidebar-nav-item">
-                            <button type="button" class="sidebar-nav-link" data-tab="tab-paket-wisata">
-                                <i class="fa-solid fa-suitcase"></i>
-                                <span>Paket Wisata</span>
-                            </button>
-                        </li>
-                        <li class="sidebar-nav-item">
-                            <button type="button" class="sidebar-nav-link" data-tab="tab-riwayat-pemesanan">
-                                <i class="fa-solid fa-clock-rotate-left"></i>
-                                <span>Riwayat Pemesanan</span>
-                            </button>
-                        </li>
-                        <li class="sidebar-nav-item">
-                            <button type="button" class="sidebar-nav-link" data-tab="tab-kelola-pengguna">
-                                <i class="fa-solid fa-users-gear"></i>
-                                <span>Kelola Pengguna</span>
-                            </button>
-                        </li>
-                        <li class="sidebar-nav-item">
-                            <button type="button" class="sidebar-nav-link" data-tab="tab-wishlist-saya">
-                                <i class="fa-solid fa-heart"></i>
-                                <span>Wishlist Saya</span>
-                            </button>
-                        </li>
-                        <li class="sidebar-nav-item">
-                            <button type="button" class="sidebar-nav-link" data-tab="tab-pengaturan">
-                                <i class="fa-solid fa-gear"></i>
-                                <span>Pengaturan</span>
-                            </button>
-                        </li>
-                        <li class="sidebar-nav-item">
-                            <button type="button" class="sidebar-nav-link nav-logout" onclick="openLogoutModal()">
-                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                                <span>Logout</span>
-                            </button>
-                        </li>
+                    {{-- MENU LENGKAP UNTUK ADMIN --}}
+                    <li class="sidebar-nav-item">
+                        <button type="button" class="sidebar-nav-link active" data-tab="tab-dashboard">
+                            <i class="fa-solid fa-house"></i>
+                            <span>Dashboard</span>
+                        </button>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <button type="button" class="sidebar-nav-link" data-tab="tab-paket-wisata">
+                            <i class="fa-solid fa-suitcase"></i>
+                            <span>Paket Wisata</span>
+                        </button>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <button type="button" class="sidebar-nav-link" data-tab="tab-riwayat-pemesanan">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <span>Riwayat Pemesanan</span>
+                        </button>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <button type="button" class="sidebar-nav-link" data-tab="tab-kelola-pengguna">
+                            <i class="fa-solid fa-users-gear"></i>
+                            <span>Kelola Pengguna</span>
+                        </button>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <button type="button" class="sidebar-nav-link" data-tab="tab-wishlist-saya">
+                            <i class="fa-solid fa-heart"></i>
+                            <span>Wishlist Saya</span>
+                        </button>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <button type="button" class="sidebar-nav-link" data-tab="tab-pengaturan">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Pengaturan</span>
+                        </button>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <button type="button" class="sidebar-nav-link nav-logout" onclick="openLogoutModal()">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            <span>Logout</span>
+                        </button>
+                    </li>
                     @else
-                        {{-- MENU KHUSUS USER BIASA: RIWAYAT, WISHLIST DAN LOGOUT --}}
-                        <li class="sidebar-nav-item">
-                            <button type="button" class="sidebar-nav-link active" data-tab="tab-riwayat-pemesanan">
-                                <i class="fa-solid fa-clock-rotate-left"></i>
-                                <span>Riwayat Pemesanan</span>
-                            </button>
-                        </li>
-                        <li class="sidebar-nav-item">
-                            <button type="button" class="sidebar-nav-link" data-tab="tab-wishlist-saya">
-                                <i class="fa-solid fa-heart"></i>
-                                <span>Wishlist Saya</span>
-                            </button>
-                        </li>
-                        <li class="sidebar-nav-item">
-                            <button type="button" class="sidebar-nav-link nav-logout" onclick="openLogoutModal()">
-                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                                <span>Logout</span>
-                            </button>
-                        </li>
+                    {{-- MENU KHUSUS USER BIASA: RIWAYAT, WISHLIST DAN LOGOUT --}}
+                    <li class="sidebar-nav-item">
+                        <button type="button" class="sidebar-nav-link active" data-tab="tab-riwayat-pemesanan">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <span>Riwayat Pemesanan</span>
+                        </button>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <button type="button" class="sidebar-nav-link" data-tab="tab-wishlist-saya">
+                            <i class="fa-solid fa-heart"></i>
+                            <span>Wishlist Saya</span>
+                        </button>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <button type="button" class="sidebar-nav-link nav-logout" onclick="openLogoutModal()">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            <span>Logout</span>
+                        </button>
+                    </li>
                     @endif
                 </ul>
             </nav>
@@ -508,14 +553,14 @@
 
             {{-- Global Flash Messages --}}
             @if(session('success'))
-                <div class="pkg-alert-success" style="background:#f0fdf4;border:1px solid #bbf7d0;border-left:5px solid #16a34a;color:#15803d;padding:14px 18px;border-radius:14px;margin-bottom:20px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:12px;">
-                    <i class="fa-solid fa-circle-check"></i> <span>{{ session('success') }}</span>
-                </div>
+            <div class="pkg-alert-success" style="background:#f0fdf4;border:1px solid #bbf7d0;border-left:5px solid #16a34a;color:#15803d;padding:14px 18px;border-radius:14px;margin-bottom:20px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:12px;">
+                <i class="fa-solid fa-circle-check"></i> <span>{{ session('success') }}</span>
+            </div>
             @endif
             @if(session('error'))
-                <div class="pkg-alert-error" style="background:#fef2f2;border:1px solid #fecaca;border-left:5px solid #ef4444;color:#b91c1c;padding:14px 18px;border-radius:14px;margin-bottom:20px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:12px;">
-                    <i class="fa-solid fa-triangle-exclamation"></i> <span>{{ session('error') }}</span>
-                </div>
+            <div class="pkg-alert-error" style="background:#fef2f2;border:1px solid #fecaca;border-left:5px solid #ef4444;color:#b91c1c;padding:14px 18px;border-radius:14px;margin-bottom:20px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:12px;">
+                <i class="fa-solid fa-triangle-exclamation"></i> <span>{{ session('error') }}</span>
+            </div>
             @endif
 
             @if($isAdmin)
@@ -574,35 +619,35 @@
 
                     <div class="packages-horizontal-list" id="dashboardPackagesList">
                         @forelse($packages->take(5) as $pkg)
-                            <div class="package-item-card" data-package-id="{{ $pkg->id }}" data-package-slug="{{ $pkg->slug }}" data-title="{{ strtolower($pkg->nama_paket) }}" data-loc="{{ strtolower($pkg->destinasi) }}">
-                                <div class="package-item-left">
-                                    <img src="{{ $pkg->gambar_url }}" alt="{{ $pkg->nama_paket }}" class="package-item-thumb" loading="lazy">
-                                    <div class="package-item-meta">
-                                        <h4 class="package-item-name">{{ $pkg->nama_paket }}</h4>
-                                        <span class="package-item-location">{{ $pkg->destinasi }}</span>
-                                    </div>
-                                </div>
-                                <div class="package-item-right">
-                                    <div class="package-item-pricing">
-                                        <span class="package-item-price">{{ $pkg->formatted_harga }}</span>
-                                        <span class="package-item-duration">
-                                            <i class="fa-regular fa-clock"></i> {{ $pkg->durasi }}
-                                        </span>
-                                    </div>
-                                    <div class="package-item-actions">
-                                        <button type="button" class="btn-action-icon edit" title="Edit Paket" onclick="openEditPackageView('{{ $pkg->slug }}', 'tab-dashboard')">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </button>
-                                        <button type="button" class="btn-action-icon delete" title="Hapus Paket" onclick="deletePackageConfirm('{{ $pkg->slug }}', '{{ addslashes($pkg->nama_paket) }}', {{ $pkg->id }})">
-                                            <i class="fa-regular fa-trash-can"></i>
-                                        </button>
-                                    </div>
+                        <div class="package-item-card" data-package-id="{{ $pkg->id }}" data-package-slug="{{ $pkg->slug }}" data-title="{{ strtolower($pkg->nama_paket) }}" data-loc="{{ strtolower($pkg->destinasi) }}">
+                            <div class="package-item-left">
+                                <img src="{{ $pkg->gambar_url }}" alt="{{ $pkg->nama_paket }}" class="package-item-thumb" loading="lazy">
+                                <div class="package-item-meta">
+                                    <h4 class="package-item-name">{{ $pkg->nama_paket }}</h4>
+                                    <span class="package-item-location">{{ $pkg->destinasi }}</span>
                                 </div>
                             </div>
+                            <div class="package-item-right">
+                                <div class="package-item-pricing">
+                                    <span class="package-item-price">{{ $pkg->formatted_harga }}</span>
+                                    <span class="package-item-duration">
+                                        <i class="fa-regular fa-clock"></i> {{ $pkg->durasi }}
+                                    </span>
+                                </div>
+                                <div class="package-item-actions">
+                                    <button type="button" class="btn-action-icon edit" title="Edit Paket" onclick="openEditPackageView('{{ $pkg->slug }}', 'tab-dashboard')">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </button>
+                                    <button type="button" class="btn-action-icon delete" title="Hapus Paket" onclick="deletePackageConfirm('{{ $pkg->slug }}', '{{ addslashes($pkg->nama_paket) }}', '{{ $pkg->id }}')">
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                         @empty
-                            <div style="padding: 24px; text-align: center; color: #64748b; width: 100%;">
-                                Belum ada paket wisata di database.
-                            </div>
+                        <div style="padding: 24px; text-align: center; color: #64748b; width: 100%;">
+                            Belum ada paket wisata di database.
+                        </div>
                         @endforelse
                     </div>
                 </div>
@@ -628,41 +673,41 @@
                             </thead>
                             <tbody>
                                 @forelse($orders->take(5) as $ord)
-                                    @php
-                                        $statusLower = strtolower($ord->status);
-                                        $statusBadgeClass = ($statusLower === 'selesai' || $statusLower === 'disetujui') ? 'completed' : 'pending';
-                                        $statusLabel = ($statusLower === 'selesai') ? 'Selesai' : (($statusLower === 'disetujui') ? 'Disetujui' : 'Dipending');
-                                        $createdDateStr = \Carbon\Carbon::parse($ord->created_at)->translatedFormat('d F Y');
-                                    @endphp
-                                    <tr>
-                                        <td>
-                                            <div class="table-text-main">{{ $ord->nama_pemesan }}</div>
-                                            <div class="table-text-sub">{{ $ord->nomor_hp }}</div>
-                                        </td>
-                                        <td>
-                                            <div class="table-text-main">{{ $ord->nama_paket }}</div>
-                                            <div class="table-text-sub">{{ $ord->kota_keberangkatan }}</div>
-                                        </td>
-                                        <td>
-                                            <div class="table-text-main">{{ $createdDateStr }}</div>
-                                            <div class="table-text-sub">{{ $ord->tanggal_keberangkatan }}</div>
-                                        </td>
-                                        <td>{{ $ord->jumlah_peserta }} Orang</td>
-                                        <td><strong>Rp. {{ number_format($ord->total_pembayaran, 0, ',', '.') }}</strong></td>
-                                        <td><span class="badge-status {{ $statusBadgeClass }}" data-order-badge="{{ $ord->id }}">{{ $statusLabel }}</span></td>
-                                        <td>
-                                            <button type="button" class="btn-detail-outline" onclick="showOrderDetail('{{ $ord->id }}')">
-                                                Lihat Detail
-                                            </button>
-                                        </td>
-                                    </tr>
+                                @php
+                                $statusLower = strtolower($ord->status);
+                                $statusBadgeClass = ($statusLower === 'selesai' || $statusLower === 'disetujui') ? 'completed' : 'pending';
+                                $statusLabel = ($statusLower === 'selesai') ? 'Selesai' : (($statusLower === 'disetujui') ? 'Disetujui' : 'Dipending');
+                                $createdDateStr = \Carbon\Carbon::parse($ord->created_at)->translatedFormat('d F Y');
+                                @endphp
+                                <tr>
+                                    <td>
+                                        <div class="table-text-main">{{ $ord->nama_pemesan }}</div>
+                                        <div class="table-text-sub">{{ $ord->nomor_hp }}</div>
+                                    </td>
+                                    <td>
+                                        <div class="table-text-main">{{ $ord->nama_paket }}</div>
+                                        <div class="table-text-sub">{{ $ord->kota_keberangkatan }}</div>
+                                    </td>
+                                    <td>
+                                        <div class="table-text-main">{{ $createdDateStr }}</div>
+                                        <div class="table-text-sub">{{ $ord->tanggal_keberangkatan }}</div>
+                                    </td>
+                                    <td>{{ $ord->jumlah_peserta }} Orang</td>
+                                    <td><strong>Rp. {{ number_format($ord->total_pembayaran, 0, ',', '.') }}</strong></td>
+                                    <td><span class="badge-status {{ $statusBadgeClass }}" data-order-badge="{{ $ord->id }}">{{ $statusLabel }}</span></td>
+                                    <td>
+                                        <button type="button" class="btn-detail-outline" onclick="showOrderDetail('{{ $ord->id }}')">
+                                            Lihat Detail
+                                        </button>
+                                    </td>
+                                </tr>
                                 @empty
-                                    <tr>
-                                        <td colspan="7" style="text-align: center; padding: 30px; color: #64748b;">
-                                            <i class="fa-solid fa-folder-open" style="font-size: 24px; margin-bottom: 8px; display: block; color: #94a3b8;"></i>
-                                            Belum ada pesanan masuk.
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 30px; color: #64748b;">
+                                        <i class="fa-solid fa-folder-open" style="font-size: 24px; margin-bottom: 8px; display: block; color: #94a3b8;"></i>
+                                        Belum ada pesanan masuk.
+                                    </td>
+                                </tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -700,35 +745,35 @@
                     <!-- Full Horizontal Package List (Dynamic from Database) -->
                     <div class="packages-horizontal-list" id="fullPackagesList">
                         @forelse($packages as $pkg)
-                            <div class="package-item-card full-package-card" data-package-id="{{ $pkg->id }}" data-package-slug="{{ $pkg->slug }}" data-title="{{ strtolower($pkg->nama_paket) }}" data-loc="{{ strtolower($pkg->destinasi) }}">
-                                <div class="package-item-left">
-                                    <img src="{{ $pkg->gambar_url }}" alt="{{ $pkg->nama_paket }}" class="package-item-thumb" loading="lazy">
-                                    <div class="package-item-meta">
-                                        <h4 class="package-item-name">{{ $pkg->nama_paket }}</h4>
-                                        <span class="package-item-location">{{ $pkg->destinasi }}</span>
-                                    </div>
-                                </div>
-                                <div class="package-item-right">
-                                    <div class="package-item-pricing">
-                                        <span class="package-item-price">{{ $pkg->formatted_harga }}</span>
-                                        <span class="package-item-duration">
-                                            <i class="fa-regular fa-clock"></i> {{ $pkg->durasi }}
-                                        </span>
-                                    </div>
-                                    <div class="package-item-actions">
-                                        <button type="button" class="btn-action-icon edit" title="Edit Paket" onclick="openEditPackageView('{{ $pkg->slug }}', 'tab-paket-wisata')">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </button>
-                                        <button type="button" class="btn-action-icon delete" title="Hapus Paket" onclick="deletePackageConfirm('{{ $pkg->slug }}', '{{ addslashes($pkg->nama_paket) }}', {{ $pkg->id }})">
-                                            <i class="fa-regular fa-trash-can"></i>
-                                        </button>
-                                    </div>
+                        <div class="package-item-card full-package-card" data-package-id="{{ $pkg->id }}" data-package-slug="{{ $pkg->slug }}" data-title="{{ strtolower($pkg->nama_paket) }}" data-loc="{{ strtolower($pkg->destinasi) }}">
+                            <div class="package-item-left">
+                                <img src="{{ $pkg->gambar_url }}" alt="{{ $pkg->nama_paket }}" class="package-item-thumb" loading="lazy">
+                                <div class="package-item-meta">
+                                    <h4 class="package-item-name">{{ $pkg->nama_paket }}</h4>
+                                    <span class="package-item-location">{{ $pkg->destinasi }}</span>
                                 </div>
                             </div>
+                            <div class="package-item-right">
+                                <div class="package-item-pricing">
+                                    <span class="package-item-price">{{ $pkg->formatted_harga }}</span>
+                                    <span class="package-item-duration">
+                                        <i class="fa-regular fa-clock"></i> {{ $pkg->durasi }}
+                                    </span>
+                                </div>
+                                <div class="package-item-actions">
+                                    <button type="button" class="btn-action-icon edit" title="Edit Paket" onclick="openEditPackageView('{{ $pkg->slug }}', 'tab-paket-wisata')">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </button>
+                                    <button type="button" class="btn-action-icon delete" title="Hapus Paket" onclick="deletePackageConfirm('{{ $pkg->slug }}', '{{ addslashes($pkg->nama_paket) }}', '{{ $pkg->id }}')">
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                         @empty
-                            <div style="padding: 30px; text-align: center; color: #64748b; width: 100%;">
-                                Belum ada paket wisata di database.
-                            </div>
+                        <div style="padding: 30px; text-align: center; color: #64748b; width: 100%;">
+                            Belum ada paket wisata di database.
+                        </div>
                         @endforelse
                     </div>
                 </div>
@@ -741,26 +786,26 @@
 
                 {{-- Flash messages --}}
                 @if(session('success'))
-                    <div class="pkg-alert-success" style="background:#f0fdf4;border:1px solid #bbf7d0;border-left:5px solid #16a34a;color:#15803d;padding:14px 18px;border-radius:14px;margin-bottom:20px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:12px;">
-                        <i class="fa-solid fa-circle-check"></i> <span>{{ session('success') }}</span>
-                    </div>
+                <div class="pkg-alert-success" style="background:#f0fdf4;border:1px solid #bbf7d0;border-left:5px solid #16a34a;color:#15803d;padding:14px 18px;border-radius:14px;margin-bottom:20px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:12px;">
+                    <i class="fa-solid fa-circle-check"></i> <span>{{ session('success') }}</span>
+                </div>
                 @endif
                 @if(session('error'))
-                    <div class="pkg-alert-error" style="background:#fef2f2;border:1px solid #fecaca;border-left:5px solid #ef4444;color:#b91c1c;padding:14px 18px;border-radius:14px;margin-bottom:20px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:12px;">
-                        <i class="fa-solid fa-triangle-exclamation"></i> <span>{{ session('error') }}</span>
-                    </div>
+                <div class="pkg-alert-error" style="background:#fef2f2;border:1px solid #fecaca;border-left:5px solid #ef4444;color:#b91c1c;padding:14px 18px;border-radius:14px;margin-bottom:20px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:12px;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> <span>{{ session('error') }}</span>
+                </div>
                 @endif
                 @if(isset($errors) && $errors->any())
-                    <div class="pkg-alert-error" style="background:#fef2f2;border:1px solid #fecaca;border-left:5px solid #ef4444;color:#b91c1c;padding:14px 18px;border-radius:14px;margin-bottom:20px;font-size:14px;">
-                        <div style="font-weight: 700; display:flex; align-items:center; gap:8px; margin-bottom: 6px;">
-                            <i class="fa-solid fa-circle-exclamation"></i> <span>Terdapat kesalahan validasi input:</span>
-                        </div>
-                        <ul style="margin: 0; padding-left: 24px; font-weight: 500;">
-                            @foreach($errors->all() as $err)
-                                <li>{{ $err }}</li>
-                            @endforeach
-                        </ul>
+                <div class="pkg-alert-error" style="background:#fef2f2;border:1px solid #fecaca;border-left:5px solid #ef4444;color:#b91c1c;padding:14px 18px;border-radius:14px;margin-bottom:20px;font-size:14px;">
+                    <div style="font-weight: 700; display:flex; align-items:center; gap:8px; margin-bottom: 6px;">
+                        <i class="fa-solid fa-circle-exclamation"></i> <span>Terdapat kesalahan validasi input:</span>
                     </div>
+                    <ul style="margin: 0; padding-left: 24px; font-weight: 500;">
+                        @foreach($errors->all() as $err)
+                        <li>{{ $err }}</li>
+                        @endforeach
+                    </ul>
+                </div>
                 @endif
 
                 <form
@@ -774,14 +819,14 @@
                     {{-- Hidden: itinerary dalam format JSON --}}
                     <input type="hidden" id="itineraryJsonInput" name="itinerary">
 
-                    
+
                     <!-- 1. Tambah Gambar -->
                     <div class="package-form-card">
                         <h3 class="form-section-heading">1. Tambah Gambar</h3>
                         <div class="upload-dropzone" id="packageDropzone" onclick="document.getElementById('packageImageInput').click();">
                             <input type="file" id="packageImageInput" name="gambar" accept="image/png, image/jpeg, image/webp" style="display: none;" onchange="handlePackageImageSelect(this)">
 
-                            
+
                             <div class="upload-dropzone-content" id="uploadPlaceholderContent">
                                 <div class="upload-icon-circle">
                                     <i class="fa-solid fa-cloud-arrow-up"></i>
@@ -935,7 +980,7 @@
                         <h3 class="form-section-heading">1. Ubah Gambar</h3>
                         <div class="upload-dropzone" id="editPackageDropzone" onclick="document.getElementById('editPackageImageInput').click();">
                             <input type="file" id="editPackageImageInput" name="gambar" accept="image/png, image/jpeg, image/webp" style="display: none;" onchange="handleEditPackageImageSelect(this)">
-                            
+
                             <div class="upload-dropzone-content" id="editUploadPlaceholderContent" style="display: none;">
                                 <div class="upload-icon-circle">
                                     <i class="fa-solid fa-cloud-arrow-up"></i>
@@ -1093,41 +1138,41 @@
                             </thead>
                             <tbody>
                                 @forelse($orders as $ord)
-                                    @php
-                                        $statusLower = strtolower($ord->status);
-                                        $statusBadgeClass = ($statusLower === 'selesai' || $statusLower === 'disetujui') ? 'completed' : 'pending';
-                                        $statusLabel = ($statusLower === 'selesai') ? 'Selesai' : (($statusLower === 'disetujui') ? 'Disetujui' : 'Dipending');
-                                        $createdDateStr = \Carbon\Carbon::parse($ord->created_at)->translatedFormat('d F Y');
-                                    @endphp
-                                    <tr>
-                                        <td>
-                                            <div class="table-text-main">{{ $ord->nama_pemesan }}</div>
-                                            <div class="table-text-sub">{{ $ord->nomor_hp }}</div>
-                                        </td>
-                                        <td>
-                                            <div class="table-text-main">{{ $ord->nama_paket }}</div>
-                                            <div class="table-text-sub">{{ $ord->kota_keberangkatan }}</div>
-                                        </td>
-                                        <td>
-                                            <div class="table-text-main">{{ $createdDateStr }}</div>
-                                            <div class="table-text-sub">{{ $ord->tanggal_keberangkatan }}</div>
-                                        </td>
-                                        <td>{{ $ord->jumlah_peserta }} Orang</td>
-                                        <td><strong>Rp. {{ number_format($ord->total_pembayaran, 0, ',', '.') }}</strong></td>
-                                        <td><span class="badge-status {{ $statusBadgeClass }}" data-order-badge="{{ $ord->id }}">{{ $statusLabel }}</span></td>
-                                        <td>
-                                            <button type="button" class="btn-detail-outline" onclick="showOrderDetail('{{ $ord->id }}')">
-                                                Lihat Detail
-                                            </button>
-                                        </td>
-                                    </tr>
+                                @php
+                                $statusLower = strtolower($ord->status);
+                                $statusBadgeClass = ($statusLower === 'selesai' || $statusLower === 'disetujui') ? 'completed' : 'pending';
+                                $statusLabel = ($statusLower === 'selesai') ? 'Selesai' : (($statusLower === 'disetujui') ? 'Disetujui' : 'Dipending');
+                                $createdDateStr = \Carbon\Carbon::parse($ord->created_at)->translatedFormat('d F Y');
+                                @endphp
+                                <tr>
+                                    <td>
+                                        <div class="table-text-main">{{ $ord->nama_pemesan }}</div>
+                                        <div class="table-text-sub">{{ $ord->nomor_hp }}</div>
+                                    </td>
+                                    <td>
+                                        <div class="table-text-main">{{ $ord->nama_paket }}</div>
+                                        <div class="table-text-sub">{{ $ord->kota_keberangkatan }}</div>
+                                    </td>
+                                    <td>
+                                        <div class="table-text-main">{{ $createdDateStr }}</div>
+                                        <div class="table-text-sub">{{ $ord->tanggal_keberangkatan }}</div>
+                                    </td>
+                                    <td>{{ $ord->jumlah_peserta }} Orang</td>
+                                    <td><strong>Rp. {{ number_format($ord->total_pembayaran, 0, ',', '.') }}</strong></td>
+                                    <td><span class="badge-status {{ $statusBadgeClass }}" data-order-badge="{{ $ord->id }}">{{ $statusLabel }}</span></td>
+                                    <td>
+                                        <button type="button" class="btn-detail-outline" onclick="showOrderDetail('{{ $ord->id }}')">
+                                            Lihat Detail
+                                        </button>
+                                    </td>
+                                </tr>
                                 @empty
-                                    <tr>
-                                        <td colspan="7" style="text-align: center; padding: 30px; color: #64748b;">
-                                            <i class="fa-solid fa-folder-open" style="font-size: 24px; margin-bottom: 8px; display: block; color: #94a3b8;"></i>
-                                            Belum ada riwayat pemesanan.
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 30px; color: #64748b;">
+                                        <i class="fa-solid fa-folder-open" style="font-size: 24px; margin-bottom: 8px; display: block; color: #94a3b8;"></i>
+                                        Belum ada riwayat pemesanan.
+                                    </td>
+                                </tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -1165,14 +1210,14 @@
 
                     {{-- Feedback Alerts --}}
                     @if(session('success'))
-                        <div class="pkg-alert-success" style="background:#f0fdf4;border:1px solid #bbf7d0;border-left:5px solid #16a34a;color:#15803d;padding:12px 16px;border-radius:12px;margin-bottom:20px;font-weight:600;font-size:13px;display:flex;align-items:center;gap:10px;">
-                            <i class="fa-solid fa-circle-check"></i> <span>{{ session('success') }}</span>
-                        </div>
+                    <div class="pkg-alert-success" style="background:#f0fdf4;border:1px solid #bbf7d0;border-left:5px solid #16a34a;color:#15803d;padding:12px 16px;border-radius:12px;margin-bottom:20px;font-weight:600;font-size:13px;display:flex;align-items:center;gap:10px;">
+                        <i class="fa-solid fa-circle-check"></i> <span>{{ session('success') }}</span>
+                    </div>
                     @endif
                     @if(session('error'))
-                        <div class="pkg-alert-error" style="background:#fef2f2;border:1px solid #fecaca;border-left:5px solid #ef4444;color:#b91c1c;padding:12px 16px;border-radius:12px;margin-bottom:20px;font-weight:600;font-size:13px;display:flex;align-items:center;gap:10px;">
-                            <i class="fa-solid fa-triangle-exclamation"></i> <span>{{ session('error') }}</span>
-                        </div>
+                    <div class="pkg-alert-error" style="background:#fef2f2;border:1px solid #fecaca;border-left:5px solid #ef4444;color:#b91c1c;padding:12px 16px;border-radius:12px;margin-bottom:20px;font-weight:600;font-size:13px;display:flex;align-items:center;gap:10px;">
+                        <i class="fa-solid fa-triangle-exclamation"></i> <span>{{ session('error') }}</span>
+                    </div>
                     @endif
 
                     <!-- Stats Badges & Search Filter Controls -->
@@ -1210,112 +1255,118 @@
                             </thead>
                             <tbody id="userTableBody">
                                 @forelse($users as $usr)
-                                    @php
-                                        $currentUserId = session('user.id');
-                                        $currentUserEmail = session('user.email');
-                                        $isSelf = ($usr->id == $currentUserId || $usr->email == $currentUserEmail);
-                                        $roleLower = strtolower($usr->role ?? 'user');
-                                        $joinedDate = $usr->created_at ? \Carbon\Carbon::parse($usr->created_at)->translatedFormat('d M Y') : '-';
-                                        
-                                        $initials = strtoupper(substr($usr->name, 0, 1));
-                                        $avatarBg = ($roleLower === 'admin') ? 'linear-gradient(135deg, #f43f5e, #e11d48)' : 'linear-gradient(135deg, #0ea5e9, #0284c7)';
-                                    @endphp
-                                    <tr class="user-row" 
-                                        data-id="{{ $usr->id }}" 
-                                        data-name="{{ strtolower($usr->name) }}" 
-                                        data-email="{{ strtolower($usr->email) }}" 
-                                        data-role="{{ $roleLower }}">
-                                        <td>
-                                            <span class="user-id-badge">#{{ $usr->id }}</span>
-                                        </td>
-                                        <td>
-                                            <div style="display: flex; align-items: center; gap: 10px;">
-                                                <div class="user-avatar-initial" style="background: {{ $avatarBg }};">
-                                                    {{ $initials }}
-                                                </div>
-                                                <div>
-                                                    <div class="table-text-main" style="display: flex; align-items: center; gap: 6px;">
-                                                        <span>{{ $usr->name }}</span>
-                                                        @if($isSelf)
-                                                            <span class="badge-self-user">Anda</span>
-                                                        @endif
-                                                    </div>
-                                                    <div class="table-text-sub">Akun {{ ucfirst($roleLower) }}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="table-text-main" style="color: #475569; font-weight: 500;">
-                                                <i class="fa-regular fa-envelope" style="color: #94a3b8; margin-right: 5px;"></i>
-                                                {{ $usr->email }}
-                                            </div>
-                                        </td>
-                                        <td>
+                                @php
+                                $currentUserId = session('user.id');
+                                $currentUserEmail = session('user.email');
+                                $isSelf = ($usr->id == $currentUserId || $usr->email == $currentUserEmail);
+                                $roleLower = strtolower($usr->role ?? 'user');
+                                $joinedDate = $usr->created_at ? \Carbon\Carbon::parse($usr->created_at)->translatedFormat('d M Y') : '-';
+
+                                $initials = strtoupper(substr($usr->name, 0, 1));
+                                $avatarBg = ($roleLower === 'admin') ? 'linear-gradient(135deg, #f43f5e, #e11d48)' : 'linear-gradient(135deg, #0ea5e9, #0284c7)';
+                                @endphp
+                                <tr class="user-row"
+                                    data-id="{{ $usr->id }}"
+                                    data-name="{{ strtolower($usr->name) }}"
+                                    data-email="{{ strtolower($usr->email) }}"
+                                    data-role="{{ $roleLower }}">
+                                    <td>
+                                        <span class="user-id-badge">#{{ $usr->id }}</span>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 10px;">
                                             @if($roleLower === 'admin')
-                                                <span class="badge-user-role admin">
-                                                    <i class="fa-solid fa-shield-halved"></i> Admin
-                                                </span>
+                                            <div class="user-avatar-initial" style="background: linear-gradient(135deg, #f43f5e, #e11d48);">
+                                                {{ $initials }}
+                                            </div>
                                             @else
-                                                <span class="badge-user-role user">
-                                                    <i class="fa-solid fa-user"></i> User
-                                                </span>
+                                            <div class="user-avatar-initial" style="background: linear-gradient(135deg, #0ea5e9, #0284c7);">
+                                                {{ $initials }}
+                                            </div>
                                             @endif
-                                        </td>
-                                        <td>
-                                            <div class="table-text-main" style="font-size: 11px; color: #64748b;">
-                                                {{ $joinedDate }}
+                                            <div>
+                                                <div class="table-text-main" style="display: flex; align-items: center; gap: 6px;">
+                                                    <span>{{ $usr->name }}</span>
+                                                    @if($isSelf)
+                                                    <span class="badge-self-user">Anda</span>
+                                                    @endif
+                                                </div>
+                                                <div class="table-text-sub">Akun {{ ucfirst($roleLower) }}</div>
                                             </div>
-                                        </td>
-                                        <td>
-                                            <div class="user-action-buttons">
-                                                <!-- 1. Tombol Ubah Role -->
-                                                @if($isSelf && $roleLower === 'admin')
-                                                    <button type="button" class="btn-action-btn btn-role-disabled" title="Tidak dapat mengubah role akun sendiri saat login" disabled>
-                                                        <i class="fa-solid fa-lock"></i> Ubah Role
-                                                    </button>
-                                                @else
-                                                    <form action="{{ route('admin.users.updateRole', $usr->id) }}" method="POST" style="margin: 0; display: inline;">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        @if($roleLower === 'admin')
-                                                            <input type="hidden" name="role" value="user">
-                                                            <button type="submit" class="btn-action-btn btn-role-to-user" title="Ubah role pengguna menjadi User biasa" onclick="return confirm('Ubah role {{ addslashes($usr->name) }} menjadi User?')">
-                                                                <i class="fa-solid fa-arrow-down"></i> Ke User
-                                                            </button>
-                                                        @else
-                                                            <input type="hidden" name="role" value="admin">
-                                                            <button type="submit" class="btn-action-btn btn-role-to-admin" title="Tingkatkan role pengguna menjadi Admin" onclick="return confirm('Tingkatkan {{ addslashes($usr->name) }} menjadi Admin?')">
-                                                                <i class="fa-solid fa-arrow-up"></i> Ke Admin
-                                                            </button>
-                                                        @endif
-                                                    </form>
-                                                @endif
-
-                                                <!-- 2. Tombol Edit -->
-                                                <button type="button" class="btn-action-btn btn-edit-user" onclick="openEditUserModal({{ $usr->id }}, '{{ addslashes($usr->name) }}', '{{ addslashes($usr->email) }}', '{{ $roleLower }}')" title="Edit Nama, Email, Role, atau Password">
-                                                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="table-text-main" style="color: #475569; font-weight: 500;">
+                                            <i class="fa-regular fa-envelope" style="color: #94a3b8; margin-right: 5px;"></i>
+                                            {{ $usr->email }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if($roleLower === 'admin')
+                                        <span class="badge-user-role admin">
+                                            <i class="fa-solid fa-shield-halved"></i> Admin
+                                        </span>
+                                        @else
+                                        <span class="badge-user-role user">
+                                            <i class="fa-solid fa-user"></i> User
+                                        </span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div class="table-text-main" style="font-size: 11px; color: #64748b;">
+                                            {{ $joinedDate }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-action-buttons">
+                                            <!-- 1. Tombol Ubah Role -->
+                                            @if($isSelf && $roleLower === 'admin')
+                                            <button type="button" class="btn-action-btn btn-role-disabled" title="Tidak dapat mengubah role akun sendiri saat login" disabled>
+                                                <i class="fa-solid fa-lock"></i> Ubah Role
+                                            </button>
+                                            @else
+                                            <form action="{{ route('admin.users.updateRole', $usr->id) }}" method="POST" style="margin: 0; display: inline;">
+                                                @csrf
+                                                @method('PATCH')
+                                                @if($roleLower === 'admin')
+                                                <input type="hidden" name="role" value="user">
+                                                <button type="submit" class="btn-action-btn btn-role-to-user" title="Ubah role pengguna menjadi User biasa" onclick="return confirm('Ubah role pengguna ini menjadi User?');">
+                                                    <i class="fa-solid fa-arrow-down"></i> Ke User
                                                 </button>
-
-                                                <!-- 3. Tombol Hapus -->
-                                                @if($isSelf)
-                                                    <button type="button" class="btn-action-btn btn-delete-disabled" title="Tidak dapat menghapus akun sendiri saat login" disabled>
-                                                        <i class="fa-solid fa-trash-can"></i> Hapus
-                                                    </button>
                                                 @else
-                                                    <button type="button" class="btn-action-btn btn-delete-user" onclick="openDeleteUserModal({{ $usr->id }}, '{{ addslashes($usr->name) }}', '{{ $roleLower }}')" title="Hapus Akun Pengguna">
-                                                        <i class="fa-solid fa-trash-can"></i> Hapus
-                                                    </button>
+                                                <input type="hidden" name="role" value="admin">
+                                                <button type="submit" class="btn-action-btn btn-role-to-admin" title="Tingkatkan role pengguna menjadi Admin" onclick="return confirm('Tingkatkan role pengguna ini menjadi Admin?');">
+                                                    <i class="fa-solid fa-arrow-up"></i> Ke Admin
+                                                </button>
                                                 @endif
-                                            </div>
-                                        </td>
-                                    </tr>
+                                            </form>
+                                            @endif
+
+                                            <!-- 2. Tombol Edit -->
+                                            <button type="button" class="btn-action-btn btn-edit-user" onclick="openEditUserModal('{{ $usr->id }}', '{{ addslashes($usr->name) }}', '{{ addslashes($usr->email) }}', '{{ $roleLower }}')" title="Edit Nama, Email, Role, atau Password">
+                                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                                            </button>
+
+                                            <!-- 3. Tombol Hapus -->
+                                            @if($isSelf)
+                                            <button type="button" class="btn-action-btn btn-delete-disabled" title="Tidak dapat menghapus akun sendiri saat login" disabled>
+                                                <i class="fa-solid fa-trash-can"></i> Hapus
+                                            </button>
+                                            @else
+                                            <button type="button" class="btn-action-btn btn-delete-user" onclick="openDeleteUserModal('{{ $usr->id }}', '{{ addslashes($usr->name) }}', '{{ $roleLower }}')" title="Hapus Akun Pengguna">
+                                                <i class="fa-solid fa-trash-can"></i> Hapus
+                                            </button>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
                                 @empty
-                                    <tr id="emptyUserRow">
-                                        <td colspan="6" style="text-align: center; padding: 40px 20px; color: #64748b;">
-                                            <i class="fa-solid fa-users-slash" style="font-size: 32px; color: #94a3b8; margin-bottom: 10px; display: block;"></i>
-                                            Belum ada pengguna yang terdaftar di sistem.
-                                        </td>
-                                    </tr>
+                                <tr id="emptyUserRow">
+                                    <td colspan="6" style="text-align: center; padding: 40px 20px; color: #64748b;">
+                                        <i class="fa-solid fa-users-slash" style="font-size: 32px; color: #94a3b8; margin-bottom: 10px; display: block;"></i>
+                                        Belum ada pengguna yang terdaftar di sistem.
+                                    </td>
+                                </tr>
                                 @endforelse
                                 <tr id="noSearchResultRow" style="display: none;">
                                     <td colspan="6" style="text-align: center; padding: 36px 20px; color: #64748b;">
@@ -1389,61 +1440,61 @@
                     </div>
 
                     @if(isset($adminWishlists) && $adminWishlists->count() > 0)
-                        <div class="wishlist-grid" id="adminWishlistGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 18px;">
-                            @foreach($adminWishlists as $wish)
-                                @php
-                                    $pkg = $wish->package;
-                                @endphp
-                                @if($pkg)
-                                    <div class="wishlist-card" id="adminWishlistCard-{{ $pkg->slug }}" data-slug="{{ $pkg->slug }}" style="background: #ffffff; border-radius: 18px; border: 1px solid #e2e8f0; overflow: hidden; display: flex; flex-direction: column; transition: all 0.3s ease; position: relative; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);">
-                                        <div style="position: relative; height: 170px; background: #f1f5f9; overflow: hidden;">
-                                            <img src="{{ asset($pkg->gambar_url) }}" alt="{{ $pkg->nama_paket }}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null;this.src='{{ asset('img/no-image.jpg') }}';">
-                                            <span style="position: absolute; top: 12px; left: 12px; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); color: #ffffff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">
-                                                {{ strtoupper($pkg->durasi ?? '1 HARI') }}
-                                            </span>
-                                            <button type="button" title="Hapus dari Wishlist" aria-label="Hapus dari Wishlist" onclick="removeFromAdminWishlist('{{ $pkg->slug }}')" style="position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(6px); border: 1px solid rgba(226, 232, 240, 0.8); color: #ef4444; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
-                                                <i class="fa-solid fa-heart-crack"></i>
-                                            </button>
-                                        </div>
-                                        <div style="padding: 16px 18px 18px; display: flex; flex-direction: column; flex: 1;">
-                                            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #ea580c; letter-spacing: 0.5px; margin-bottom: 4px;">
-                                                {{ $pkg->kategori ?? 'Tour Wisata' }}
-                                            </span>
-                                            <h4 style="font-size: 15px; font-weight: 700; color: #0f172a; line-height: 1.35; margin-bottom: 8px;" title="{{ $pkg->nama_paket }}">
-                                                {{ $pkg->nama_paket }}
-                                            </h4>
-                                            <div style="font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 6px; margin-bottom: 14px;">
-                                                <i class="fa-solid fa-location-dot" style="color: #ea580c;"></i>
-                                                <span>{{ $pkg->destinasi ?? 'Indonesia' }}</span>
-                                            </div>
-                                            <div style="margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 12px; border-top: 1px solid #f1f5f9;">
-                                                <div>
-                                                    <div style="font-size: 11px; color: #64748b; font-weight: 600;">Mulai dari</div>
-                                                    <div style="font-size: 15px; font-weight: 800; color: #ea580c;">Rp. {{ number_format($pkg->harga, 0, ',', '.') }}</div>
-                                                </div>
-                                                <a href="{{ url('/paket-wisata/' . $pkg->slug) }}" target="_blank" style="padding: 8px 14px; border-radius: 9999px; background: #ea580c; color: #ffffff; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
-                                                    <span>Lihat</span>
-                                                    <i class="fa-solid fa-arrow-right" style="font-size: 11px;"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                            @endforeach
-                        </div>
-                    @else
-                        <div id="adminWishlistEmptyState" style="text-align: center; padding: 48px 16px; color: #64748b;">
-                            <div style="width: 60px; height: 60px; border-radius: 50%; background: #fff2eb; color: #ea580c; display: inline-flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 14px;">
-                                <i class="fa-regular fa-heart"></i>
+                    <div class="wishlist-grid" id="adminWishlistGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 18px;">
+                        @foreach($adminWishlists as $wish)
+                        @php
+                        $pkg = $wish->package;
+                        @endphp
+                        @if($pkg)
+                        <div class="wishlist-card" id="adminWishlistCard-{{ $pkg->slug }}" data-slug="{{ $pkg->slug }}" style="background: #ffffff; border-radius: 18px; border: 1px solid #e2e8f0; overflow: hidden; display: flex; flex-direction: column; transition: all 0.3s ease; position: relative; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);">
+                            <div style="position: relative; height: 170px; background: #f1f5f9; overflow: hidden;">
+                                <img src="{{ asset($pkg->gambar_url) }}" alt="{{ $pkg->nama_paket }}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null;this.src='/images/jogja.jpg';">
+                                <span style="position: absolute; top: 12px; left: 12px; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); color: #ffffff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;">
+                                    {{ strtoupper($pkg->durasi ?? '1 HARI') }}
+                                </span>
+                                <button type="button" title="Hapus dari Wishlist" aria-label="Hapus dari Wishlist" onclick="removeFromAdminWishlist('{{ $pkg->slug }}')" style="position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(6px); border: 1px solid rgba(226, 232, 240, 0.8); color: #ef4444; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+                                    <i class="fa-solid fa-heart-crack"></i>
+                                </button>
                             </div>
-                            <h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Belum ada paket wisata di Wishlist</h4>
-                            <p style="margin: 0; font-size: 13.5px; color: #64748b; max-width: 400px; margin: 0 auto;">
-                                Klik ikon love pada paket wisata untuk menambahkannya ke daftar wishlist Anda.
-                            </p>
-                            <a href="{{ url('/paket-wisata') }}" class="btn-step-primary" style="display: inline-flex; margin-top: 18px; text-decoration: none; padding: 10px 24px; font-size: 13px;">
-                                <i class="fa-solid fa-compass" style="margin-right: 6px;"></i> Jelajahi Paket Wisata
-                            </a>
+                            <div style="padding: 16px 18px 18px; display: flex; flex-direction: column; flex: 1;">
+                                <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #ea580c; letter-spacing: 0.5px; margin-bottom: 4px;">
+                                    {{ $pkg->kategori ?? 'Tour Wisata' }}
+                                </span>
+                                <h4 style="font-size: 15px; font-weight: 700; color: #0f172a; line-height: 1.35; margin-bottom: 8px;" title="{{ $pkg->nama_paket }}">
+                                    {{ $pkg->nama_paket }}
+                                </h4>
+                                <div style="font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 6px; margin-bottom: 14px;">
+                                    <i class="fa-solid fa-location-dot" style="color: #ea580c;"></i>
+                                    <span>{{ $pkg->destinasi ?? 'Indonesia' }}</span>
+                                </div>
+                                <div style="margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 12px; border-top: 1px solid #f1f5f9;">
+                                    <div>
+                                        <div style="font-size: 11px; color: #64748b; font-weight: 600;">Mulai dari</div>
+                                        <div style="font-size: 15px; font-weight: 800; color: #ea580c;">Rp. {{ number_format($pkg->harga, 0, ',', '.') }}</div>
+                                    </div>
+                                    <a href="{{ url('/paket-wisata/' . $pkg->slug) }}" target="_blank" style="padding: 8px 14px; border-radius: 9999px; background: #ea580c; color: #ffffff; font-size: 12px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                                        <span>Lihat</span>
+                                        <i class="fa-solid fa-arrow-right" style="font-size: 11px;"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
+                        @endif
+                        @endforeach
+                    </div>
+                    @else
+                    <div id="adminWishlistEmptyState" style="text-align: center; padding: 48px 16px; color: #64748b;">
+                        <div style="width: 60px; height: 60px; border-radius: 50%; background: #fff2eb; color: #ea580c; display: inline-flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 14px;">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                        <h4 style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Belum ada paket wisata di Wishlist</h4>
+                        <p style="margin: 0; font-size: 13.5px; color: #64748b; max-width: 400px; margin: 0 auto;">
+                            Klik ikon love pada paket wisata untuk menambahkannya ke daftar wishlist Anda.
+                        </p>
+                        <a href="{{ url('/paket-wisata') }}" class="btn-step-primary" style="display: inline-flex; margin-top: 18px; text-decoration: none; padding: 10px 24px; font-size: 13px;">
+                            <i class="fa-solid fa-compass" style="margin-right: 6px;"></i> Jelajahi Paket Wisata
+                        </a>
+                    </div>
                     @endif
                 </div>
             </div>
@@ -1688,56 +1739,96 @@
 <!-- ==================== TOAST NOTIFICATION CONTAINER ==================== -->
 <div class="admin-toast-container" id="adminToastContainer"></div>
 
+<!-- ==================== DATASET DARI DATABASE (JSON) ==================== -->
+@php
+    $orderDatabaseList = [];
+    $allPaketList = [];
+    try {
+        $allPaketList = \App\Http\Controllers\PaketWisataController::getPaketData();
+    } catch (\Throwable $e) {
+        $allPaketList = [];
+    }
+
+    if (isset($orders)) {
+        foreach($orders as $ord) {
+            $statusLower = strtolower($ord->status ?? '');
+            $statusFormatted = ($statusLower === 'selesai') ? 'Selesai' : (($statusLower === 'disetujui') ? 'Disetujui' : 'Dipending');
+            $pkg = $allPaketList[$ord->paket_slug] ?? null;
+            $pkgImage = $pkg['image'] ?? 'images/jogja.jpg';
+            $pkgDuration = $pkg['duration'] ?? '1 Hari';
+            $pkgHotel = $pkg['hotel_info'] ?? 'Hotel Rekomendasi';
+            $pkgMeal = $pkg['meal_info'] ?? 'Makan Sesuai Program';
+            $pricePerPerson = $pkg['price'] ?? ('Rp ' . number_format(($ord->total_pembayaran ?? 0) / max(1, $ord->jumlah_peserta ?? 1), 0, ',', '.'));
+            $totalFormatted = 'Rp. ' . number_format($ord->total_pembayaran ?? 0, 0, ',', '.');
+            $createdCarbon = \Carbon\Carbon::parse($ord->created_at);
+
+            $orderDatabaseList[(string)$ord->id] = [
+                'id' => (int)$ord->id,
+                'orderDate' => $createdCarbon->translatedFormat("d F Y"),
+                'status' => $statusFormatted,
+                'pkgName' => (string)($ord->nama_paket ?? ''),
+                'pkgDuration' => (string)$pkgDuration,
+                'pkgHotel' => (string)$pkgHotel,
+                'pkgMeal' => (string)$pkgMeal,
+                'pkgImage' => asset($pkgImage),
+                'custName' => (string)($ord->nama_pemesan ?? ''),
+                'custEmail' => (string)($ord->email_pemesan ?? ''),
+                'custPhone' => (string)($ord->nomor_hp ?? ''),
+                'custAddress' => (string)($ord->kota_keberangkatan ?? ''),
+                'custNotes' => (string)($ord->catatan ?: "Tidak ada catatan"),
+                'bookingDate' => $createdCarbon->translatedFormat("d F Y"),
+                'departDate' => (string)($ord->tanggal_keberangkatan ?? ''),
+                'departCity' => (string)($ord->kota_keberangkatan ?? ''),
+                'pricePerPerson' => $pricePerPerson,
+                'participants' => ($ord->jumlah_peserta ?? 1) . ' Orang',
+                'payMethod' => ($ord->skema_pembayaran === "dp30") ? "Down Payment (DP 30%)" : "Pembayaran Lunas (100%)",
+                'payStatus' => 'Berhasil',
+                'payDate' => $createdCarbon->translatedFormat("d F Y"),
+                'totalPay' => $totalFormatted,
+                'receiptAmount' => $totalFormatted,
+                'receiptTime' => $createdCarbon->format("d M Y") . " \u2022 " . $createdCarbon->format("H:i"),
+                'receiptId' => 'ORD-' . str_pad($ord->id, 8, "0", STR_PAD_LEFT),
+                'receiptTx' => 'TX-' . $ord->id . '-' . strtotime($ord->created_at),
+                'receiptMerchant' => 'GO Travel Indonesia',
+                'receiptMethod' => 'WhatsApp / Transfer',
+            ];
+        }
+    }
+
+    $dbPackagesList = [];
+    if (isset($packages) && count($packages) > 0) {
+        foreach($packages as $dbPkg) {
+            $dbPackagesList[$dbPkg->slug] = [
+                'id' => (int)$dbPkg->id,
+                'slug' => (string)$dbPkg->slug,
+                'name' => (string)($dbPkg->nama_paket ?? ''),
+                'price' => (string)($dbPkg->formatted_harga ?? ''),
+                'location' => (string)($dbPkg->destinasi ?? ''),
+                'destination' => (string)($dbPkg->destinasi ?? ''),
+                'category' => (string)($dbPkg->kategori ?: 'Wisata Alam'),
+                'duration' => (string)($dbPkg->durasi ?? ''),
+                'meal' => (string)($dbPkg->makan ?: 'Makan Sesuai Program'),
+                'image' => (string)($dbPkg->gambar_url ?? ''),
+                'description' => (string)($dbPkg->deskripsi ?: ''),
+                'itinerary' => $dbPkg->itinerary ?: [],
+            ];
+        }
+    }
+@endphp
+
+<script id="adminOrdersData" type="application/json">
+{!! json_encode($orderDatabaseList, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) !!}
+</script>
+<script id="adminPackagesData" type="application/json">
+{!! json_encode($dbPackagesList, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) !!}
+</script>
+
 <!-- ==================== SCRIPT LOGIKA PROFILE & ADMIN DASHBOARD ==================== -->
 <script>
     // Master Dataset of Orders dynamically generated from database
-    const orderDatabase = {
-        @foreach($orders as $ord)
-            @php
-                $statusLower = strtolower($ord->status);
-                $statusFormatted = ($statusLower === 'selesai') ? 'Selesai' : (($statusLower === 'disetujui') ? 'Disetujui' : 'Dipending');
-                $allPaket = \App\Http\Controllers\PaketWisataController::getPaketData();
-                $pkg = $allPaket[$ord->paket_slug] ?? null;
-                $pkgImage = $pkg['image'] ?? 'images/jogja.jpg';
-                $pkgDuration = $pkg['duration'] ?? '1 Hari';
-                $pkgHotel = $pkg['hotel_info'] ?? 'Hotel Rekomendasi';
-                $pkgMeal = $pkg['meal_info'] ?? 'Makan Sesuai Program';
-                $pricePerPerson = $pkg['price'] ?? ('Rp ' . number_format($ord->total_pembayaran / max(1, $ord->jumlah_peserta), 0, ',', '.'));
-            @endphp
-            '{{ $ord->id }}': {
-                id: {{ $ord->id }},
-                orderDate: '{{ \Carbon\Carbon::parse($ord->created_at)->translatedFormat("d F Y") }}',
-                status: '{{ $statusFormatted }}',
-                pkgName: '{{ addslashes($ord->nama_paket) }}',
-                pkgDuration: '{{ addslashes($pkgDuration) }}',
-                pkgHotel: '{{ addslashes($pkgHotel) }}',
-                pkgMeal: '{{ addslashes($pkgMeal) }}',
-                pkgImage: '{{ asset($pkgImage) }}',
-                custName: '{{ addslashes($ord->nama_pemesan) }}',
-                custEmail: '{{ addslashes($ord->email_pemesan) }}',
-                custPhone: '{{ addslashes($ord->nomor_hp) }}',
-                custAddress: '{{ addslashes($ord->kota_keberangkatan) }}',
-                custNotes: '{{ addslashes($ord->catatan ?: "Tidak ada catatan") }}',
-                bookingDate: '{{ \Carbon\Carbon::parse($ord->created_at)->translatedFormat("d F Y") }}',
-                departDate: '{{ addslashes($ord->tanggal_keberangkatan) }}',
-                departCity: '{{ addslashes($ord->kota_keberangkatan) }}',
-                pricePerPerson: '{{ $pricePerPerson }}',
-                participants: '{{ $ord->jumlah_peserta }} Orang',
-                payMethod: '{{ $ord->skema_pembayaran === "dp30" ? "Down Payment (DP 30%)" : "Pembayaran Lunas (100%)" }}',
-                payStatus: 'Berhasil',
-                payDate: '{{ \Carbon\Carbon::parse($ord->created_at)->translatedFormat("d F Y") }}',
-                totalPay: 'Rp. {{ number_format($ord->total_pembayaran, 0, ',', '.') }}',
-                receiptAmount: 'Rp. {{ number_format($ord->total_pembayaran, 0, ',', '.') }}',
-                receiptTime: '{{ \Carbon\Carbon::parse($ord->created_at)->format("d M Y • H:i") }}',
-                receiptId: 'ORD-{{ str_pad($ord->id, 8, "0", STR_PAD_LEFT) }}',
-                receiptTx: 'TX-{{ $ord->id }}-{{ strtotime($ord->created_at) }}',
-                receiptMerchant: 'GO Travel Indonesia',
-                receiptMethod: 'WhatsApp / Transfer'
-            },
-        @endforeach
-    };
-
-    let currentViewingOrderKey = Object.keys(orderDatabase)[0] || '';
+    const rawOrdersData = document.getElementById('adminOrdersData');
+    const orderDatabase = rawOrdersData ? JSON.parse(rawOrdersData.textContent || '{}') : {};
+let currentViewingOrderKey = Object.keys(orderDatabase)[0] || '';
 
     // Tab Navigation Logic
     document.addEventListener('DOMContentLoaded', function() {
@@ -1871,19 +1962,28 @@
             meal: 'Makan 4x',
             image: '{{ asset("images/jogja.jpg") }}',
             description: 'Jelajahi keindahan budaya, sejarah, dan pesona alam kota Yogyakarta. Mengunjungi Candi Prambanan, Pantai Parangtritis, Tebing Breksi, hingga suasana malam syahdu di kawasan Malioboro.',
-            itinerary: [
-                {
+            itinerary: [{
                     day: 1,
-                    slots: [
-                        { time: '08.00 - 12.00', activity: 'Tiba di Jogja, explore Candi Prambanan & Tebing Breksi' },
-                        { time: '13.00 - 17.00', activity: 'Makan siang kuliner khas Gudeg & sunset di Pantai Parangtritis' }
+                    slots: [{
+                            time: '08.00 - 12.00',
+                            activity: 'Tiba di Jogja, explore Candi Prambanan & Tebing Breksi'
+                        },
+                        {
+                            time: '13.00 - 17.00',
+                            activity: 'Makan siang kuliner khas Gudeg & sunset di Pantai Parangtritis'
+                        }
                     ]
                 },
                 {
                     day: 2,
-                    slots: [
-                        { time: '08.00 - 12.00', activity: 'Keraton Ngayogyakarta & Tamansari Water Castle' },
-                        { time: '13.00 - 16.00', activity: 'Belanja oleh-oleh di Malioboro & Sentra Bakpia Pathok' }
+                    slots: [{
+                            time: '08.00 - 12.00',
+                            activity: 'Keraton Ngayogyakarta & Tamansari Water Castle'
+                        },
+                        {
+                            time: '13.00 - 16.00',
+                            activity: 'Belanja oleh-oleh di Malioboro & Sentra Bakpia Pathok'
+                        }
                     ]
                 }
             ]
@@ -1899,15 +1999,18 @@
             meal: 'Makan 1x & Snack',
             image: '{{ asset("images/bromo.jpg") }}',
             description: 'Saksikan megahnya matahari terbit (sunrise) di Penanjakan 1 Bromo dan jelajahi Pasir Berbisik, Kawah Bromo, serta Bukit Teletubbies.',
-            itinerary: [
-                {
-                    day: 1,
-                    slots: [
-                        { time: '00.30 - 04.30', activity: 'Meeting point & perjalanan jeep menuju Penanjakan Bromo' },
-                        { time: '05.00 - 09.30', activity: 'Golden Sunrise, Kawah Bromo, Pasir Berbisik & Savana Teletubbies' }
-                    ]
-                }
-            ]
+            itinerary: [{
+                day: 1,
+                slots: [{
+                        time: '00.30 - 04.30',
+                        activity: 'Meeting point & perjalanan jeep menuju Penanjakan Bromo'
+                    },
+                    {
+                        time: '05.00 - 09.30',
+                        activity: 'Golden Sunrise, Kawah Bromo, Pasir Berbisik & Savana Teletubbies'
+                    }
+                ]
+            }]
         },
         'lampung': {
             slug: 'lampung',
@@ -1920,26 +2023,36 @@
             meal: 'Makan 6x',
             image: '{{ asset("images/lampung.jpg") }}',
             description: 'Eksplorasi keindahan bahari Teluk Kiluan, Pulau Pahawang, serta snorkeling bersama ikan badut dan lumba-lumba liar.',
-            itinerary: [
-                {
+            itinerary: [{
                     day: 1,
-                    slots: [
-                        { time: '08.00 - 12.00', activity: 'Penyeberangan pelabuhan & eksplorasi Pulau Kelagian' },
-                        { time: '13.00 - 17.00', activity: 'Snorkeling di Pahawang Besar & check-in homestay' }
+                    slots: [{
+                            time: '08.00 - 12.00',
+                            activity: 'Penyeberangan pelabuhan & eksplorasi Pulau Kelagian'
+                        },
+                        {
+                            time: '13.00 - 17.00',
+                            activity: 'Snorkeling di Pahawang Besar & check-in homestay'
+                        }
                     ]
                 },
                 {
                     day: 2,
-                    slots: [
-                        { time: '06.00 - 11.00', activity: 'Dolphin tour di Teluk Kiluan melihat lumba-lumba' },
-                        { time: '13.00 - 16.30', activity: 'Laguna Gayau & bersantai di pantai pasir putih' }
+                    slots: [{
+                            time: '06.00 - 11.00',
+                            activity: 'Dolphin tour di Teluk Kiluan melihat lumba-lumba'
+                        },
+                        {
+                            time: '13.00 - 16.30',
+                            activity: 'Laguna Gayau & bersantai di pantai pasir putih'
+                        }
                     ]
                 },
                 {
                     day: 3,
-                    slots: [
-                        { time: '08.00 - 12.00', activity: 'Beli oleh-oleh kripik pisang khas Lampung & transfer kembali' }
-                    ]
+                    slots: [{
+                        time: '08.00 - 12.00',
+                        activity: 'Beli oleh-oleh kripik pisang khas Lampung & transfer kembali'
+                    }]
                 }
             ]
         },
@@ -1954,19 +2067,28 @@
             meal: 'Makan 10x',
             image: '{{ asset("images/bali.jpg") }}',
             description: 'Liburan lengkap ke Pulau Dewata: Tanah Lot, Kintamani, Pantai Melasti, Tari Kecak Uluwatu, dan sunset dinner di Jimbaran.',
-            itinerary: [
-                {
+            itinerary: [{
                     day: 1,
-                    slots: [
-                        { time: '10.00 - 14.00', activity: 'Penjemputan Bandara Ngurah Rai & check-in hotel' },
-                        { time: '15.30 - 19.00', activity: 'Sunset Tanah Lot & makan malam santai' }
+                    slots: [{
+                            time: '10.00 - 14.00',
+                            activity: 'Penjemputan Bandara Ngurah Rai & check-in hotel'
+                        },
+                        {
+                            time: '15.30 - 19.00',
+                            activity: 'Sunset Tanah Lot & makan malam santai'
+                        }
                     ]
                 },
                 {
                     day: 2,
-                    slots: [
-                        { time: '08.30 - 13.00', activity: 'Kintamani view Gunung & Danau Batur' },
-                        { time: '14.00 - 17.30', activity: 'Tegalalang Rice Terrace & Tirta Empul' }
+                    slots: [{
+                            time: '08.30 - 13.00',
+                            activity: 'Kintamani view Gunung & Danau Batur'
+                        },
+                        {
+                            time: '14.00 - 17.30',
+                            activity: 'Tegalalang Rice Terrace & Tirta Empul'
+                        }
                     ]
                 }
             ]
@@ -1982,15 +2104,18 @@
             meal: 'Makan 8x',
             image: '{{ asset("images/bandung.jpg") }}',
             description: 'Wisata sejuk Bandung & Lembang: Kawah Putih Ciwidey, Floating Market, The Great Asia Africa, dan belanja Factory Outlet.',
-            itinerary: [
-                {
-                    day: 1,
-                    slots: [
-                        { time: '08.00 - 12.30', activity: 'Wisata Kawah Putih Ciwidey & Kebun Teh Rancabali' },
-                        { time: '13.30 - 17.00', activity: 'Glamping Lakeside & Situ Patenggang' }
-                    ]
-                }
-            ]
+            itinerary: [{
+                day: 1,
+                slots: [{
+                        time: '08.00 - 12.30',
+                        activity: 'Wisata Kawah Putih Ciwidey & Kebun Teh Rancabali'
+                    },
+                    {
+                        time: '13.30 - 17.00',
+                        activity: 'Glamping Lakeside & Situ Patenggang'
+                    }
+                ]
+            }]
         },
         'malioboro': {
             slug: 'malioboro',
@@ -2003,15 +2128,18 @@
             meal: 'Makan 1x',
             image: '{{ asset("images/malioboro.jpg") }}',
             description: 'City tour Jogja menikmati suasana khas Malioboro, Titik Nol KM, Keraton Ngayogyakarta, dan Pasar Beringharjo.',
-            itinerary: [
-                {
-                    day: 1,
-                    slots: [
-                        { time: '09.00 - 12.00', activity: 'Walking tour Malioboro & Titik Nol Kilometer' },
-                        { time: '13.00 - 16.00', activity: 'Keraton & belanja batik Pasar Beringharjo' }
-                    ]
-                }
-            ]
+            itinerary: [{
+                day: 1,
+                slots: [{
+                        time: '09.00 - 12.00',
+                        activity: 'Walking tour Malioboro & Titik Nol Kilometer'
+                    },
+                    {
+                        time: '13.00 - 16.00',
+                        activity: 'Keraton & belanja batik Pasar Beringharjo'
+                    }
+                ]
+            }]
         },
         'tangkuban-perahu': {
             slug: 'tangkuban-perahu',
@@ -2024,15 +2152,18 @@
             meal: 'Makan 1x & Snack',
             image: '{{ asset("images/tangkuban.jpg") }}',
             description: 'Menikmati keindahan Kawah Ratu Tangkuban Perahu dan udara sejuk pegunungan Lembang.',
-            itinerary: [
-                {
-                    day: 1,
-                    slots: [
-                        { time: '07.00 - 11.30', activity: 'Eksplorasi Kawah Ratu & Kawah Domas' },
-                        { time: '12.30 - 15.30', activity: 'Pemandian Air Panas Ciater & Kebun Teh' }
-                    ]
-                }
-            ]
+            itinerary: [{
+                day: 1,
+                slots: [{
+                        time: '07.00 - 11.30',
+                        activity: 'Eksplorasi Kawah Ratu & Kawah Domas'
+                    },
+                    {
+                        time: '12.30 - 15.30',
+                        activity: 'Pemandian Air Panas Ciater & Kebun Teh'
+                    }
+                ]
+            }]
         },
         'pantai-pandawa': {
             slug: 'pantai-pandawa',
@@ -2045,37 +2176,31 @@
             meal: 'Makan 1x',
             image: '{{ asset("images/pandawa.jpg") }}',
             description: 'Menikmati keindahan pasir putih Pantai Pandawa, tebing kapur patung Pandawa Lima, dan water sport kano.',
-            itinerary: [
-                {
-                    day: 1,
-                    slots: [
-                        { time: '09.00 - 12.00', activity: 'Foto tebing Patung Pandawa Lima & pantai pasir putih' },
-                        { time: '13.00 - 16.00', activity: 'Bermain kano laut & bersantai di beach club' }
-                    ]
-                }
-            ]
+            itinerary: [{
+                day: 1,
+                slots: [{
+                        time: '09.00 - 12.00',
+                        activity: 'Foto tebing Patung Pandawa Lima & pantai pasir putih'
+                    },
+                    {
+                        time: '13.00 - 16.00',
+                        activity: 'Bermain kano laut & bersantai di beach club'
+                    }
+                ]
+            }]
         }
     };
 
     // Sinkronkan paket dari database ke objek JavaScript packagesDatabase
-    @if(isset($packages) && count($packages) > 0)
-        @foreach($packages as $dbPkg)
-            packagesDatabase['{{ $dbPkg->slug }}'] = {
-                id: {{ $dbPkg->id }},
-                slug: '{{ $dbPkg->slug }}',
-                name: {!! json_encode($dbPkg->nama_paket) !!},
-                price: {!! json_encode($dbPkg->formatted_harga) !!},
-                location: {!! json_encode($dbPkg->destinasi) !!},
-                destination: {!! json_encode($dbPkg->destinasi) !!},
-                category: {!! json_encode($dbPkg->kategori ?: 'Wisata Alam') !!},
-                duration: {!! json_encode($dbPkg->durasi) !!},
-                meal: {!! json_encode($dbPkg->makan ?: 'Makan Sesuai Program') !!},
-                image: {!! json_encode($dbPkg->gambar_url) !!},
-                description: {!! json_encode($dbPkg->deskripsi ?: '') !!},
-                itinerary: {!! json_encode($dbPkg->itinerary ?: []) !!}
-            };
-        @endforeach
-    @endif
+    const rawPackagesData = document.getElementById('adminPackagesData');
+    if (rawPackagesData) {
+        try {
+            const dbPackages = JSON.parse(rawPackagesData.textContent || '{}');
+            Object.assign(packagesDatabase, dbPackages);
+        } catch (e) {
+            console.error('Failed to parse packages data:', e);
+        }
+    }
 
     // ==========================================
     // ITINERARY SLOTS & DAY BUILDER HELPERS
@@ -2139,7 +2264,7 @@
         const form = document.getElementById('addPackageForm');
         if (form) form.reset();
         uploadedPackageImageSrc = '{{ asset("images/jogja.jpg") }}';
-        
+
         // Reset preview
         const previewWrap = document.getElementById('packageImagePreviewWrap');
         const placeholder = document.getElementById('uploadPlaceholderContent');
@@ -2162,7 +2287,10 @@
         const pkgSideLink = document.querySelector('.sidebar-nav-link[data-tab="tab-paket-wisata"]');
         if (pkgSideLink) pkgSideLink.classList.add('active');
 
-        window.scrollTo({ top: document.querySelector('.admin-glass-container').offsetTop - 20, behavior: 'smooth' });
+        window.scrollTo({
+            top: document.querySelector('.admin-glass-container').offsetTop - 20,
+            behavior: 'smooth'
+        });
     }
 
     function backToPackageList() {
@@ -2177,7 +2305,7 @@
                 const previewImg = document.getElementById('packageImagePreview');
                 const previewWrap = document.getElementById('packageImagePreviewWrap');
                 const placeholder = document.getElementById('uploadPlaceholderContent');
-                
+
                 if (previewImg) previewImg.src = uploadedPackageImageSrc;
                 if (previewWrap) previewWrap.style.display = 'block';
                 if (placeholder) placeholder.style.display = 'none';
@@ -2203,7 +2331,7 @@
     function addItineraryDay(initialSlots = null) {
         const itineraryContainer = document.getElementById('itineraryDaysContainer');
         const itineraryAlert = document.getElementById('itineraryEmptyAlert');
-        
+
         if (itineraryAlert) itineraryAlert.style.display = 'none';
 
         const dayCards = itineraryContainer ? itineraryContainer.querySelectorAll('.itinerary-day-card') : [];
@@ -2270,7 +2398,10 @@
                 const time = (row.querySelector('.itinerary-time-input')?.value || '').trim();
                 const act = (row.querySelector('.itinerary-act-input')?.value || '').trim();
                 if (time || act) {
-                    slots.push({ time: time, activity: act });
+                    slots.push({
+                        time: time,
+                        activity: act
+                    });
                 }
             });
 
@@ -2289,16 +2420,16 @@
         // Prevent default HTML submit so we can collect itinerary first
         if (event) event.preventDefault();
 
-        const nameInput     = document.getElementById('inputFormPkgName');
-        const priceInput    = document.getElementById('inputFormPkgPrice');
-        const destInput     = document.getElementById('inputFormPkgDest');
+        const nameInput = document.getElementById('inputFormPkgName');
+        const priceInput = document.getElementById('inputFormPkgPrice');
+        const destInput = document.getElementById('inputFormPkgDest');
         const categoryInput = document.getElementById('inputFormPkgCategory');
         const durationInput = document.getElementById('inputFormPkgDuration');
 
-        const name     = nameInput     ? nameInput.value.trim()     : '';
-        const price    = priceInput    ? priceInput.value.trim()    : '';
-        const dest     = destInput     ? destInput.value            : '';
-        const category = categoryInput ? categoryInput.value        : '';
+        const name = nameInput ? nameInput.value.trim() : '';
+        const price = priceInput ? priceInput.value.trim() : '';
+        const dest = destInput ? destInput.value : '';
+        const category = categoryInput ? categoryInput.value : '';
         const duration = durationInput ? durationInput.value.trim() : '';
 
         // Validasi sisi klien
@@ -2355,9 +2486,13 @@
                 meal: 'Makan 4x',
                 image: '{{ asset("images/jogja.jpg") }}',
                 description: 'Deskripsi paket wisata.',
-                itinerary: [
-                    { day: 1, slots: [{ time: '08.00 - 12.00', activity: 'Aktivitas tour' }] }
-                ]
+                itinerary: [{
+                    day: 1,
+                    slots: [{
+                        time: '08.00 - 12.00',
+                        activity: 'Aktivitas tour'
+                    }]
+                }]
             };
         }
 
@@ -2375,7 +2510,7 @@
         // Populate fields
         document.getElementById('editFormPkgName').value = pkg.name;
         document.getElementById('editFormPkgPrice').value = pkg.price;
-        
+
         const destSelect = document.getElementById('editFormPkgDest');
         if (destSelect) {
             destSelect.value = pkg.destination || pkg.location || 'Yogyakarta';
@@ -2412,11 +2547,17 @@
                 } else if (item.schedules && Array.isArray(item.schedules)) {
                     addEditItineraryDay(item.schedules);
                 } else if (item.time || item.activity) {
-                    addEditItineraryDay([{ time: item.time || '', activity: item.activity || '' }]);
+                    addEditItineraryDay([{
+                        time: item.time || '',
+                        activity: item.activity || ''
+                    }]);
                 }
             });
         } else {
-            addEditItineraryDay([{ time: '08.00 - 12.00', activity: 'Aktivitas wisata & eksplorasi destinasi' }]);
+            addEditItineraryDay([{
+                time: '08.00 - 12.00',
+                activity: 'Aktivitas wisata & eksplorasi destinasi'
+            }]);
         }
 
         // Switch pane to Edit Paket & keep sidebar active
@@ -2424,7 +2565,10 @@
         const pkgSideLink = document.querySelector('.sidebar-nav-link[data-tab="tab-paket-wisata"]');
         if (pkgSideLink) pkgSideLink.classList.add('active');
 
-        window.scrollTo({ top: document.querySelector('.admin-glass-container').offsetTop - 20, behavior: 'smooth' });
+        window.scrollTo({
+            top: document.querySelector('.admin-glass-container').offsetTop - 20,
+            behavior: 'smooth'
+        });
     }
 
     function backFromEditPackage() {
@@ -2440,7 +2584,7 @@
                 const previewImg = document.getElementById('editPackageImagePreview');
                 const previewWrap = document.getElementById('editPackageImagePreviewWrap');
                 const placeholder = document.getElementById('editUploadPlaceholderContent');
-                
+
                 if (previewImg) previewImg.src = editUploadedPackageImageSrc;
                 if (previewWrap) previewWrap.style.display = 'block';
                 if (placeholder) placeholder.style.display = 'none';
@@ -2466,7 +2610,7 @@
     function addEditItineraryDay(initialSlots = null) {
         const editContainer = document.getElementById('editItineraryDaysContainer');
         const editAlert = document.getElementById('editItineraryEmptyAlert');
-        
+
         if (editAlert) editAlert.style.display = 'none';
 
         const dayCards = editContainer ? editContainer.querySelectorAll('.itinerary-day-card') : [];
@@ -2637,7 +2781,10 @@
         const riwayatBtn = document.querySelector('.sidebar-nav-link[data-tab="tab-riwayat-pemesanan"]');
         if (riwayatBtn) riwayatBtn.classList.add('active');
 
-        window.scrollTo({ top: document.querySelector('.admin-glass-container').offsetTop - 20, behavior: 'smooth' });
+        window.scrollTo({
+            top: document.querySelector('.admin-glass-container').offsetTop - 20,
+            behavior: 'smooth'
+        });
     }
 
     function renderDetailOrderStatus(status) {
@@ -2714,7 +2861,9 @@
                         'X-CSRF-TOKEN': csrfToken,
                         'Accept': 'application/json'
                     },
-                    body: JSON.stringify({ status: 'disetujui' })
+                    body: JSON.stringify({
+                        status: 'disetujui'
+                    })
                 }).catch(err => console.error('Status sync error:', err));
             }
         } else if (orderData.status === 'Disetujui') {
@@ -2736,7 +2885,9 @@
                         'X-CSRF-TOKEN': csrfToken,
                         'Accept': 'application/json'
                     },
-                    body: JSON.stringify({ status: 'dipending' })
+                    body: JSON.stringify({
+                        status: 'dipending'
+                    })
                 }).catch(err => console.error('Status sync error:', err));
             }
         } else if (orderData.status === 'Selesai') {
@@ -2774,11 +2925,11 @@
 
         const toast = document.createElement('div');
         toast.className = `admin-toast toast-${type}`;
-        
-        const iconHtml = (type === 'success') 
-            ? '<i class="fa-solid fa-circle-check admin-toast-icon"></i>'
-            : '<i class="fa-solid fa-circle-info admin-toast-icon"></i>';
-            
+
+        const iconHtml = (type === 'success') ?
+            '<i class="fa-solid fa-circle-check admin-toast-icon"></i>' :
+            '<i class="fa-solid fa-circle-info admin-toast-icon"></i>';
+
         toast.innerHTML = `${iconHtml} <span>${message}</span>`;
         container.appendChild(toast);
 

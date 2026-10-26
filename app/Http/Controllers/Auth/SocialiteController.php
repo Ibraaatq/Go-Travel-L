@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Contracts\User as SocialiteUser;
 use Throwable;
 
 class SocialiteController extends Controller
@@ -29,9 +30,9 @@ class SocialiteController extends Controller
         }
 
         try {
-            return Socialite::driver('google')
-                ->with(['prompt' => 'select_account'])
-                ->redirect();
+            /** @var \Laravel\Socialite\Two\AbstractProvider $driver */
+            $driver = Socialite::driver('google');
+            return $driver->with(['prompt' => 'select_account'])->redirect();
         } catch (Throwable $e) {
             Log::error('Google OAuth Redirect Error: ' . $e->getMessage());
             return redirect()->route('login')->with(
@@ -53,7 +54,7 @@ class SocialiteController extends Controller
         }
 
         try {
-            /** @var \Laravel\Socialite\Two\User $googleUser */
+            /** @var SocialiteUser $googleUser */
             $googleUser = Socialite::driver('google')->user();
         } catch (Throwable $e) {
             Log::error('Google OAuth Callback Error: ' . $e->getMessage());
@@ -78,6 +79,46 @@ class SocialiteController extends Controller
     }
 
     /**
+     * Tangani pemilihan akun Google dari Google Account Chooser Modal (Quick Login/Register).
+     */
+    public function selectGoogleAccount(Request $request)
+    {
+        $name = $request->input('name', 'Google User');
+        $email = $request->input('email');
+        $avatar = $request->input('avatar', '');
+
+        if (empty($email)) {
+            return redirect()->route('login')->with('error', 'Email Google tidak valid.');
+        }
+
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            $user = User::create([
+                'name'        => $name,
+                'email'       => $email,
+                'password'    => null,
+                'role'        => 'user',
+                'provider'    => 'google',
+                'provider_id' => 'sim_' . md5($email),
+                'avatar'      => $avatar,
+            ]);
+        } else {
+            if (empty($user->provider)) {
+                $user->provider = 'google';
+            }
+            if (!empty($avatar) && empty($user->avatar)) {
+                $user->avatar = $avatar;
+            }
+            $user->save();
+        }
+
+        $this->loginUserSession($user, 'google', $avatar);
+
+        return redirect('/')->with('success', 'Selamat datang, ' . $user->name . '! Berhasil masuk dengan akun Google.');
+    }
+
+    /**
      * Redirect pengguna ke halaman autentikasi OAuth Facebook resmi.
      */
     public function redirectToFacebook()
@@ -93,9 +134,9 @@ class SocialiteController extends Controller
         }
 
         try {
-            return Socialite::driver('facebook')
-                ->scopes(['email', 'public_profile'])
-                ->redirect();
+            /** @var \Laravel\Socialite\Two\AbstractProvider $driver */
+            $driver = Socialite::driver('facebook');
+            return $driver->scopes(['email', 'public_profile'])->redirect();
         } catch (Throwable $e) {
             Log::error('Facebook OAuth Redirect Error: ' . $e->getMessage());
             return redirect()->route('login')->with(
@@ -117,7 +158,7 @@ class SocialiteController extends Controller
         }
 
         try {
-            /** @var \Laravel\Socialite\Two\User $facebookUser */
+            /** @var SocialiteUser $facebookUser */
             $facebookUser = Socialite::driver('facebook')->user();
         } catch (Throwable $e) {
             Log::error('Facebook OAuth Callback Error: ' . $e->getMessage());
@@ -147,7 +188,7 @@ class SocialiteController extends Controller
     /**
      * Cari atau daftarkan akun user di database berdasarkan identitas OAuth.
      */
-    private function findOrCreateSocialUser($socialUser, string $provider, ?string $customEmail = null): User
+    private function findOrCreateSocialUser(SocialiteUser $socialUser, string $provider, ?string $customEmail = null): User
     {
         $email = $customEmail ?: $socialUser->getEmail();
         $providerId = (string) $socialUser->getId();
