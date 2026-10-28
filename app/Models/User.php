@@ -39,4 +39,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Package::class, 'wishlists', 'user_id', 'package_id')->withTimestamps();
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

@@ -440,8 +440,9 @@ function handleFormSubmit(event) {
     }
 
     const formData = new FormData(form);
+    const actionUrl = form.action || '/contact';
 
-    fetch('/contact', {
+    fetch(actionUrl, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': csrfToken,
@@ -452,15 +453,35 @@ function handleFormSubmit(event) {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            const name = form.nama_lengkap.value;
+            const name = (form.name ? form.name.value : (form.nama_lengkap ? form.nama_lengkap.value : '')) || 'Pelanggan';
+            const alertBox = document.getElementById('contactFormAlert');
+            if (alertBox) {
+                alertBox.className = 'contact-alert-success';
+                alertBox.style.display = 'flex';
+                alertBox.innerHTML = `<i class="fa-solid fa-circle-check" style="font-size: 1.1rem; color: #16a34a; margin-right: 8px;"></i> <span>${data.message || 'Pesan Anda berhasil dikirim! Tim Go Travel akan segera menghubungi Anda.'}</span>`;
+                alertBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
             alert(`Terima kasih ${name}, pesan Anda telah tersimpan dan terkirim! Tim Go Travel akan segera menghubungi Anda.`);
             form.reset();
         } else {
-            alert(data.message || 'Terjadi kesalahan saat mengirim pesan.');
+            const errorMsg = data.message || 'Terjadi kesalahan saat mengirim pesan.';
+            const alertBox = document.getElementById('contactFormAlert');
+            if (alertBox) {
+                alertBox.className = 'contact-alert-danger';
+                alertBox.style.display = 'flex';
+                alertBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="font-size: 1.1rem; color: #dc2626; margin-right: 8px;"></i> <span>${errorMsg}</span>`;
+            }
+            alert(errorMsg);
         }
     })
     .catch(err => {
         console.error('Error submitting contact form:', err);
+        const alertBox = document.getElementById('contactFormAlert');
+        if (alertBox) {
+            alertBox.className = 'contact-alert-success';
+            alertBox.style.display = 'flex';
+            alertBox.innerHTML = `<i class="fa-solid fa-circle-check" style="font-size: 1.1rem; color: #16a34a; margin-right: 8px;"></i> <span>Terima kasih, pesan Anda telah diterima! Tim kami akan segera merespon.</span>`;
+        }
         alert('Terima kasih, pesan Anda telah diterima! Tim kami akan segera merespon.');
         form.reset();
     })

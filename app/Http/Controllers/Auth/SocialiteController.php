@@ -124,6 +124,7 @@ class SocialiteController extends Controller
     private function loginUserSession(User $user, string $provider, ?string $avatar = null): void
     {
         Auth::login($user, true);
+        request()->session()->regenerate();
 
         session([
             'user' => [
@@ -133,6 +134,7 @@ class SocialiteController extends Controller
                 'avatar'   => $avatar ?: ($user->avatar ?: ''),
                 'provider' => $provider,
                 'role'     => $user->role ?? 'user',
+                'phone'    => $user->phone ?? '',
             ]
         ]);
     }

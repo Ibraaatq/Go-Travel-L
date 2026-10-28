@@ -31,9 +31,28 @@ class AdminMiddleware
             return redirect('/login')->with('error', 'Silakan masuk terlebih dahulu.');
         }
 
+        // Pastikan Auth::login dan session selalu sinkron
+        if (!Auth::check()) {
+            Auth::login($user);
+        }
+
+        if (!session()->has('user')) {
+            session([
+                'user' => [
+                    'id'       => $user->id,
+                    'name'     => $user->name,
+                    'email'    => $user->email,
+                    'avatar'   => $user->avatar ?: '',
+                    'provider' => $user->provider ?: 'local',
+                    'role'     => $user->role ?? 'user',
+                    'phone'    => $user->phone ?? '',
+                ]
+            ]);
+        }
+
         // Validasi role resmi langsung dari database MySQL
         if ($user->role !== 'admin') {
-            return redirect('/profile')->with('error', 'Akses ditolak.');
+            return redirect('/profile')->with('error', 'Akses ditolak. Halaman tersebut khusus untuk Administrator.');
         }
 
         return $next($request);

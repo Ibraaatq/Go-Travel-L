@@ -53,6 +53,23 @@
                 <a href="{{ url('/register') }}" class="auth-tab-btn active" id="tabRegister">Register</a>
             </div>
 
+            @if(session('error'))
+            <div style="background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-circle-exclamation" style="color: #ef4444;"></i>
+                <span>{{ session('error') }}</span>
+            </div>
+            @endif
+
+            @if($errors->any())
+            <div style="background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 600; margin-bottom: 16px;">
+                <ul style="margin: 0; padding-left: 18px;">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+
             <!-- Form Register -->
             <form action="{{ url('/register') }}" method="POST" id="registerForm">
                 @csrf
@@ -61,7 +78,7 @@
                 <div class="auth-form-group">
                     <label for="name" class="auth-label">Full Name</label>
                     <div class="auth-input-wrapper">
-                        <input type="text" id="name" name="name" class="auth-input" placeholder="Enter your full name" required autofocus>
+                        <input type="text" id="name" name="name" class="auth-input" placeholder="Enter your full name" value="{{ old('name') }}" required autofocus>
                     </div>
                 </div>
 
@@ -69,7 +86,7 @@
                 <div class="auth-form-group">
                     <label for="email" class="auth-label">Email</label>
                     <div class="auth-input-wrapper">
-                        <input type="email" id="email" name="email" class="auth-input" placeholder="Enter your email" required>
+                        <input type="email" id="email" name="email" class="auth-input" placeholder="Enter your email" value="{{ old('email') }}" required>
                     </div>
                 </div>
 

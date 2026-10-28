@@ -22,86 +22,112 @@ Route::get('/about', function () {
 })->name('about');
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
-Route::get('/login', function () {
-    return view('login');
-})->name('login');
+// ---- Route Autentikasi Pengguna (Guest Only) ----
+Route::middleware('guest.user')->group(function () {
+    Route::get('/login', function () {
+        return view('login');
+    })->name('login');
 
-Route::post('/login', function (Request $request) {
-    $email = $request->input('email', '');
-    $password = $request->input('password', '');
+    Route::post('/login', function (Request $request) {
+        $credentials = $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required',
+        ], [
+            'email.required'    => 'Alamat email wajib diisi.',
+            'email.email'       => 'Format email tidak valid.',
+            'password.required' => 'Password wajib diisi.',
+        ]);
 
-    // Ambil data resmi dari tabel users MySQL
-    $dbUser = \App\Models\User::where('email', $email)->first();
+        // Cari user resmi di database
+        $dbUser = \App\Models\User::where('email', $credentials['email'])->first();
 
-    if ($dbUser) {
-        // Data dari database (id, email, name, role)
+        if (!$dbUser) {
+            return redirect()->back()
+                ->withInput($request->only('email'))
+                ->with('error', 'Akun dengan email tersebut tidak ditemukan. Silakan daftar terlebih dahulu.');
+        }
+
+        // Jika akun terdaftar lewat Google OAuth dan belum memiliki password
+        if (empty($dbUser->password) && $dbUser->provider === 'google') {
+            return redirect()->back()
+                ->withInput($request->only('email'))
+                ->with('error', 'Akun ini terdaftar melalui Google. Silakan masuk menggunakan tombol Google.');
+        }
+
+        // Verifikasi password hash
+        if (!Hash::check($credentials['password'], $dbUser->password)) {
+            return redirect()->back()
+                ->withInput($request->only('email'))
+                ->with('error', 'Password yang Anda masukkan salah.');
+        }
+
+        // Simpan sesi login resmi ke Laravel Auth & session
+        Auth::login($dbUser, $request->boolean('remember'));
+        $request->session()->regenerate();
+
         session([
             'user' => [
                 'id'       => $dbUser->id,
                 'name'     => $dbUser->name,
                 'email'    => $dbUser->email,
-                'avatar'   => '',
-                'provider' => 'local',
+                'avatar'   => $dbUser->avatar ?: '',
+                'provider' => $dbUser->provider ?: 'local',
                 'role'     => $dbUser->role ?? 'user',
+                'phone'    => $dbUser->phone ?? '',
             ]
         ]);
-    } else {
-        // Buat record user baru di database jika belum ada
-        $name = ucfirst(explode('@', $email)[0]);
-        $role = str_contains(strtolower($email), 'admin') ? 'admin' : 'user';
-        $newUser = \App\Models\User::create([
-            'name'     => $name,
-            'email'    => $email,
-            'password' => \Illuminate\Support\Facades\Hash::make($password ?: 'password123'),
-            'role'     => $role,
+
+        if ($dbUser->role === 'admin') {
+            return redirect()->route('admin')->with('success', 'Selamat datang kembali, Admin ' . $dbUser->name . '!');
+        }
+
+        return redirect('/')->with('success', 'Selamat datang kembali, ' . $dbUser->name . '!');
+    });
+
+    Route::get('/register', function () {
+        return view('register');
+    })->name('register');
+
+    Route::post('/register', function (Request $request) {
+        $validated = $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+        ], [
+            'name.required'      => 'Nama lengkap wajib diisi.',
+            'email.required'     => 'Alamat email wajib diisi.',
+            'email.email'        => 'Format email tidak valid.',
+            'email.unique'       => 'Email ini sudah terdaftar. Silakan masuk.',
+            'password.required'  => 'Password wajib diisi.',
+            'password.min'       => 'Password minimal harus 6 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
         ]);
 
-        session([
-            'user' => [
-                'id'       => $newUser->id,
-                'name'     => $name,
-                'email'    => $email,
-                'avatar'   => '',
-                'provider' => 'local',
-                'role'     => $role,
-            ]
-        ]);
-    }
-
-    return redirect('/');
-});
-
-Route::get('/register', function () {
-    return view('register');
-})->name('register');
-
-Route::post('/register', function (Request $request) {
-    $name = $request->input('name', 'User');
-    $email = $request->input('email', 'user@gmail.com');
-    $password = $request->input('password', 'password123');
-
-    // Simpan ke database dengan role 'user'
-    $newUser = \App\Models\User::updateOrCreate(
-        ['email' => $email],
-        [
-            'name'     => $name,
-            'password' => \Illuminate\Support\Facades\Hash::make($password),
+        \App\Models\User::create([
+            'name'     => $validated['name'],
+            'email'    => $validated['email'],
+            'password' => Hash::make($validated['password']),
             'role'     => 'user',
-        ]
-    );
+            'provider' => 'local',
+        ]);
 
-    // Jangan langsung login setelah register; arahkan ke halaman login
-    return redirect('/login')->with('success', 'Registrasi berhasil! Silakan masuk.');
+        return redirect('/login')->with('success', 'Registrasi berhasil! Silakan masuk dengan akun baru Anda.');
+    });
+
+    // ---- Route Autentikasi OAuth Google Resmi (Socialite) ----
+    Route::get('/auth/google', [\App\Http\Controllers\Auth\SocialiteController::class, 'redirectToGoogle'])->name('auth.google');
+    Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\SocialiteController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 });
 
-// ---- Route Autentikasi OAuth Google Resmi (Socialite) ----
-Route::get('/auth/google', [\App\Http\Controllers\Auth\SocialiteController::class, 'redirectToGoogle'])->name('auth.google');
-Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\SocialiteController::class, 'handleGoogleCallback'])->name('auth.google.callback');
-
-Route::get('/logout', function () {
-    \Illuminate\Support\Facades\Auth::logout();
-    session()->forget('user');
+// ---- Route Logout (GET & POST) ----
+Route::match(['get', 'post'], '/logout', function (Request $request) {
+    Auth::logout();
+    $request->session()->forget('user');
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
     return redirect('/login')->with('success', 'Anda telah berhasil keluar.');
 })->name('logout');
 
@@ -122,113 +148,107 @@ Route::post('/kontak', [ContactController::class, 'store'])->name('kontak.store'
 Route::post('/wishlist/toggle', [\App\Http\Controllers\WishlistController::class, 'toggle'])->name('wishlist.toggle');
 Route::get('/wishlist/user-ids', [\App\Http\Controllers\WishlistController::class, 'userWishlistIds'])->name('wishlist.userIds');
 
-// ---- Route: Update Profil Akun (Admin & User) ----
-Route::post('/profile/update', function (Request $request) {
-    $userSession = session('user');
-    if (!$userSession || empty($userSession['id'])) {
-        return response()->json(['success' => false, 'message' => 'Tidak terautentikasi.'], 401);
-    }
+// ---- Route: User Profile (Dilindungi Middleware auth.user) ----
+Route::middleware('auth.user')->group(function () {
+    Route::post('/profile/update', function (Request $request) {
+        $userSession = session('user');
+        $userId = Auth::id() ?? ($userSession['id'] ?? null);
 
-    $user = \App\Models\User::find($userSession['id']);
-    if (!$user) {
-        return response()->json(['success' => false, 'message' => 'User tidak ditemukan.'], 404);
-    }
-
-    $name     = trim($request->input('name', ''));
-    $email    = trim($request->input('email', ''));
-    $phone    = trim($request->input('phone', ''));
-    $password = $request->input('password', '');
-
-    if (!$name || !$email) {
-        return response()->json(['success' => false, 'message' => 'Nama dan email wajib diisi.'], 422);
-    }
-
-    // Cek email sudah dipakai user lain
-    $emailExists = \App\Models\User::where('email', $email)->where('id', '!=', $user->id)->exists();
-    if ($emailExists) {
-        return response()->json(['success' => false, 'message' => 'Email sudah digunakan akun lain.'], 422);
-    }
-
-    // Bangun data update — sertakan phone hanya jika kolom sudah ada
-    $updateData = ['name' => $name, 'email' => $email];
-
-    $hasPhoneColumn = \Illuminate\Support\Facades\Schema::hasColumn('users', 'phone');
-    if ($hasPhoneColumn) {
-        $updateData['phone'] = $phone;
-    }
-
-    if ($password && strlen($password) >= 6) {
-        $updateData['password'] = \Illuminate\Support\Facades\Hash::make($password);
-    }
-
-    $user->update($updateData);
-
-    // Perbarui session agar langsung terefleksi tanpa logout
-    session(['user' => array_merge($userSession, [
-        'name'  => $name,
-        'email' => $email,
-        'phone' => $phone,
-    ])]);
-
-    return response()->json(['success' => true, 'message' => 'Profil berhasil diperbarui!']);
-})->name('profile.update');
-
-// ---- Route: /profile (Halaman Profil Pengguna) ----
-// Hanya untuk user yang sudah login. Menampilkan profile.blade.php.
-Route::get('/profile', function () {
-    $userSession = session('user');
-    if (!$userSession) {
-        return redirect('/login')->with('error', 'Silakan masuk terlebih dahulu.');
-    }
-
-    // Ambil data resmi dari MySQL berdasarkan id atau email di session
-    $dbUser = null;
-    if (!empty($userSession['id'])) {
-        $dbUser = \App\Models\User::find($userSession['id']);
-    }
-    if (!$dbUser && !empty($userSession['email'])) {
-        $dbUser = \App\Models\User::where('email', $userSession['email'])->first();
-    }
-
-    // Hitung pesanan user
-    $userOrders = collect();
-    try {
-        if ($dbUser) {
-            $allUserOrders = \App\Models\Order::where(function($q) use ($dbUser) {
-                    $q->where('user_id', $dbUser->id)
-                      ->orWhere('email_pemesan', $dbUser->email);
-                })
-                ->latest()
-                ->get();
-
-            // Deduplicate: jika order cocok user_id DAN email, hindari tampil 2x
-            $userOrders = $allUserOrders->unique(function ($ord) {
-                return $ord->nama_pemesan
-                    . '|' . $ord->nama_paket
-                    . '|' . $ord->tanggal_keberangkatan
-                    . '|' . $ord->jumlah_peserta
-                    . '|' . $ord->total_pembayaran;
-            })->values();
+        $user = \App\Models\User::find($userId);
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'User tidak ditemukan.'], 404);
         }
-    } catch (\Throwable $e) {
+
+        $name     = trim($request->input('name', ''));
+        $email    = trim($request->input('email', ''));
+        $phone    = trim($request->input('phone', ''));
+        $password = $request->input('password', '');
+
+        if (!$name || !$email) {
+            return response()->json(['success' => false, 'message' => 'Nama dan email wajib diisi.'], 422);
+        }
+
+        // Cek email sudah dipakai user lain
+        $emailExists = \App\Models\User::where('email', $email)->where('id', '!=', $user->id)->exists();
+        if ($emailExists) {
+            return response()->json(['success' => false, 'message' => 'Email sudah digunakan akun lain.'], 422);
+        }
+
+        // Bangun data update
+        $updateData = ['name' => $name, 'email' => $email];
+
+        $hasPhoneColumn = \Illuminate\Support\Facades\Schema::hasColumn('users', 'phone');
+        if ($hasPhoneColumn) {
+            $updateData['phone'] = $phone;
+        }
+
+        if ($password && strlen($password) >= 6) {
+            $updateData['password'] = \Illuminate\Support\Facades\Hash::make($password);
+        }
+
+        $user->update($updateData);
+
+        // Perbarui session agar langsung terefleksi tanpa logout
+        session(['user' => array_merge(session('user', []), [
+            'id'    => $user->id,
+            'name'  => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'role'  => $user->role,
+        ])]);
+
+        return response()->json(['success' => true, 'message' => 'Profil berhasil diperbarui!']);
+    })->name('profile.update');
+
+    // Halaman Profil Pengguna
+    Route::get('/profile', function () {
+        $userId = Auth::id() ?? session('user.id');
+        $dbUser = \App\Models\User::find($userId);
+
+        if (!$dbUser && session()->has('user.email')) {
+            $dbUser = \App\Models\User::where('email', session('user.email'))->first();
+        }
+
+        // Hitung pesanan user
         $userOrders = collect();
-    }
+        try {
+            if ($dbUser) {
+                $allUserOrders = \App\Models\Order::where(function($q) use ($dbUser) {
+                        $q->where('user_id', $dbUser->id)
+                          ->orWhere('email_pemesan', $dbUser->email);
+                    })
+                    ->latest()
+                    ->get();
 
-    // Ambil daftar wishlist user
-    $userWishlists = collect();
-    try {
-        if ($dbUser) {
-            $userWishlists = \App\Models\Wishlist::with('package')
-                ->where('user_id', $dbUser->id)
-                ->latest()
-                ->get();
+                // Deduplicate: jika order cocok user_id DAN email, hindari tampil 2x
+                $userOrders = $allUserOrders->unique(function ($ord) {
+                    return $ord->nama_pemesan
+                        . '|' . $ord->nama_paket
+                        . '|' . $ord->tanggal_keberangkatan
+                        . '|' . $ord->jumlah_peserta
+                        . '|' . $ord->total_pembayaran;
+                })->values();
+            }
+        } catch (\Throwable $e) {
+            $userOrders = collect();
         }
-    } catch (\Throwable $e) {
-        $userWishlists = collect();
-    }
 
-    return view('profile', compact('dbUser', 'userOrders', 'userWishlists'));
-})->name('profile');
+        // Ambil daftar wishlist user
+        $userWishlists = collect();
+        try {
+            if ($dbUser) {
+                $userWishlists = \App\Models\Wishlist::with('package')
+                    ->where('user_id', $dbUser->id)
+                    ->latest()
+                    ->get();
+            }
+        } catch (\Throwable $e) {
+            $userWishlists = collect();
+        }
+
+        return view('profile', compact('dbUser', 'userOrders', 'userWishlists'));
+    })->name('profile');
+});
 
 // ---- Route: /admin (Dashboard Admin) ----
 // Dilindungi AdminMiddleware — hanya role 'admin' dari DB yang bisa masuk.

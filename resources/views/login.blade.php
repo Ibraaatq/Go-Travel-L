@@ -69,6 +69,16 @@
             </div>
             @endif
 
+            @if($errors->any())
+            <div style="background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 600; margin-bottom: 16px;">
+                <ul style="margin: 0; padding-left: 18px;">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+
             <!-- Form Login -->
             <form action="{{ url('/login') }}" method="POST" id="loginForm">
                 @csrf
@@ -77,7 +87,7 @@
                 <div class="auth-form-group">
                     <label for="email" class="auth-label">Email</label>
                     <div class="auth-input-wrapper">
-                        <input type="email" id="email" name="email" class="auth-input" placeholder="Enter your email" required autofocus>
+                        <input type="email" id="email" name="email" class="auth-input" placeholder="Enter your email" value="{{ old('email') }}" required autofocus>
                     </div>
                 </div>
 

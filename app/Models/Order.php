@@ -25,10 +25,16 @@ class Order extends Model
         'skema_pembayaran',
         'total_pembayaran',
         'status',
+        'bukti_pembayaran',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function package()
+    {
+        return $this->belongsTo(Package::class, 'paket_slug', 'slug');
     }
 }

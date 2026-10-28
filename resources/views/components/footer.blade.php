@@ -22,18 +22,18 @@
                     <li><a href="{{ url('/') }}">Beranda</a></li>
                     <li><a href="{{ route('paket-wisata') }}">Paket Wisata</a></li>
                     <li><a href="{{ route('destinasi') }}">Destinasi</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="{{ url('/about') }}">About</a></li>
+                    <li><a href="{{ url('/#contact') }}">Contact</a></li>
                 </ul>
             </div>
 
             <div class="footer-links">
                 <h4>Paket Populer</h4>
                 <ul>
-                    <li><a href="#paket-wisata">Jogja Tour 2 Hari</a></li>
-                    <li><a href="#paket-wisata">Bandung Tour 2 Hari</a></li>
-                    <li><a href="#paket-wisata">Bali Tour 2 Hari</a></li>
-                    <li><a href="#paket-wisata">Lampung Tour 2 Hari</a></li>
+                    <li><a href="{{ url('/paket-wisata/jogja') }}">Jogja Tour 2 Hari</a></li>
+                    <li><a href="{{ url('/paket-wisata/bandung') }}">Bandung Tour 4 Hari</a></li>
+                    <li><a href="{{ url('/paket-wisata/bali') }}">Bali Tour 5 Hari</a></li>
+                    <li><a href="{{ url('/paket-wisata/lampung') }}">Lampung Tour 3 Hari</a></li>
                 </ul>
             </div>
 

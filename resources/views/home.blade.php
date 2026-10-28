@@ -219,27 +219,48 @@
                         Isi formulir di bawah ini dan kami akan segera merespon Anda
                     </p>
 
-                    <form id="contactForm" class="contact-form" action="{{ url('/contact') }}" method="POST" onsubmit="handleFormSubmit(event)">
+                    @if (session('success'))
+                        <div class="contact-alert-success">
+                            <i class="fa-solid fa-circle-check" style="font-size: 1.1rem; color: #10b981;"></i>
+                            <span>{{ session('success') }}</span>
+                        </div>
+                    @endif
+
+                    @if ($errors->any())
+                        <div class="contact-alert-danger">
+                            <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.1rem; color: #ef4444;"></i>
+                            <div>
+                                @foreach ($errors->all() as $error)
+                                    <div>{{ $error }}</div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- Dynamic Notification Box for AJAX Submissions -->
+                    <div id="contactFormAlert" style="display: none;"></div>
+
+                    <form id="contactForm" class="contact-form" action="{{ route('contact.store') }}" method="POST" onsubmit="handleFormSubmit(event)">
                         @csrf
                         <div class="form-row-two-cols">
                             <div class="form-group">
-                                <label for="nama_lengkap">Nama Lengkap</label>
-                                <input type="text" id="nama_lengkap" name="nama_lengkap" placeholder="Masukkan nama lengkap" required>
+                                <label for="name">Nama Lengkap</label>
+                                <input type="text" id="name" name="name" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required>
                             </div>
                             <div class="form-group">
-                                <label for="nomor_telepon">Nomor Telepon</label>
-                                <input type="tel" id="nomor_telepon" name="nomor_telepon" placeholder="Masukkan nomor telepon" required>
+                                <label for="phone">Nomor Telepon</label>
+                                <input type="tel" id="phone" name="phone" placeholder="Masukkan nomor telepon" value="{{ old('phone') }}" required>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" id="email" name="email" placeholder="Masukkan email Anda" required>
+                            <input type="email" id="email" name="email" placeholder="Masukkan email Anda" value="{{ old('email') }}" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="pesan">Pesan</label>
-                            <textarea id="pesan" name="pesan" rows="3" placeholder="Tulis pesan Anda di sini..." required></textarea>
+                            <label for="message">Pesan</label>
+                            <textarea id="message" name="message" rows="3" placeholder="Tulis pesan Anda di sini..." required>{{ old('message') }}</textarea>
                         </div>
 
                         <button type="submit" class="btn-submit-orange">
