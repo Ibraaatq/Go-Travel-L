@@ -108,7 +108,7 @@
                         <input type="checkbox" name="remember" id="rememberMe">
                         <span>Remember me</span>
                     </label>
-                    <a href="javascript:void(0)" class="auth-forgot-link">Lupa Password?</a>
+                    <a href="{{ url('/forgot-password') }}" class="auth-forgot-link">Lupa Password?</a>
                 </div>
 
                 <!-- Submit Button -->

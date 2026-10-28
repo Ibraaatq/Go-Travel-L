@@ -29,7 +29,10 @@ class SocialiteController extends Controller
         }
 
         try {
-            return Socialite::driver('google')->redirect();
+            $redirectUrl = url('/auth/google/callback');
+            return Socialite::driver('google')
+                ->redirectUrl($redirectUrl)
+                ->redirect();
         } catch (Throwable $e) {
             Log::error('Google OAuth Redirect Error: ' . $e->getMessage());
             return redirect()->route('login')->with(
@@ -51,8 +54,11 @@ class SocialiteController extends Controller
         }
 
         try {
+            $redirectUrl = url('/auth/google/callback');
             /** @var SocialiteUser $googleUser */
-            $googleUser = Socialite::driver('google')->user();
+            $googleUser = Socialite::driver('google')
+                ->redirectUrl($redirectUrl)
+                ->user();
         } catch (Throwable $e) {
             Log::error('Google OAuth Callback Error: ' . $e->getMessage());
             return redirect()->route('login')->with(

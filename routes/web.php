@@ -120,6 +120,42 @@ Route::middleware('guest.user')->group(function () {
     // ---- Route Autentikasi OAuth Google Resmi (Socialite) ----
     Route::get('/auth/google', [\App\Http\Controllers\Auth\SocialiteController::class, 'redirectToGoogle'])->name('auth.google');
     Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\SocialiteController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+
+    // ---- Route Lupa / Reset Password ----
+    Route::get('/forgot-password', function () {
+        return view('forgot-password');
+    })->name('password.request');
+
+    Route::get('/lupa-password', function () {
+        return view('forgot-password');
+    });
+
+    Route::post('/forgot-password', function (Request $request) {
+        $validated = $request->validate([
+            'email'                 => 'required|email',
+            'password'              => 'required|string|min:6|confirmed',
+        ], [
+            'email.required'        => 'Alamat email wajib diisi.',
+            'email.email'           => 'Format email tidak valid.',
+            'password.required'     => 'Password baru wajib diisi.',
+            'password.min'          => 'Password minimal harus 6 karakter.',
+            'password.confirmed'    => 'Konfirmasi password baru tidak cocok.',
+        ]);
+
+        $user = \App\Models\User::where('email', $validated['email'])->first();
+
+        if (!$user) {
+            return redirect()->back()
+                ->withInput($request->only('email'))
+                ->with('error', 'Akun dengan alamat email tersebut tidak ditemukan.');
+        }
+
+        // Update password hash user
+        $user->password = Hash::make($validated['password']);
+        $user->save();
+
+        return redirect('/login')->with('success', 'Password Anda berhasil diperbarui! Silakan masuk dengan password baru.');
+    })->name('password.update');
 });
 
 // ---- Route Logout (GET & POST) ----

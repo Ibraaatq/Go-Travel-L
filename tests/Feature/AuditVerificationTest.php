@@ -91,4 +91,42 @@ class AuditVerificationTest extends TestCase
                  ->assertRedirect('/profile');
         }
     }
+
+    public function test_forgot_password_workflow(): void
+    {
+        // 1. Halaman lupa password bisa dibuka
+        $this->get('/forgot-password')->assertStatus(200);
+
+        // 2. Email tidak terdaftar akan gagal
+        $response = $this->post('/forgot-password', [
+            'email'                 => 'tidak_ada_' . time() . '@example.com',
+            'password'              => 'newpassword123',
+            'password_confirmation' => 'newpassword123',
+        ]);
+        $response->assertSessionHas('error');
+
+        // 3. User terdaftar berhasil reset password
+        $testEmail = 'reset_test_' . time() . '@example.com';
+        $user = User::create([
+            'name'     => 'Reset User Test',
+            'email'    => $testEmail,
+            'password' => Hash::make('oldpassword123'),
+            'role'     => 'user',
+        ]);
+
+        $response = $this->post('/forgot-password', [
+            'email'                 => $testEmail,
+            'password'              => 'brandnewpassword123',
+            'password_confirmation' => 'brandnewpassword123',
+        ]);
+        $response->assertRedirect('/login');
+        $response->assertSessionHas('success');
+
+        // Verifikasi password baru benar-benar bisa digunakan login
+        $user->refresh();
+        $this->assertTrue(Hash::check('brandnewpassword123', $user->password));
+
+        // Cleanup
+        $user->delete();
+    }
 }
