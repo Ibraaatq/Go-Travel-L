@@ -174,14 +174,14 @@
             
             <div class="detail-sidebar-sticky">
 
-                <!-- Card Itinerary Perjalanan -->
+                <!-- Card Rencana Perjalanan -->
                 <div class="detail-white-card detail-itinerary-card">
                     <div class="itinerary-header">
                         <div class="itinerary-header-badge">
                             <i class="fa-solid fa-route"></i>
                         </div>
                         <div>
-                            <h3 class="itinerary-title">Itinerary Perjalanan</h3>
+                            <h3 class="itinerary-title">Rencana Perjalanan</h3>
                             <span class="itinerary-subtitle">Rencana rute dan jadwal aktivitas</span>
                         </div>
                     </div>

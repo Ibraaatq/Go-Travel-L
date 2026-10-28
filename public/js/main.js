@@ -36,79 +36,18 @@ document.addEventListener('DOMContentLoaded', function () {
         toggleWishlist(btn, slug || id);
     });
 
-    // 3. Live Search in Paket Wisata (Both Hero Search & Main Filter Bar Search)
+    // 3. Live Search in Paket Wisata — handled by inline script in paket-wisata.blade.php
+    // Hero search syncs via hero search input on homepage only
     const heroSearchInput = document.getElementById('heroSearchInput');
-    const paketSearchInput = document.getElementById('paketSearchInput');
-    const searchInputs = [heroSearchInput, paketSearchInput].filter(Boolean);
-
-    function filterPackages(query) {
-        const packageCards = document.querySelectorAll('.package-card');
-        const cleanQuery = query.toLowerCase().trim();
-
-        packageCards.forEach(card => {
-            const title = card.getAttribute('data-title') || card.querySelector('.package-name')?.textContent.toLowerCase() || '';
-            if (!cleanQuery || title.includes(cleanQuery)) {
-                card.style.display = 'flex';
-            } else {
-                card.style.display = 'none';
-            }
+    if (heroSearchInput) {
+        heroSearchInput.addEventListener('input', function () {
+            // Redirect to paket-wisata page with search query if on homepage
+            // (inline script on paket-wisata.blade.php handles filtering)
         });
     }
 
-    searchInputs.forEach(input => {
-        input.addEventListener('input', function () {
-            const query = this.value;
-            // Sync values across search inputs
-            searchInputs.forEach(other => {
-                if (other !== input) {
-                    other.value = query;
-                }
-            });
-            filterPackages(query);
-        });
-    });
-
-    // 4. Category Filter Dropdown in Paket Wisata
-    const btnFilterCategory = document.getElementById('btnFilterCategory');
-    const categoryDropdownMenu = document.getElementById('categoryDropdownMenu');
-
-    if (btnFilterCategory && categoryDropdownMenu) {
-        btnFilterCategory.addEventListener('click', function (e) {
-            e.stopPropagation();
-            categoryDropdownMenu.classList.toggle('show');
-        });
-
-        document.addEventListener('click', function () {
-            categoryDropdownMenu.classList.remove('show');
-        });
-
-        const dropdownItems = categoryDropdownMenu.querySelectorAll('.dropdown-item');
-        dropdownItems.forEach(item => {
-            item.addEventListener('click', function (e) {
-                e.preventDefault();
-                dropdownItems.forEach(d => d.classList.remove('active'));
-                this.classList.add('active');
-
-                const selectedCategory = this.getAttribute('data-category');
-                const btnText = btnFilterCategory.querySelector('span');
-                if (btnText) {
-                    btnText.textContent = this.textContent;
-                }
-
-                const packageCards = document.querySelectorAll('.package-card');
-                packageCards.forEach(card => {
-                    const cardCategory = card.getAttribute('data-category') || '';
-                    if (selectedCategory === 'all' || cardCategory.includes(selectedCategory)) {
-                        card.style.display = 'flex';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-
-                categoryDropdownMenu.classList.remove('show');
-            });
-        });
-    }
+    // 4. Category Filter Dropdown in Paket Wisata — handled by inline script in paket-wisata.blade.php
+    // (removed to prevent double event listener conflict)
 
     // =========================================================================
     // 5. CHECKOUT PAGE DYNAMIC CALCULATION & STEPPER LOGIC
@@ -314,6 +253,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
                 }
 
+                // Validasi bukti transfer wajib diupload
+                if (typeof buktiFileObject !== 'undefined' && !buktiFileObject) {
+                    const alertEl = document.getElementById('alertBuktiRequired');
+                    if (alertEl) {
+                        alertEl.style.display = 'flex';
+                        alertEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    return;
+                }
+
                 // Populate Step 3 Confirmation
                 const confirmCity = document.getElementById('confirmCity');
                 const confirmSchedule = document.getElementById('confirmSchedule');
@@ -365,8 +314,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 const custPhone = document.getElementById('custWhatsapp')?.value?.trim() || '';
                 const custEmail = document.getElementById('custEmail')?.value?.trim() || '';
                 const custOrg = document.getElementById('custOrg')?.value?.trim() || '';
-                const orderNotes = document.getElementById('orderNotes')?.value?.trim() || '';
-                const selectedPayment = document.querySelector('input[name="payment_scheme"]:checked')?.value === 'dp30' ? 'DP 30%' : 'Lunas 100%';
+                const orderNotes = document.getElementById('orderNotesStep2')?.value?.trim()
+                                || document.getElementById('orderNotes')?.value?.trim() || '';
+                const selectedPayment = 'Lunas 100%';
                 const totalBill = summaryTotal?.textContent || '0';
 
                 if (!custName || !custPhone || !custEmail) {
@@ -381,30 +331,35 @@ document.addEventListener('DOMContentLoaded', function () {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') 
                                || document.querySelector('input[name="_token"]')?.value;
 
-                const payload = {
-                    paket_slug: pkgData.slug,
-                    nama_paket: pkgData.name,
-                    kota_keberangkatan: selectedCityName,
-                    tanggal_keberangkatan: departureDate.value ? formatIndoDate(departureDate.value) : '-',
-                    titik_kumpul: meetingPoint.value,
-                    jumlah_peserta: parseInt(inputParticipants.value) || 1,
-                    catatan: orderNotes || null,
-                    nama_pemesan: custName,
-                    nomor_hp: custPhone,
-                    email_pemesan: custEmail,
-                    nama_instansi: custOrg || null,
-                    skema_pembayaran: selectedPayment,
-                    total_pembayaran: totalBill
-                };
+                // Gunakan FormData agar bisa kirim file bukti transfer
+                const formData = new FormData();
+                formData.append('paket_slug', pkgData.slug);
+                formData.append('nama_paket', pkgData.name);
+                formData.append('kota_keberangkatan', selectedCityName);
+                formData.append('tanggal_keberangkatan', departureDate.value ? formatIndoDate(departureDate.value) : '-');
+                formData.append('titik_kumpul', meetingPoint.value);
+                formData.append('jumlah_peserta', parseInt(inputParticipants.value) || 1);
+                formData.append('catatan', orderNotes || '');
+                formData.append('nama_pemesan', custName);
+                formData.append('nomor_hp', custPhone);
+                formData.append('email_pemesan', custEmail);
+                formData.append('nama_instansi', custOrg || '');
+                formData.append('skema_pembayaran', selectedPayment);
+                formData.append('total_pembayaran', totalBill);
+                formData.append('_token', csrfToken);
 
-                fetch('/checkout', {
+                // Sertakan file bukti transfer jika ada
+                if (typeof buktiFileObject !== 'undefined' && buktiFileObject) {
+                    formData.append('bukti_pembayaran', buktiFileObject);
+                }
+
+                fetch('/orders', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': csrfToken,
                         'Accept': 'application/json'
                     },
-                    body: JSON.stringify(payload)
+                    body: formData
                 })
                 .then(res => res.json())
                 .then(data => {
@@ -427,8 +382,9 @@ document.addEventListener('DOMContentLoaded', function () {
 *Skema Pembayaran:* ${selectedPayment}
 ----------------------------------------
 *TOTAL TAGIHAN:* ${totalBill}
+*Bukti Transfer:* Sudah diupload ✓
 ----------------------------------------
-Mohon info ketersediaan armada & instruksi transfer selanjutnya. Terima kasih!`;
+Mohon info konfirmasi pesanan. Terima kasih!`;
 
                     const waUrl = `https://wa.me/6283821382635?text=${encodeURIComponent(waMessage)}`;
                     

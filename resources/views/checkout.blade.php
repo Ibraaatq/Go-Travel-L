@@ -1,5 +1,143 @@
 @extends('layouts.app')
 
+@section('styles')
+<style>
+/* ===== BCA REKENING BOX ===== */
+.bca-rekening-box {
+    background: #f0f7ff;
+    border: 1.5px solid #bfdbfe;
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-top: 14px;
+    margin-bottom: 16px;
+}
+.bca-logo-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+.bca-logo-badge {
+    background: #005bac;
+    border-radius: 8px;
+    padding: 6px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.bca-logo-text {
+    color: #fff;
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: 2px;
+    font-family: 'Arial Black', Arial, sans-serif;
+}
+.bca-rekening-info {
+    flex: 1;
+}
+.bca-norek {
+    font-size: 15px;
+    color: #1e3a5f;
+    font-weight: 600;
+}
+.bca-atas-nama {
+    font-size: 13px;
+    color: #475569;
+    margin-top: 2px;
+}
+.btn-copy-norek {
+    background: #fff;
+    border: 1.5px solid #bfdbfe;
+    color: #2563eb;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.btn-copy-norek:hover {
+    background: #eff6ff;
+    border-color: #2563eb;
+}
+.btn-copy-norek.copied {
+    background: #ecfdf5;
+    border-color: #6ee7b7;
+    color: #059669;
+}
+.bca-nominal-transfer {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #dbeafe;
+    font-size: 13px;
+    color: #1e40af;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ===== UPLOAD BUKTI ===== */
+.upload-bukti-wrapper {
+    margin-top: 6px;
+}
+.upload-bukti-label {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #fafbfc;
+}
+.upload-bukti-label:hover {
+    border-color: #e07b1b;
+    background: #fff8f0;
+}
+.upload-bukti-label.has-file {
+    border-color: #10b981;
+    border-style: solid;
+    background: #f0fdf4;
+}
+.upload-bukti-icon {
+    font-size: 28px;
+    color: #e07b1b;
+    flex-shrink: 0;
+}
+.upload-bukti-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.upload-bukti-main {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+}
+.upload-bukti-hint {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+/* ===== PAYMENT AMOUNT PREVIEW ===== */
+.payment-amount-preview {
+    padding: 8px 12px;
+    background: #fff8f0;
+    border-radius: 8px;
+    border: 1px solid #fed7aa;
+    display: inline-block;
+}
+</style>
+@endsection
+
 @section('content')
 <div class="checkout-page-container">
 
@@ -212,33 +350,86 @@
                             </div>
                         </div>
 
-                        <!-- Opsi Pembayaran -->
+                        <!-- hidden: skema selalu Lunas 100% -->
+                        <input type="hidden" name="payment_scheme" value="full" id="paymentSchemeFixed">
+
+                        <!-- 1. Bayar Sekarang — Transfer BCA (Lunas) -->
+                        <div class="form-section-block" id="sectionBayarSekarang">
+                            <h3 class="form-section-title">
+                                <span class="num-badge">1</span>
+                                Bayar Sekarang
+                            </h3>
+                            <p class="form-section-desc">Selesaikan pembayaran lunas, lalu upload bukti transfer untuk memproses pesanan Anda.</p>
+
+                            <!-- Info Rekening BCA -->
+                            <div class="bca-rekening-box">
+                                <div class="bca-logo-row">
+                                    <div class="bca-logo-badge">
+                                        <span class="bca-logo-text">BCA</span>
+                                    </div>
+                                    <div class="bca-rekening-info">
+                                        <div class="bca-norek">No. Rekening: <strong>1234567890</strong></div>
+                                        <div class="bca-atas-nama">Atas Nama: <strong>PT GO Travel Indonesia</strong></div>
+                                    </div>
+                                    <button type="button" class="btn-copy-norek" id="btnCopyNorek" title="Salin nomor rekening">
+                                        <i class="fa-regular fa-copy"></i>
+                                        <span id="copyNorekLabel">Salin</span>
+                                    </button>
+                                </div>
+                                <div class="bca-nominal-transfer">
+                                    <i class="fa-solid fa-circle-info" style="color:#2563eb;"></i>
+                                    <span>Transfer sejumlah: <strong id="nominalTransfer">-</strong></span>
+                                </div>
+                            </div>
+
+                            <!-- Upload Bukti Transfer -->
+                            <div class="upload-bukti-wrapper">
+                                <label class="upload-bukti-label" id="uploadBuktiLabel" for="inputBuktiTransfer">
+                                    <div class="upload-bukti-icon">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    </div>
+                                    <div class="upload-bukti-text">
+                                        <span class="upload-bukti-main" id="uploadBuktiMainText">Upload Bukti Transfer</span>
+                                        <span class="upload-bukti-hint">Format: JPG, PNG, PDF — Maks. 2MB</span>
+                                    </div>
+                                </label>
+                                <input type="file" id="inputBuktiTransfer" name="bukti_transfer_preview"
+                                    accept="image/jpeg,image/png,image/jpg,application/pdf"
+                                    style="display:none;" onchange="handleBuktiUpload(this)">
+
+                                <!-- Preview -->
+                                <div id="buktiPreviewBox" style="display:none; margin-top:12px;">
+                                    <img id="buktiPreviewImg" src="" alt="Preview Bukti" style="max-width:100%; max-height:220px; border-radius:10px; border:1.5px solid #e2e8f0; object-fit:contain;">
+                                    <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+                                        <i class="fa-solid fa-circle-check" style="color:#10b981;font-size:15px;"></i>
+                                        <span id="buktiFileName" style="font-size:13px;color:#374151;font-weight:600;"></span>
+                                        <button type="button" onclick="removeBukti()" style="margin-left:auto;background:none;border:none;color:#ef4444;cursor:pointer;font-size:13px;">
+                                            <i class="fa-solid fa-xmark"></i> Hapus
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Alert belum upload -->
+                                <div id="alertBuktiRequired" style="display:none;margin-top:10px;padding:10px 14px;background:#fef2f2;border:1px solid #fecaca;border-radius:10px;color:#b91c1c;font-size:13px;font-weight:600;align-items:center;gap:8px;">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    Harap upload bukti transfer terlebih dahulu sebelum melanjutkan.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Catatan (Opsional) -->
                         <div class="form-section-block">
                             <h3 class="form-section-title">
-                                <span class="num-badge"><i class="fa-solid fa-credit-card"></i></span>
-                                Skema Pembayaran
+                                <span class="num-badge">2</span>
+                                Catatan (Opsional)
                             </h3>
-                            <div class="payment-options-grid">
-                                <label class="payment-radio-card selected">
-                                    <input type="radio" name="payment_scheme" value="dp30" checked>
-                                    <div class="payment-card-content">
-                                        <div class="payment-title-row">
-                                            <strong>Down Payment (DP 30%)</strong>
-                                            <span class="badge-populer">Paling Dipilih</span>
-                                        </div>
-                                        <p class="payment-desc">Amankan jadwal bus dengan DP 30%, pelunasan maksimal H-3 keberangkatan.</p>
-                                    </div>
-                                </label>
-
-                                <label class="payment-radio-card">
-                                    <input type="radio" name="payment_scheme" value="full">
-                                    <div class="payment-card-content">
-                                        <div class="payment-title-row">
-                                            <strong>Pembayaran Lunas 100%</strong>
-                                        </div>
-                                        <p class="payment-desc">Bayar lunas tanpa repot konfirmasi ulang sebelum trip dimulai.</p>
-                                    </div>
-                                </label>
+                            <div class="custom-form-group">
+                                <textarea id="orderNotesStep2" name="order_notes_pemesan" rows="3" class="custom-textarea"
+                                    placeholder="Permintaan khusus, informasi tambahan, atau hal yang perlu diketahui tim kami..."></textarea>
+                            </div>
+                            <div class="terms-agreement-note" style="margin-top:10px;">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <span>Dengan melanjutkan pemesanan, Anda setuju dengan <a href="#" style="color:#e07b1b;font-weight:700;">Syarat &amp; Ketentuan</a> yang berlaku.</span>
                             </div>
                         </div>
 
@@ -307,8 +498,8 @@
                                 <span>Ubah Data Pemesan</span>
                             </button>
                             <button type="button" class="btn-step-primary btn-step-final" id="btnCompleteOrder">
-                                <i class="fa-brands fa-whatsapp"></i>
-                                <span>Konfirmasi & Kirim Pesanan</span>
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Konfirmasi Pesanan</span>
                             </button>
                         </div>
                     </div>
@@ -443,5 +634,130 @@
         duration: @json($paket['duration']),
         serviceFee: 25000
     };
+
+    // ===== Upload Bukti Transfer =====
+    let buktiFileObject = null;
+
+    function handleBuktiUpload(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        // Validasi ukuran (maks 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            alert('Ukuran file terlalu besar. Maksimal 2MB.');
+            input.value = '';
+            return;
+        }
+
+        buktiFileObject = file;
+        const label = document.getElementById('uploadBuktiLabel');
+        label.classList.add('has-file');
+
+        document.getElementById('uploadBuktiMainText').textContent = 'Ganti Bukti Transfer';
+        document.getElementById('buktiFileName').textContent = file.name;
+        document.getElementById('alertBuktiRequired').style.display = 'none';
+
+        // Preview gambar (hanya untuk image)
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('buktiPreviewImg').src = e.target.result;
+                document.getElementById('buktiPreviewBox').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // PDF — tampilkan nama file saja
+            document.getElementById('buktiPreviewImg').src = '';
+            document.getElementById('buktiPreviewBox').style.display = 'block';
+        }
+    }
+
+    function removeBukti() {
+        buktiFileObject = null;
+        document.getElementById('inputBuktiTransfer').value = '';
+        document.getElementById('uploadBuktiLabel').classList.remove('has-file');
+        document.getElementById('uploadBuktiMainText').textContent = 'Upload Bukti Transfer';
+        document.getElementById('buktiPreviewBox').style.display = 'none';
+        document.getElementById('buktiPreviewImg').src = '';
+    }
+
+    // ===== Salin No Rekening =====
+    document.addEventListener('DOMContentLoaded', function () {
+        const btnCopy = document.getElementById('btnCopyNorek');
+        if (btnCopy) {
+            btnCopy.addEventListener('click', function () {
+                navigator.clipboard.writeText('1234567890').then(function () {
+                    btnCopy.classList.add('copied');
+                    document.getElementById('copyNorekLabel').textContent = 'Tersalin!';
+                    setTimeout(function () {
+                        btnCopy.classList.remove('copied');
+                        document.getElementById('copyNorekLabel').textContent = 'Salin';
+                    }, 2500);
+                }).catch(function () {
+                    // Fallback untuk browser lama
+                    const el = document.createElement('textarea');
+                    el.value = '1234567890';
+                    document.body.appendChild(el);
+                    el.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(el);
+                    document.getElementById('copyNorekLabel').textContent = 'Tersalin!';
+                    setTimeout(function () {
+                        document.getElementById('copyNorekLabel').textContent = 'Salin';
+                    }, 2500);
+                });
+            });
+        }
+
+        // ===== Nominal transfer = selalu total penuh (Lunas 100%) =====
+        function updateNominalTransfer() {
+            const qty = window.currentQty || parseInt(document.getElementById('inputParticipants')?.value) || 10;
+            const total = (window.PACKAGE_DATA.basePrice * qty) + window.PACKAGE_DATA.serviceFee;
+            const formatted = 'Rp ' + total.toLocaleString('id-ID');
+            const nominalEl = document.getElementById('nominalTransfer');
+            if (nominalEl) nominalEl.textContent = formatted;
+        }
+
+        // ===== Validasi bukti sebelum lanjut ke Step 3 =====
+        const btnGoToStep3 = document.getElementById('btnGoToStep3');
+        if (btnGoToStep3) {
+            btnGoToStep3.addEventListener('click', function (e) {
+                // Cek data pemesan
+                const custName = document.getElementById('custName');
+                const custWhatsapp = document.getElementById('custWhatsapp');
+                const custEmail = document.getElementById('custEmail');
+
+                if (custName && !custName.value.trim()) {
+                    custName.focus();
+                    custName.style.borderColor = '#ef4444';
+                    return;
+                }
+                if (custWhatsapp && !custWhatsapp.value.trim()) {
+                    custWhatsapp.focus();
+                    custWhatsapp.style.borderColor = '#ef4444';
+                    return;
+                }
+                if (custEmail && !custEmail.value.trim()) {
+                    custEmail.focus();
+                    custEmail.style.borderColor = '#ef4444';
+                    return;
+                }
+
+                // Cek bukti transfer
+                if (!buktiFileObject) {
+                    document.getElementById('alertBuktiRequired').style.display = 'flex';
+                    document.getElementById('sectionBayarSekarang').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return;
+                }
+
+                document.getElementById('alertBuktiRequired').style.display = 'none';
+                // Lanjut ke step 3 — trigger event di main JS
+                document.dispatchEvent(new CustomEvent('goToStep3Confirmed'));
+            }, true); // capture phase agar override handler lain
+        }
+
+        // Init nominal
+        setTimeout(updateNominalTransfer, 300);
+    });
 </script>
 @endsection

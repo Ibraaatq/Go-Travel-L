@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class OrderController extends Controller
 {
@@ -15,22 +16,23 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'paket_slug' => 'required|string',
-            'nama_paket' => 'required|string',
-            'kota_keberangkatan' => 'required|string',
-            'tanggal_keberangkatan' => 'required|string',
-            'titik_kumpul' => 'required|string',
-            'jumlah_peserta' => 'required|integer|min:1',
-            'catatan' => 'nullable|string',
-            'nama_pemesan' => 'required|string|max:255',
-            'nomor_hp' => 'required|string|max:50',
-            'email_pemesan' => 'required|email|max:255',
-            'nama_instansi' => 'nullable|string|max:255',
-            'skema_pembayaran' => 'required|string',
-            'total_pembayaran' => 'required',
+            'paket_slug'           => 'required|string',
+            'nama_paket'           => 'required|string',
+            'kota_keberangkatan'   => 'required|string',
+            'tanggal_keberangkatan'=> 'required|string',
+            'titik_kumpul'         => 'required|string',
+            'jumlah_peserta'       => 'required|integer|min:1',
+            'catatan'              => 'nullable|string',
+            'nama_pemesan'         => 'required|string|max:255',
+            'nomor_hp'             => 'required|string|max:50',
+            'email_pemesan'        => 'required|email|max:255',
+            'nama_instansi'        => 'nullable|string|max:255',
+            'skema_pembayaran'     => 'required|string',
+            'total_pembayaran'     => 'required',
+            'bukti_pembayaran'     => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
-        // Resolve user_id if logged in
+        // Resolve user_id jika sudah login
         $userId = Auth::id();
         if (!$userId && session()->has('user.email')) {
             $user = User::where('email', session('user.email'))->first();
@@ -39,36 +41,43 @@ class OrderController extends Controller
             }
         }
 
-        // Clean total_pembayaran to numeric
+        // Bersihkan total_pembayaran ke numerik
         $totalRaw = $validated['total_pembayaran'];
         if (is_string($totalRaw)) {
             $totalRaw = preg_replace('/[^0-9]/', '', $totalRaw);
         }
         $total = (float) ($totalRaw ?: 0);
 
+        // Upload bukti pembayaran jika ada
+        $buktiPath = null;
+        if ($request->hasFile('bukti_pembayaran') && $request->file('bukti_pembayaran')->isValid()) {
+            $buktiPath = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
+        }
+
         $order = Order::create([
-            'user_id' => $userId,
-            'paket_slug' => $validated['paket_slug'],
-            'nama_paket' => $validated['nama_paket'],
-            'kota_keberangkatan' => $validated['kota_keberangkatan'],
+            'user_id'               => $userId,
+            'paket_slug'            => $validated['paket_slug'],
+            'nama_paket'            => $validated['nama_paket'],
+            'kota_keberangkatan'    => $validated['kota_keberangkatan'],
             'tanggal_keberangkatan' => $validated['tanggal_keberangkatan'],
-            'titik_kumpul' => $validated['titik_kumpul'],
-            'jumlah_peserta' => (int) $validated['jumlah_peserta'],
-            'catatan' => $validated['catatan'] ?? null,
-            'nama_pemesan' => $validated['nama_pemesan'],
-            'nomor_hp' => $validated['nomor_hp'],
-            'email_pemesan' => $validated['email_pemesan'],
-            'nama_instansi' => $validated['nama_instansi'] ?? null,
-            'skema_pembayaran' => $validated['skema_pembayaran'],
-            'total_pembayaran' => $total,
-            'status' => 'dipending',
+            'titik_kumpul'          => $validated['titik_kumpul'],
+            'jumlah_peserta'        => (int) $validated['jumlah_peserta'],
+            'catatan'               => $validated['catatan'] ?? null,
+            'nama_pemesan'          => $validated['nama_pemesan'],
+            'nomor_hp'              => $validated['nomor_hp'],
+            'email_pemesan'         => $validated['email_pemesan'],
+            'nama_instansi'         => $validated['nama_instansi'] ?? null,
+            'skema_pembayaran'      => $validated['skema_pembayaran'],
+            'total_pembayaran'      => $total,
+            'status'                => 'dipending',
+            'bukti_pembayaran'      => $buktiPath,
         ]);
 
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Pesanan berhasil disimpan ke database!',
-                'order' => $order,
+                'order'   => $order,
             ]);
         }
 
@@ -80,14 +89,14 @@ class OrderController extends Controller
      */
     public function updateStatus(Request $request, $id)
     {
-        $order = Order::findOrFail($id);
+        $order  = Order::findOrFail($id);
         $status = $request->input('status', 'selesai');
         $order->update(['status' => strtolower($status)]);
 
         return response()->json([
             'success' => true,
             'message' => 'Status pesanan berhasil diperbarui!',
-            'order' => $order,
+            'order'   => $order,
         ]);
     }
 }

@@ -122,6 +122,57 @@ Route::post('/kontak', [ContactController::class, 'store'])->name('kontak.store'
 Route::post('/wishlist/toggle', [\App\Http\Controllers\WishlistController::class, 'toggle'])->name('wishlist.toggle');
 Route::get('/wishlist/user-ids', [\App\Http\Controllers\WishlistController::class, 'userWishlistIds'])->name('wishlist.userIds');
 
+// ---- Route: Update Profil Akun (Admin & User) ----
+Route::post('/profile/update', function (Request $request) {
+    $userSession = session('user');
+    if (!$userSession || empty($userSession['id'])) {
+        return response()->json(['success' => false, 'message' => 'Tidak terautentikasi.'], 401);
+    }
+
+    $user = \App\Models\User::find($userSession['id']);
+    if (!$user) {
+        return response()->json(['success' => false, 'message' => 'User tidak ditemukan.'], 404);
+    }
+
+    $name     = trim($request->input('name', ''));
+    $email    = trim($request->input('email', ''));
+    $phone    = trim($request->input('phone', ''));
+    $password = $request->input('password', '');
+
+    if (!$name || !$email) {
+        return response()->json(['success' => false, 'message' => 'Nama dan email wajib diisi.'], 422);
+    }
+
+    // Cek email sudah dipakai user lain
+    $emailExists = \App\Models\User::where('email', $email)->where('id', '!=', $user->id)->exists();
+    if ($emailExists) {
+        return response()->json(['success' => false, 'message' => 'Email sudah digunakan akun lain.'], 422);
+    }
+
+    // Bangun data update — sertakan phone hanya jika kolom sudah ada
+    $updateData = ['name' => $name, 'email' => $email];
+
+    $hasPhoneColumn = \Illuminate\Support\Facades\Schema::hasColumn('users', 'phone');
+    if ($hasPhoneColumn) {
+        $updateData['phone'] = $phone;
+    }
+
+    if ($password && strlen($password) >= 6) {
+        $updateData['password'] = \Illuminate\Support\Facades\Hash::make($password);
+    }
+
+    $user->update($updateData);
+
+    // Perbarui session agar langsung terefleksi tanpa logout
+    session(['user' => array_merge($userSession, [
+        'name'  => $name,
+        'email' => $email,
+        'phone' => $phone,
+    ])]);
+
+    return response()->json(['success' => true, 'message' => 'Profil berhasil diperbarui!']);
+})->name('profile.update');
+
 // ---- Route: /profile (Halaman Profil Pengguna) ----
 // Hanya untuk user yang sudah login. Menampilkan profile.blade.php.
 Route::get('/profile', function () {
@@ -143,10 +194,21 @@ Route::get('/profile', function () {
     $userOrders = collect();
     try {
         if ($dbUser) {
-            $userOrders = \App\Models\Order::where('user_id', $dbUser->id)
-                ->orWhere('email_pemesan', $dbUser->email)
+            $allUserOrders = \App\Models\Order::where(function($q) use ($dbUser) {
+                    $q->where('user_id', $dbUser->id)
+                      ->orWhere('email_pemesan', $dbUser->email);
+                })
                 ->latest()
                 ->get();
+
+            // Deduplicate: jika order cocok user_id DAN email, hindari tampil 2x
+            $userOrders = $allUserOrders->unique(function ($ord) {
+                return $ord->nama_pemesan
+                    . '|' . $ord->nama_paket
+                    . '|' . $ord->tanggal_keberangkatan
+                    . '|' . $ord->jumlah_peserta
+                    . '|' . $ord->total_pembayaran;
+            })->values();
         }
     } catch (\Throwable $e) {
         $userOrders = collect();

@@ -1754,7 +1754,7 @@ body.page-body::before {
 }
 
 .step-item.completed .step-circle {
-    background: #16a34a;
+    background: var(--primary-orange);
     color: #ffffff;
 }
 
@@ -1771,7 +1771,7 @@ body.page-body::before {
 }
 
 .step-item.completed .step-label {
-    color: #16a34a;
+    color: var(--primary-orange);
 }
 
 .step-line {
@@ -1785,7 +1785,7 @@ body.page-body::before {
 }
 
 .step-line.completed {
-    background: #16a34a;
+    background: var(--primary-orange);
 }
 
 /* Step Content visibility */
@@ -2211,13 +2211,13 @@ body.page-body::before {
 }
 
 .btn-step-final {
-    background: #16a34a;
-    box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);
+    background: var(--primary-orange);
+    box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
 }
 
 .btn-step-final:hover {
-    background: #15803d;
-    box-shadow: 0 6px 18px rgba(22, 163, 74, 0.45);
+    background: #c2610a;
+    box-shadow: 0 6px 18px rgba(234, 88, 12, 0.45);
 }
 
 .btn-step-secondary {

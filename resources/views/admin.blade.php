@@ -402,7 +402,10 @@ $isAdmin = ($userRole === 'admin');
 
 if (!isset($orders)) {
 try {
-$orders = \App\Models\Order::latest()->get();
+$allOrders = \App\Models\Order::latest()->get();
+$orders = $allOrders->unique(function ($ord) {
+    return $ord->nama_pemesan . '|' . $ord->nama_paket . '|' . $ord->tanggal_keberangkatan . '|' . $ord->jumlah_peserta . '|' . $ord->total_pembayaran;
+})->values();
 $totalOrders = $orders->count();
 $completedOrders = $orders->filter(function($o) {
 return in_array(strtolower($o->status), ['selesai', 'disetujui']);
@@ -1392,31 +1395,98 @@ $users = collect();
                         <h2 class="admin-card-title">Pengaturan Akun & Profil</h2>
                     </div>
 
-                    <form class="admin-settings-form" onsubmit="event.preventDefault(); showToast('Perubahan profil berhasil disimpan!', 'success');">
+                    <form class="admin-settings-form" id="formPengaturan" onsubmit="submitPengaturan(event)">
+                        @csrf
                         <div class="form-group-row">
                             <label class="form-group-label" for="settingName">Nama Pengguna</label>
-                            <input type="text" id="settingName" class="form-input-control" value="{{ session('user.name', 'Ika Safitri Oktavia') }}" required>
+                            <input type="text" id="settingName" name="name" class="form-input-control"
+                                value="{{ session('user.name', '') }}" required>
                         </div>
 
                         <div class="form-group-row">
                             <label class="form-group-label" for="settingEmail">Email Pengguna</label>
-                            <input type="email" id="settingEmail" class="form-input-control" value="{{ session('user.email', 'ikasafitrioktavia@gmail.com') }}" required>
+                            <input type="email" id="settingEmail" name="email" class="form-input-control"
+                                value="{{ session('user.email', '') }}" required>
                         </div>
 
                         <div class="form-group-row">
                             <label class="form-group-label" for="settingPhone">Nomor WhatsApp / Telepon</label>
-                            <input type="tel" id="settingPhone" class="form-input-control" value="0812-3456-7890">
+                            @php
+                                $sessionUserId = session('user.id');
+                                $adminUserObj  = $sessionUserId ? \App\Models\User::find($sessionUserId) : null;
+                                $adminPhone    = $adminUserObj ? ($adminUserObj->phone ?? '') : '';
+                            @endphp
+                            <input type="tel" id="settingPhone" name="phone" class="form-input-control"
+                                value="{{ $adminPhone }}">
                         </div>
 
                         <div class="form-group-row">
                             <label class="form-group-label" for="settingPass">Ganti Password (Opsional)</label>
-                            <input type="password" id="settingPass" class="form-input-control" placeholder="Biarkan kosong jika tidak ingin mengubah password">
+                            <input type="password" id="settingPass" name="password" class="form-input-control"
+                                placeholder="Biarkan kosong jika tidak ingin mengubah password">
                         </div>
 
-                        <button type="submit" class="btn-save-settings">
+                        <button type="submit" class="btn-save-settings" id="btnSavePengaturan">
                             <i class="fa-solid fa-floppy-disk" style="margin-right: 6px;"></i> Simpan Perubahan
                         </button>
                     </form>
+
+                    <script>
+                    function submitPengaturan(e) {
+                        e.preventDefault();
+                        const btn = document.getElementById('btnSavePengaturan');
+                        const originalText = btn.innerHTML;
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                                       || document.querySelector('input[name="_token"]')?.value || '';
+
+                        if (!csrfToken) {
+                            showToast('CSRF token tidak ditemukan. Refresh halaman lalu coba lagi.', 'error');
+                            btn.disabled = false;
+                            btn.innerHTML = originalText;
+                            return;
+                        }
+
+                        const formData = new FormData();
+                        formData.append('_token', csrfToken);
+                        formData.append('name',     document.getElementById('settingName').value.trim());
+                        formData.append('email',    document.getElementById('settingEmail').value.trim());
+                        formData.append('phone',    document.getElementById('settingPhone').value.trim());
+                        formData.append('password', document.getElementById('settingPass').value);
+
+                        fetch('/profile/update', {
+                            method: 'POST',
+                            headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
+                            body: formData
+                        })
+                        .then(res => {
+                            if (!res.ok && res.status === 419) {
+                                throw new Error('Session expired. Silakan refresh halaman.');
+                            }
+                            return res.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                showToast(data.message || 'Profil berhasil diperbarui!', 'success');
+                                // Update tampilan nama di sidebar & navbar langsung
+                                const newName = document.getElementById('settingName').value.trim();
+                                document.querySelectorAll('.admin-profile-name, .user-menu-name').forEach(el => {
+                                    el.textContent = newName;
+                                });
+                                document.getElementById('settingPass').value = '';
+                            } else {
+                                showToast(data.message || 'Gagal menyimpan perubahan.', 'error');
+                            }
+                        })
+                        .catch(err => showToast(err.message || 'Terjadi kesalahan jaringan. Coba lagi.', 'error'))
+                        .finally(() => {
+                            btn.disabled = false;
+                            btn.innerHTML = originalText;
+                        });
+                    }
+                    </script>
                 </div>
             </div>
             <!-- ---------------------------------------------------- -->

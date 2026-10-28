@@ -392,88 +392,32 @@
             </div>
         </section>
 
-        <!-- ==================== SEARCH & FILTER BAR ==================== -->
-        <div class="filter-wrapper-section" id="daftar-paket">
-            <div class="filter-pill-bar">
-                <div class="filter-search-input-group">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="paketSearchInput" placeholder="Cari paket wisata atau lokasi..." aria-label="Cari paket wisata">
-                    <button type="button" id="btnClearSearch" class="btn-clear-search" style="display: none;" title="Hapus pencarian">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
-                <div class="filter-category-dropdown">
-                    <button class="btn-filter-category" id="btnFilterCategory" type="button" aria-expanded="false">
-                        <i class="fa-solid fa-sliders"></i>
-                        <span id="selectedCategoryLabel">Semua Kategori</span>
-                        <i class="fa-solid fa-chevron-down caret-icon"></i>
-                    </button>
-                    <div class="category-dropdown-menu" id="categoryDropdownMenu">
-                        <a href="javascript:void(0)" class="dropdown-item active" data-category="all">
-                            <span><i class="fa-solid fa-layer-group"></i> Semua Kategori</span>
-                            <span class="category-badge-count" data-count-for="all">{{ $countAll }}</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <div class="dropdown-section-title">Destinasi</div>
-                        <a href="javascript:void(0)" class="dropdown-item" data-category="jawa">
-                            <span><i class="fa-solid fa-map-location-dot"></i> Wisata Jawa</span>
-                            <span class="category-badge-count" data-count-for="jawa">{{ $countJawa }}</span>
-                        </a>
-                        <a href="javascript:void(0)" class="dropdown-item" data-category="bali">
-                            <span><i class="fa-solid fa-umbrella-beach"></i> Wisata Bali</span>
-                            <span class="category-badge-count" data-count-for="bali">{{ $countBali }}</span>
-                        </a>
-                        <a href="javascript:void(0)" class="dropdown-item" data-category="sumatera">
-                            <span><i class="fa-solid fa-mountain-sun"></i> Wisata Sumatera</span>
-                            <span class="category-badge-count" data-count-for="sumatera">{{ $countSumatera }}</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <div class="dropdown-section-title">Durasi</div>
-                        <a href="javascript:void(0)" class="dropdown-item" data-category="1hari">
-                            <span><i class="fa-regular fa-clock"></i> Wisata 1 Hari</span>
-                            <span class="category-badge-count" data-count-for="1hari">{{ $count1Hari }}</span>
-                        </a>
-                        <a href="javascript:void(0)" class="dropdown-item" data-category="menginap">
-                            <span><i class="fa-solid fa-hotel"></i> Wisata Menginap</span>
-                            <span class="category-badge-count" data-count-for="menginap">{{ $countMenginap }}</span>
-                        </a>
-                    </div>
+        <!-- ==================== SEARCH & FILTER BAR (gaya destinasi) ==================== -->
+        <div class="filter-pill-bar destinasi-filter-bar paket-filter-bar" id="daftar-paket">
+            <div class="filter-search-input-group destinasi-search-group">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="paketSearchInput" placeholder="Cari paket wisata atau lokasi..." aria-label="Cari paket wisata">
+            </div>
+            <div class="filter-category-dropdown destinasi-filter-dropdown">
+                <button class="btn-filter-category btn-destinasi-filter" id="btnFilterCategory" type="button" aria-expanded="false">
+                    <span id="selectedCategoryLabel">Filter Kategori</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="category-dropdown-menu destinasi-dropdown-menu" id="categoryDropdownMenu">
+                    <a href="javascript:void(0)" class="dropdown-item active" data-category="all">Semua Kategori</a>
+                    <a href="javascript:void(0)" class="dropdown-item" data-category="jawa">Wisata Jawa</a>
+                    <a href="javascript:void(0)" class="dropdown-item" data-category="bali">Wisata Bali</a>
+                    <a href="javascript:void(0)" class="dropdown-item" data-category="sumatera">Wisata Sumatera</a>
+                    <a href="javascript:void(0)" class="dropdown-item" data-category="1hari">Wisata 1 Hari</a>
+                    <a href="javascript:void(0)" class="dropdown-item" data-category="menginap">Wisata Menginap</a>
                 </div>
             </div>
+        </div>
 
-            <!-- Quick Filter Chips / Pills (Horizontal Scrollable & Interactive) -->
-            <div class="quick-filter-chips" id="quickFilterChips">
-                <button type="button" class="filter-chip active" data-category="all">
-                    <i class="fa-solid fa-border-all"></i> Semua (<span class="chip-count" data-count-for="all">{{ $countAll }}</span>)
-                </button>
-                <button type="button" class="filter-chip" data-category="jawa">
-                    <i class="fa-solid fa-map-pin"></i> Jawa (<span class="chip-count" data-count-for="jawa">{{ $countJawa }}</span>)
-                </button>
-                <button type="button" class="filter-chip" data-category="bali">
-                    <i class="fa-solid fa-umbrella-beach"></i> Bali (<span class="chip-count" data-count-for="bali">{{ $countBali }}</span>)
-                </button>
-                <button type="button" class="filter-chip" data-category="sumatera">
-                    <i class="fa-solid fa-mountain"></i> Sumatera (<span class="chip-count" data-count-for="sumatera">{{ $countSumatera }}</span>)
-                </button>
-                <button type="button" class="filter-chip" data-category="1hari">
-                    <i class="fa-regular fa-sun"></i> 1 Hari (<span class="chip-count" data-count-for="1hari">{{ $count1Hari }}</span>)
-                </button>
-                <button type="button" class="filter-chip" data-category="menginap">
-                    <i class="fa-solid fa-moon"></i> Menginap (<span class="chip-count" data-count-for="menginap">{{ $countMenginap }}</span>)
-                </button>
-            </div>
-
-            <!-- Active Filter Status Indicator & Results Counter -->
-            <div class="filter-status-row" id="filterStatusRow">
-                <div class="filter-results-info">
-                    Menampilkan <strong id="filterResultCount">{{ $countAll }}</strong> paket wisata
-                    <span id="activeFilterBadge" class="active-filter-badge" style="display: none;">
-                        <span id="activeFilterName">Kategori</span>
-                        <button type="button" id="btnRemoveFilter" aria-label="Hapus filter">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
-                    </span>
-                </div>
+        <!-- Hasil filter info -->
+        <div class="filter-status-row" id="filterStatusRow" style="max-width:1200px;margin:10px auto 0;padding:0 20px;">
+            <div class="filter-results-info">
+                Menampilkan <strong id="filterResultCount">{{ $countAll }}</strong> paket wisata
             </div>
         </div>
 
@@ -553,229 +497,92 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('paketSearchInput');
-            const btnClearSearch = document.getElementById('btnClearSearch');
             const categoryBtn = document.getElementById('btnFilterCategory');
             const categoryMenu = document.getElementById('categoryDropdownMenu');
             const categoryItems = categoryMenu ? categoryMenu.querySelectorAll('.dropdown-item') : [];
             const selectedCategoryLabel = document.getElementById('selectedCategoryLabel');
-            const filterChips = document.querySelectorAll('.filter-chip');
             const cards = document.querySelectorAll('.package-card');
             const noMsg = document.getElementById('noPaketMessage');
             const btnReset = document.getElementById('btnResetFilter');
             const filterResultCount = document.getElementById('filterResultCount');
-            const activeFilterBadge = document.getElementById('activeFilterBadge');
-            const activeFilterName = document.getElementById('activeFilterName');
-            const btnRemoveFilter = document.getElementById('btnRemoveFilter');
-
-            // Category Labels Map for Display
-            const categoryNames = {
-                'all': 'Semua Kategori',
-                'jawa': 'Wisata Jawa',
-                'bali': 'Wisata Bali',
-                'sumatera': 'Wisata Sumatera',
-                '1hari': 'Durasi 1 Hari',
-                'menginap': 'Durasi Menginap'
-            };
-
-            // Hitung jumlah paket per kategori secara dinamis
-            function updateCategoryCounts() {
-                const counts = {
-                    'all': cards.length,
-                    'jawa': 0,
-                    'bali': 0,
-                    'sumatera': 0,
-                    '1hari': 0,
-                    'menginap': 0
-                };
-
-                cards.forEach(card => {
-                    const cat = (card.getAttribute('data-category') || '').toLowerCase();
-                    if (cat.includes('jawa')) counts['jawa']++;
-                    if (cat.includes('bali')) counts['bali']++;
-                    if (cat.includes('sumatera')) counts['sumatera']++;
-                    if (cat.includes('1hari')) counts['1hari']++;
-                    if (cat.includes('menginap')) counts['menginap']++;
-                });
-
-                // Update angka badge di dropdown & quick chips
-                document.querySelectorAll('[data-count-for]').forEach(el => {
-                    const key = el.getAttribute('data-count-for');
-                    if (counts[key] !== undefined) {
-                        el.textContent = counts[key];
-                    }
-                });
-            }
-
-            updateCategoryCounts();
 
             let currentCategory = 'all';
-            let searchQuery = '';
 
-            // Toggle Dropdown Filter Kategori
+            // Toggle Dropdown
             if (categoryBtn && categoryMenu) {
                 categoryBtn.addEventListener('click', function (e) {
                     e.stopPropagation();
-                    const isShown = categoryMenu.classList.contains('show');
-                    categoryMenu.classList.toggle('show', !isShown);
-                    categoryBtn.setAttribute('aria-expanded', !isShown ? 'true' : 'false');
+                    categoryMenu.classList.toggle('show');
                 });
 
                 document.addEventListener('click', function (e) {
                     if (!categoryBtn.contains(e.target) && !categoryMenu.contains(e.target)) {
                         categoryMenu.classList.remove('show');
-                        categoryBtn.setAttribute('aria-expanded', 'false');
                     }
                 });
-            }
 
-            // Set Active Category (tersinkron antara dropdown dan chips)
-            function setCategory(catKey) {
-                currentCategory = catKey || 'all';
-
-                // Update Label Button
-                if (selectedCategoryLabel) {
-                    selectedCategoryLabel.textContent = categoryNames[currentCategory] || 'Filter Kategori';
-                }
-
-                // Update Active State di Dropdown
                 categoryItems.forEach(item => {
-                    item.classList.toggle('active', item.getAttribute('data-category') === currentCategory);
-                });
-
-                // Update Active State di Chips
-                filterChips.forEach(chip => {
-                    chip.classList.toggle('active', chip.getAttribute('data-category') === currentCategory);
-                });
-
-                // Update Active Filter Badge di Status Bar
-                if (currentCategory !== 'all') {
-                    if (activeFilterBadge) activeFilterBadge.style.display = 'inline-flex';
-                    if (activeFilterName) activeFilterName.textContent = categoryNames[currentCategory] || currentCategory;
-                } else {
-                    if (activeFilterBadge) activeFilterBadge.style.display = 'none';
-                }
-
-                if (categoryMenu) {
-                    categoryMenu.classList.remove('show');
-                    if (categoryBtn) categoryBtn.setAttribute('aria-expanded', 'false');
-                }
-
-                applyFilter();
-            }
-
-            // Klik item kategori di Dropdown
-            categoryItems.forEach(item => {
-                item.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const cat = this.getAttribute('data-category') || 'all';
-                    setCategory(cat);
-                });
-            });
-
-            // Klik tombol Chip Kategori
-            filterChips.forEach(chip => {
-                chip.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const cat = this.getAttribute('data-category') || 'all';
-                    setCategory(cat);
-                });
-            });
-
-            // Tombol Hapus Filter Aktif
-            if (btnRemoveFilter) {
-                btnRemoveFilter.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    setCategory('all');
+                    item.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        categoryItems.forEach(i => i.classList.remove('active'));
+                        this.classList.add('active');
+                        currentCategory = this.getAttribute('data-category') || 'all';
+                        if (selectedCategoryLabel) {
+                            selectedCategoryLabel.textContent = this.textContent.trim();
+                        }
+                        categoryMenu.classList.remove('show');
+                        filterPaket();
+                    });
                 });
             }
 
-            // Input Search realtime dengan debounce halus
-            let searchTimeout = null;
+            // Search Filter
             if (searchInput) {
                 searchInput.addEventListener('input', function () {
-                    const val = this.value.trim();
-                    searchQuery = val.toLowerCase();
-
-                    // Tampilkan / sembunyikan tombol clear search
-                    if (btnClearSearch) {
-                        btnClearSearch.style.display = val.length > 0 ? 'inline-flex' : 'none';
-                    }
-
-                    clearTimeout(searchTimeout);
-                    searchTimeout = setTimeout(() => {
-                        applyFilter();
-                    }, 120);
+                    filterPaket();
                 });
             }
 
-            // Clear search button
-            if (btnClearSearch) {
-                btnClearSearch.addEventListener('click', function () {
-                    if (searchInput) {
-                        searchInput.value = '';
-                        searchQuery = '';
-                        this.style.display = 'none';
-                        searchInput.focus();
-                        applyFilter();
-                    }
-                });
-            }
-
-            // Reset Filter All button
+            // Reset button
             if (btnReset) {
-                btnReset.addEventListener('click', function() {
+                btnReset.addEventListener('click', function () {
                     if (searchInput) searchInput.value = '';
-                    if (btnClearSearch) btnClearSearch.style.display = 'none';
-                    searchQuery = '';
-                    setCategory('all');
+                    currentCategory = 'all';
+                    categoryItems.forEach(i => i.classList.remove('active'));
+                    const allItem = categoryMenu ? categoryMenu.querySelector('[data-category="all"]') : null;
+                    if (allItem) allItem.classList.add('active');
+                    if (selectedCategoryLabel) selectedCategoryLabel.textContent = 'Filter Kategori';
+                    filterPaket();
                 });
             }
 
-            // Fungsi Utama Filter (Seluruh paket tampil dalam satu halaman dengan scroll biasa)
-            function applyFilter() {
-                let matchingCards = [];
+            function filterPaket() {
+                const query = (searchInput ? searchInput.value : '').toLowerCase().trim();
+                let visibleCount = 0;
 
-                // 1. Saring kartu berdasarkan pencarian & kategori
                 cards.forEach(card => {
-                    const cardTitle = card.getAttribute('data-title') || '';
-                    const cardCategory = card.getAttribute('data-category') || '';
+                    const title = (card.getAttribute('data-title') || '').toLowerCase();
+                    const category = (card.getAttribute('data-category') || '').toLowerCase();
 
-                    let matchCat = (currentCategory === 'all') || cardCategory.includes(currentCategory);
-                    let matchSearch = (searchQuery === '') || cardTitle.includes(searchQuery);
+                    const matchesQuery = !query || title.includes(query);
+                    const matchesCategory = currentCategory === 'all' || category.includes(currentCategory);
 
-                    if (matchCat && matchSearch) {
-                        matchingCards.push(card);
-                    }
-                });
-
-                // Update counter teks hasil pencarian
-                if (filterResultCount) {
-                    filterResultCount.textContent = matchingCards.length;
-                }
-
-                // Sembunyikan semua kartu terlebih dahulu
-                cards.forEach(card => {
-                    card.classList.add('page-hidden');
-                    card.classList.remove('fade-in');
-                });
-
-                if (matchingCards.length === 0) {
-                    if (noMsg) noMsg.style.display = 'block';
-                } else {
-                    if (noMsg) noMsg.style.display = 'none';
-
-                    matchingCards.forEach((card, index) => {
+                    if (matchesQuery && matchesCategory) {
                         card.classList.remove('page-hidden');
                         card.classList.add('fade-in');
-                        card.style.animationDelay = `${Math.min(index * 0.03, 0.3)}s`;
-                    });
-                }
+                        visibleCount++;
+                    } else {
+                        card.classList.add('page-hidden');
+                        card.classList.remove('fade-in');
+                    }
+                });
+
+                if (filterResultCount) filterResultCount.textContent = visibleCount;
+                if (noMsg) noMsg.style.display = visibleCount === 0 ? 'block' : 'none';
             }
 
-            // Wishlist Toggle handled globally by main.js with debounce & async sync
-
-            // Inisialisasi awal: tampilkan seluruh paket
-            applyFilter();
+            // Inisialisasi awal
+            filterPaket();
         });
     </script>
 @endsection

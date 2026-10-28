@@ -17,7 +17,18 @@ class AdminController extends Controller
     public function index(Request $request)
     {
         $packages = Package::all();
-        $orders = Order::latest()->get();
+
+        // Ambil semua order, lalu deduplicate berdasarkan kombinasi field unik
+        // untuk mencegah duplikat akibat data yang tersimpan ganda
+        $allOrders = Order::latest()->get();
+        $orders = $allOrders->unique(function ($ord) {
+            return $ord->nama_pemesan
+                . '|' . $ord->nama_paket
+                . '|' . $ord->tanggal_keberangkatan
+                . '|' . $ord->jumlah_peserta
+                . '|' . $ord->total_pembayaran;
+        })->values();
+
         $users = User::all();
 
         $totalOrders = $orders->count();
