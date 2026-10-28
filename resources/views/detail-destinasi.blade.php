@@ -92,7 +92,7 @@
                     <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 10px; text-shadow: 0 2px 8px rgba(0,0,0,0.3);">
                         Belum Ada Paket Wisata
                     </h2>
-                    
+
                     <p style="font-size: 14px; color: rgba(255, 255, 255, 0.88); line-height: 1.6; margin-bottom: 28px;">
                         Saat ini paket wisata untuk destinasi <strong>{{ $destinasi['name'] }}</strong> belum tersedia. Tim kami sedang menyiapkan pilihan rute dan paket terbaik untuk Anda.
                     </p>
