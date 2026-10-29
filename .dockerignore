@@ -1,0 +1,8 @@
+/node_modules
+/public/hot
+/storage/*.key
+.env
+.git
+.gitignore
+phpunit.xml
+tests/
