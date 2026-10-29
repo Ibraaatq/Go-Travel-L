@@ -23,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
             request()->header('x-forwarded-proto') === 'https' ||
             str_contains(request()->header('host', ''), 'trycloudflare.com') ||
             str_contains(request()->header('host', ''), 'onrender.com') ||
+            str_contains(request()->header('host', ''), 'vercel.app') ||
             app()->environment('production') ||
             request()->isSecure()
         ) {
