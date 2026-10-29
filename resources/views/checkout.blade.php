@@ -661,12 +661,14 @@
         if (file.type.startsWith('image/')) {
             const reader = new FileReader();
             reader.onload = function(e) {
+                window.buktiBase64Data = e.target.result;
                 document.getElementById('buktiPreviewImg').src = e.target.result;
                 document.getElementById('buktiPreviewBox').style.display = 'block';
             };
             reader.readAsDataURL(file);
         } else {
             // PDF — tampilkan nama file saja
+            window.buktiBase64Data = null;
             document.getElementById('buktiPreviewImg').src = '';
             document.getElementById('buktiPreviewBox').style.display = 'block';
         }
@@ -674,6 +676,7 @@
 
     function removeBukti() {
         buktiFileObject = null;
+        window.buktiBase64Data = null;
         document.getElementById('inputBuktiTransfer').value = '';
         document.getElementById('uploadBuktiLabel').classList.remove('has-file');
         document.getElementById('uploadBuktiMainText').textContent = 'Upload Bukti Transfer';

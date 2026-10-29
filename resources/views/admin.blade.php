@@ -1838,15 +1838,15 @@ $users = collect();
                                 </div>
                                 <div class="bukti-photo-wrapper">
                                     <div class="bukti-photo-frame" onclick="openBuktiModal()" style="cursor: pointer; position: relative; border-radius: 14px; overflow: hidden; border: 1.5px solid #e2e8f0; background: #0f172a; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: all 0.25s ease;">
-                                        <img id="dtBuktiImage" src="{{ asset('images/sample-receipt.jpg') }}" alt="Bukti Transfer" style="width: 100%; max-height: 380px; object-fit: contain; display: block; margin: 0 auto; transition: transform 0.3s ease;">
+                                        <img id="dtBuktiImage" src="{{ asset('images/pigolio.jpeg') }}" alt="Bukti Transfer" style="width: 100%; max-height: 380px; object-fit: contain; display: block; margin: 0 auto; transition: transform 0.3s ease;">
                                         <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(15,23,42,0.85)); padding: 12px 14px; color: #fff; display: flex; align-items: center; justify-content: space-between; font-size: 11.5px;">
-                                            <span id="dtBuktiFileName" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;"><i class="fa-solid fa-file-image" style="color: #38bdf8;"></i> Bukti Transfer</span>
+                                            <span id="dtBuktiFileName" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;"><i class="fa-solid fa-file-image" style="color: #38bdf8;"></i> pigolio.jpeg</span>
                                             <span style="background: rgba(255,255,255,0.2); backdrop-filter: blur(4px); padding: 3px 8px; border-radius: 6px; font-weight: 500; font-size: 10.5px;"><i class="fa-solid fa-magnifying-glass-plus"></i> Perbesar</span>
                                         </div>
                                     </div>
                                     <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; padding: 0 4px;">
                                         <span><i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Terverifikasi Pengguna</span>
-                                        <a id="dtBuktiDownloadBtn" href="{{ asset('images/sample-receipt.jpg') }}" target="_blank" style="color: #2563eb; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                        <a id="dtBuktiDownloadBtn" href="{{ asset('images/pigolio.jpeg') }}" target="_blank" style="color: #2563eb; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
                                             <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Gambar Penuh
                                         </a>
                                     </div>
@@ -1933,6 +1933,22 @@ $users = collect();
             $totalFormatted = 'Rp. ' . number_format($ord->total_pembayaran ?? 0, 0, ',', '.');
             $createdCarbon = \Carbon\Carbon::parse($ord->created_at);
 
+            $rawBukti = (string)($ord->bukti_pembayaran ?? '');
+            $buktiImgUrl = null;
+            if (!empty($rawBukti)) {
+                if (str_starts_with($rawBukti, 'data:') || str_starts_with($rawBukti, 'http://') || str_starts_with($rawBukti, 'https://')) {
+                    $buktiImgUrl = $rawBukti;
+                } elseif (str_contains(strtolower($rawBukti), 'pigolio')) {
+                    $buktiImgUrl = asset('images/pigolio.jpeg');
+                } elseif (file_exists(public_path($rawBukti))) {
+                    $buktiImgUrl = asset($rawBukti);
+                } else {
+                    $buktiImgUrl = asset('images/pigolio.jpeg');
+                }
+            } else {
+                $buktiImgUrl = asset('images/pigolio.jpeg');
+            }
+
             $orderDatabaseList[(string)$ord->id] = [
                 'id' => (int)$ord->id,
                 'orderDate' => $createdCarbon->translatedFormat("d F Y"),
@@ -1962,8 +1978,8 @@ $users = collect();
                 'receiptTx' => 'TX-' . $ord->id . '-' . strtotime($ord->created_at),
                 'receiptMerchant' => 'GO Travel Indonesia',
                 'receiptMethod' => 'WhatsApp / Transfer',
-                'buktiImage' => (!empty($ord->bukti_pembayaran) && (str_starts_with($ord->bukti_pembayaran, 'http') || str_starts_with($ord->bukti_pembayaran, 'data:'))) ? $ord->bukti_pembayaran : asset('images/sample-receipt.jpg'),
-                'buktiFileName' => basename($ord->bukti_pembayaran ?: 'Screenshot_Transfer_Ayomi.png'),
+                'buktiImage' => $buktiImgUrl,
+                'buktiFileName' => basename($ord->bukti_pembayaran ?: 'pigolio.jpeg'),
             ];
         }
     }
@@ -2952,19 +2968,19 @@ let currentViewingOrderKey = Object.keys(orderDatabase)[0] || '';
         // Update Bukti Pembayaran Image & Link
         const buktiImg = document.getElementById('dtBuktiImage');
         if (buktiImg) {
-            buktiImg.src = data.buktiImage || '/images/sample-receipt.jpg';
+            buktiImg.src = data.buktiImage || '/images/pigolio.jpeg';
             buktiImg.onerror = function() {
                 this.onerror = null;
-                this.src = '/images/sample-receipt.jpg';
+                this.src = '/images/pigolio.jpeg';
             };
         }
         const buktiLink = document.getElementById('dtBuktiDownloadBtn');
         if (buktiLink) {
-            buktiLink.href = data.buktiImage || '/images/sample-receipt.jpg';
+            buktiLink.href = data.buktiImage || '/images/pigolio.jpeg';
         }
         const buktiName = document.getElementById('dtBuktiFileName');
         if (buktiName) {
-            buktiName.innerHTML = `<i class="fa-solid fa-file-image" style="color: #38bdf8;"></i> ${data.buktiFileName || 'Bukti Transfer'}`;
+            buktiName.innerHTML = `<i class="fa-solid fa-file-image" style="color: #38bdf8;"></i> ${data.buktiFileName || 'pigolio.jpeg'}`;
         }
 
         document.querySelectorAll('.tab-content-pane').forEach(p => p.classList.remove('active'));

@@ -349,6 +349,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 formData.append('_token', csrfToken);
 
                 // Sertakan file bukti transfer jika ada
+                if (typeof window !== 'undefined' && window.buktiBase64Data) {
+                    formData.append('bukti_pembayaran_base64', window.buktiBase64Data);
+                }
                 if (typeof buktiFileObject !== 'undefined' && buktiFileObject) {
                     formData.append('bukti_pembayaran', buktiFileObject);
                 }

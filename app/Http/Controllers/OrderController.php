@@ -51,17 +51,20 @@ class OrderController extends Controller
         }
         $total = (float) ($totalRaw ?: 0);
 
-        // Upload bukti pembayaran jika ada (dengan fallback serverless read-only filesystem)
+        // Upload bukti pembayaran (disimpan permanen sebagai Base64 Data URI di database agar kompatibel dengan Vercel Serverless)
         $buktiPath = null;
-        if ($request->hasFile('bukti_pembayaran') && $request->file('bukti_pembayaran')->isValid()) {
+        if ($request->filled('bukti_pembayaran_base64')) {
+            $buktiPath = $request->input('bukti_pembayaran_base64');
+        } elseif ($request->hasFile('bukti_pembayaran') && $request->file('bukti_pembayaran')->isValid()) {
             try {
                 $file = $request->file('bukti_pembayaran');
-                $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
-                $path = $file->storeAs('bukti_pembayaran', $filename, 'public');
-                $buktiPath = 'storage/' . $path;
+                $mime = $file->getMimeType() ?: 'image/jpeg';
+                $content = file_get_contents($file->getRealPath());
+                if ($content !== false) {
+                    $buktiPath = 'data:' . $mime . ';base64,' . base64_encode($content);
+                }
             } catch (\Throwable $e) {
-                // Jika storage read-only (seperti di Vercel Serverless), catat path referensi file
-                $buktiPath = 'bukti_pembayaran/' . ($filename ?? 'bukti_' . time() . '.jpg');
+                \Illuminate\Support\Facades\Log::error('Upload file base64 error: ' . $e->getMessage());
             }
         }
 
