@@ -60,8 +60,12 @@ class AdminUserController extends Controller
     /**
      * Perbarui data pengguna (nama, email, role, dan optional password).
      * Route: PUT /admin/users/{id}
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string|int  $id
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, string|int $id)
     {
         $user = User::findOrFail($id);
 
@@ -115,8 +119,12 @@ class AdminUserController extends Controller
     /**
      * Ubah role pengguna (misal dari 'user' ke 'admin' atau sebaliknya).
      * Route: PATCH /admin/users/{id}/role
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string|int  $id
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function updateRole(Request $request, $id)
+    public function updateRole(Request $request, string|int $id)
     {
         $user = User::findOrFail($id);
 
@@ -157,8 +165,11 @@ class AdminUserController extends Controller
     /**
      * Hapus user dari database.
      * Route: DELETE /admin/users/{id}
+     *
+     * @param  string|int  $id
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($id)
+    public function destroy(string|int $id)
     {
         $user = User::findOrFail($id);
         $currentUserId = session('user.id');

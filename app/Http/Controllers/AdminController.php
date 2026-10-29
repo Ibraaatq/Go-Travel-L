@@ -138,8 +138,12 @@ class AdminController extends Controller
 
     /**
      * Update / Ubah Paket Wisata di Database
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string|int  $id
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function updatePackage(Request $request, $id)
+    public function updatePackage(Request $request, string|int $id)
     {
         // Cari paket berdasarkan ID atau slug
         $package = is_numeric($id) ? Package::find($id) : Package::where('slug', $id)->first();
@@ -213,8 +217,11 @@ class AdminController extends Controller
 
     /**
      * Hapus Paket Wisata
+     *
+     * @param  string|int  $id
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroyPackage($id)
+    public function destroyPackage(string|int $id)
     {
         $package = Package::findOrFail($id);
         
@@ -230,8 +237,11 @@ class AdminController extends Controller
 
     /**
      * Hapus Pesan Kontak
+     *
+     * @param  string|int  $id
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroyContact($id)
+    public function destroyContact(string|int $id)
     {
         $contact = Contact::findOrFail($id);
         $senderName = $contact->name ?: ($contact->nama_lengkap ?: 'Pengirim');

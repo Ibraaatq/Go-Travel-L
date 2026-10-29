@@ -108,8 +108,12 @@ class OrderController extends Controller
 
     /**
      * Update order status (for admin panel).
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string|int  $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function updateStatus(Request $request, $id)
+    public function updateStatus(Request $request, string|int $id)
     {
         $order  = Order::findOrFail($id);
         $status = $request->input('status', 'selesai');
