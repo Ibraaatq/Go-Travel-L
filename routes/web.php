@@ -175,8 +175,12 @@ Route::get('/checkout/{slug}', [PaketWisataController::class, 'checkout'])->name
 Route::get('/paket-wisata/checkout/{slug}', [PaketWisataController::class, 'checkout']);
 Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.store');
 Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
-Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
-
+Route::get('/contact', function () {
+    return redirect('/#contact');
+})->name('contact');
+Route::get('/kontak', function () {
+    return redirect('/#contact');
+})->name('kontak');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::post('/kontak', [ContactController::class, 'store'])->name('kontak.store');
 
@@ -303,6 +307,9 @@ Route::middleware('admin')->group(function () {
     Route::put('/admin/users/{id}', [\App\Http\Controllers\AdminUserController::class, 'update'])->name('admin.users.update');
     Route::patch('/admin/users/{id}/role', [\App\Http\Controllers\AdminUserController::class, 'updateRole'])->name('admin.users.updateRole');
     Route::delete('/admin/users/{id}', [\App\Http\Controllers\AdminUserController::class, 'destroy'])->name('admin.users.destroy');
+
+    // Orders Status Management
+    Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 });
 
 // ---- Route: /dashboard (alias /profile) ----
