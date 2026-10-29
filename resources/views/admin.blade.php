@@ -1830,33 +1830,26 @@ $users = collect();
                         <div class="detail-right-cards">
                             <!-- Bukti Pembayaran Card -->
                             <div class="detail-info-card" style="padding: 20px;">
-                                <h3 class="detail-card-title">Bukti Pembayaran</h3>
-                                <div class="receipt-screen-wrapper">
-                                    <div class="receipt-screen-title">Detail Transaksi</div>
-                                    <div class="receipt-card-slip">
-                                        <div class="receipt-icon-circle">
-                                            <i class="fa-solid fa-check"></i>
-                                        </div>
-                                        <div class="receipt-amount" id="dtReceiptAmount">Rp50.000</div>
-                                        <div class="receipt-status-text">
-                                            Pembayaran Berhasil<br>
-                                            <span id="dtReceiptTime">16 Agu 2023 • 11:41</span>
-                                        </div>
-                                        <div class="receipt-id-num" id="dtReceiptId">12410379881212</div>
-                                        <div><span class="receipt-badge-tag">PEMBAYARAN</span></div>
-                                        <div class="receipt-dashed-line"></div>
-                                        <div class="receipt-tx-info">
-                                            <strong>Detail Transaksi</strong>
-                                            <div>ID Transaksi: <span id="dtReceiptTx">20230816111121280010016686445575901</span></div>
-                                            <div style="margin-top: 4px;">ID Order Merchant: <span id="dtReceiptMerchant">12012022023831150011739406522757</span></div>
-                                        </div>
-                                        <div style="text-align: left; margin-top: 10px; font-size: 10.5px; color: #64748b;">Metode Pembayaran</div>
-                                        <div class="receipt-payment-method-row">
-                                            <span id="dtReceiptMethod"><i class="fa-solid fa-circle-check" style="color: #2563eb; margin-right: 4px;"></i> Saldo DANA</span>
-                                            <i class="fa-solid fa-circle-check" style="color: #2563eb;"></i>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                    <h3 class="detail-card-title" style="margin-bottom: 0;">Bukti Pembayaran</h3>
+                                    <span style="font-size: 11px; background: #e0f2fe; color: #0369a1; padding: 4px 8px; border-radius: 6px; font-weight: 600;">
+                                        <i class="fa-solid fa-camera"></i> Foto Pengguna
+                                    </span>
+                                </div>
+                                <div class="bukti-photo-wrapper">
+                                    <div class="bukti-photo-frame" onclick="openBuktiModal()" style="cursor: pointer; position: relative; border-radius: 14px; overflow: hidden; border: 1.5px solid #e2e8f0; background: #0f172a; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: all 0.25s ease;">
+                                        <img id="dtBuktiImage" src="{{ asset('images/sample-receipt.jpg') }}" alt="Bukti Transfer" style="width: 100%; max-height: 380px; object-fit: contain; display: block; margin: 0 auto; transition: transform 0.3s ease;">
+                                        <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(15,23,42,0.85)); padding: 12px 14px; color: #fff; display: flex; align-items: center; justify-content: space-between; font-size: 11.5px;">
+                                            <span id="dtBuktiFileName" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;"><i class="fa-solid fa-file-image" style="color: #38bdf8;"></i> Bukti Transfer</span>
+                                            <span style="background: rgba(255,255,255,0.2); backdrop-filter: blur(4px); padding: 3px 8px; border-radius: 6px; font-weight: 500; font-size: 10.5px;"><i class="fa-solid fa-magnifying-glass-plus"></i> Perbesar</span>
                                         </div>
                                     </div>
-                                    <div class="receipt-watermark">Powered by <strong>GO Travel</strong></div>
+                                    <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; padding: 0 4px;">
+                                        <span><i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Terverifikasi Pengguna</span>
+                                        <a id="dtBuktiDownloadBtn" href="{{ asset('images/sample-receipt.jpg') }}" target="_blank" style="color: #2563eb; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Gambar Penuh
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
 
@@ -1969,6 +1962,8 @@ $users = collect();
                 'receiptTx' => 'TX-' . $ord->id . '-' . strtotime($ord->created_at),
                 'receiptMerchant' => 'GO Travel Indonesia',
                 'receiptMethod' => 'WhatsApp / Transfer',
+                'buktiImage' => (!empty($ord->bukti_pembayaran) && (str_starts_with($ord->bukti_pembayaran, 'http') || str_starts_with($ord->bukti_pembayaran, 'data:'))) ? $ord->bukti_pembayaran : asset('images/sample-receipt.jpg'),
+                'buktiFileName' => basename($ord->bukti_pembayaran ?: 'Screenshot_Transfer_Ayomi.png'),
             ];
         }
     }
@@ -2947,12 +2942,30 @@ let currentViewingOrderKey = Object.keys(orderDatabase)[0] || '';
         document.getElementById('dtPayDate').textContent = data.payDate;
         document.getElementById('dtPayTotal').textContent = data.totalPay;
 
-        document.getElementById('dtReceiptAmount').textContent = data.receiptAmount;
-        document.getElementById('dtReceiptTime').textContent = data.receiptTime;
-        document.getElementById('dtReceiptId').textContent = data.receiptId;
-        document.getElementById('dtReceiptTx').textContent = data.receiptTx;
-        document.getElementById('dtReceiptMerchant').textContent = data.receiptMerchant;
-        document.getElementById('dtReceiptMethod').innerHTML = `<i class="fa-solid fa-circle-check" style="color: #2563eb; margin-right: 4px;"></i> ${data.receiptMethod}`;
+        if (document.getElementById('dtReceiptAmount')) document.getElementById('dtReceiptAmount').textContent = data.receiptAmount;
+        if (document.getElementById('dtReceiptTime')) document.getElementById('dtReceiptTime').textContent = data.receiptTime;
+        if (document.getElementById('dtReceiptId')) document.getElementById('dtReceiptId').textContent = data.receiptId;
+        if (document.getElementById('dtReceiptTx')) document.getElementById('dtReceiptTx').textContent = data.receiptTx;
+        if (document.getElementById('dtReceiptMerchant')) document.getElementById('dtReceiptMerchant').textContent = data.receiptMerchant;
+        if (document.getElementById('dtReceiptMethod')) document.getElementById('dtReceiptMethod').innerHTML = `<i class="fa-solid fa-circle-check" style="color: #2563eb; margin-right: 4px;"></i> ${data.receiptMethod}`;
+
+        // Update Bukti Pembayaran Image & Link
+        const buktiImg = document.getElementById('dtBuktiImage');
+        if (buktiImg) {
+            buktiImg.src = data.buktiImage || '/images/sample-receipt.jpg';
+            buktiImg.onerror = function() {
+                this.onerror = null;
+                this.src = '/images/sample-receipt.jpg';
+            };
+        }
+        const buktiLink = document.getElementById('dtBuktiDownloadBtn');
+        if (buktiLink) {
+            buktiLink.href = data.buktiImage || '/images/sample-receipt.jpg';
+        }
+        const buktiName = document.getElementById('dtBuktiFileName');
+        if (buktiName) {
+            buktiName.innerHTML = `<i class="fa-solid fa-file-image" style="color: #38bdf8;"></i> ${data.buktiFileName || 'Bukti Transfer'}`;
+        }
 
         document.querySelectorAll('.tab-content-pane').forEach(p => p.classList.remove('active'));
         document.getElementById('tab-detail-pemesanan').classList.add('active');
@@ -3475,5 +3488,29 @@ let currentViewingOrderKey = Object.keys(orderDatabase)[0] || '';
             }
         }
     }
+
+    function openBuktiModal() {
+        const img = document.getElementById('dtBuktiImage');
+        if (img && document.getElementById('modalBuktiImg') && document.getElementById('buktiPhotoModal')) {
+            document.getElementById('modalBuktiImg').src = img.src;
+            document.getElementById('buktiPhotoModal').style.display = 'flex';
+        }
+    }
+    function closeBuktiModal() {
+        if (document.getElementById('buktiPhotoModal')) {
+            document.getElementById('buktiPhotoModal').style.display = 'none';
+        }
+    }
 </script>
+
+<!-- Lightbox Modal untuk Bukti Pembayaran -->
+<div class="admin-modal-backdrop" id="buktiPhotoModal" onclick="closeBuktiModal()" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.88); z-index: 99999; align-items: center; justify-content: center; backdrop-filter: blur(5px); padding: 20px;">
+    <div style="position: relative; max-width: 90vw; max-height: 90vh; text-align: center;" onclick="event.stopPropagation()">
+        <button type="button" onclick="closeBuktiModal()" style="position: absolute; top: -38px; right: 0; background: none; border: none; color: #fff; font-size: 32px; cursor: pointer; line-height: 1; padding: 4px;">&times;</button>
+        <img id="modalBuktiImg" src="" alt="Bukti Transfer Penuh" style="max-width: 85vw; max-height: 82vh; border-radius: 12px; box-shadow: 0 15px 45px rgba(0,0,0,0.6); object-fit: contain; border: 2px solid rgba(255,255,255,0.15);">
+        <div style="margin-top: 10px; color: #cbd5e1; font-size: 13px;">
+            <i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Foto Bukti Transfer Pemesanan
+        </div>
+    </div>
+</div>
 @endsection
