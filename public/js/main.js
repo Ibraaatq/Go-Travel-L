@@ -361,7 +361,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     },
                     body: formData
                 })
-                .then(res => res.json())
+                .then(async res => {
+                    const data = await res.json().catch(() => ({}));
+                    if (!res.ok || data.success === false) {
+                        const errorMsg = data.message || (data.errors ? Object.values(data.errors).flat().join(', ') : 'Gagal menyimpan pesanan.');
+                        throw new Error(errorMsg);
+                    }
+                    return data;
+                })
                 .then(data => {
                     const waMessage = 
 `*KONFIRMASI PESANAN - GO TRAVEL*
@@ -394,9 +401,7 @@ Mohon info konfirmasi pesanan. Terima kasih!`;
                 })
                 .catch(err => {
                     console.error('Error saving order:', err);
-                    alert('Pesanan Anda tetap diproses via WhatsApp.');
-                    const waUrl = `https://wa.me/6283821382635`;
-                    window.open(waUrl, '_blank');
+                    alert('Peringatan: ' + err.message);
                 })
                 .finally(() => {
                     btnCompleteOrder.disabled = false;

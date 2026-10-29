@@ -19,16 +19,8 @@ class AdminController extends Controller
     {
         $packages = Package::all();
 
-        // Ambil semua order, lalu deduplicate berdasarkan kombinasi field unik
-        // untuk mencegah duplikat akibat data yang tersimpan ganda
-        $allOrders = Order::latest()->get();
-        $orders = $allOrders->unique(function ($ord) {
-            return $ord->nama_pemesan
-                . '|' . $ord->nama_paket
-                . '|' . $ord->tanggal_keberangkatan
-                . '|' . $ord->jumlah_peserta
-                . '|' . $ord->total_pembayaran;
-        })->values();
+        // Ambil semua order terbaru dari database
+        $orders = Order::latest()->get();
 
         $users = User::all();
         $contacts = Contact::latest()->get();
