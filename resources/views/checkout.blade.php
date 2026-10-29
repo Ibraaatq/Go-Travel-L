@@ -626,14 +626,17 @@
 </div>
 
 <!-- Pass dynamic data to JavaScript -->
+<script id="packageDataJson" type="application/json">
+{!! json_encode([
+    'name' => $paket['name'],
+    'slug' => $paket['slug'],
+    'basePrice' => (int) $paket['price_raw'],
+    'duration' => $paket['duration'],
+    'serviceFee' => 25000,
+]) !!}
+</script>
 <script>
-    window.PACKAGE_DATA = {
-        name: @json($paket['name']),
-        slug: @json($paket['slug']),
-        basePrice: {{ (int) $paket['price_raw'] }},
-        duration: @json($paket['duration']),
-        serviceFee: 25000
-    };
+    window.PACKAGE_DATA = JSON.parse(document.getElementById('packageDataJson').textContent || '{}');
 
     // ===== Upload Bukti Transfer =====
     let buktiFileObject = null;
