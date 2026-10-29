@@ -509,6 +509,15 @@ $users = collect();
                         </button>
                     </li>
                     <li class="sidebar-nav-item">
+                        <button type="button" class="sidebar-nav-link" data-tab="tab-pesan-masuk">
+                            <i class="fa-solid fa-envelope"></i>
+                            <span>Pesan Masuk</span>
+                            @if(isset($contacts) && $contacts->count() > 0)
+                            <span style="margin-left: auto; background: #0284c7; color: white; border-radius: 9999px; padding: 2px 7px; font-size: 11px; font-weight: 700;">{{ $contacts->count() }}</span>
+                            @endif
+                        </button>
+                    </li>
+                    <li class="sidebar-nav-item">
                         <button type="button" class="sidebar-nav-link" data-tab="tab-wishlist-saya">
                             <i class="fa-solid fa-heart"></i>
                             <span>Wishlist Saya</span>
@@ -1489,6 +1498,105 @@ $users = collect();
                     </script>
                 </div>
             </div>
+
+            <!-- ---------------------------------------------------- -->
+            <!-- TAB: PESAN MASUK / CONTACT MESSAGES (KHUSUS ADMIN)  -->
+            <!-- ---------------------------------------------------- -->
+            <div class="tab-content-pane" id="tab-pesan-masuk">
+                <div class="admin-section-card">
+                    <!-- Header & Title -->
+                    <div class="admin-card-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 22px;">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <div class="summary-icon-circle" style="background: #e0f2fe; color: #0284c7; width: 44px; height: 44px; font-size: 18px; border-radius: 14px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h2 class="admin-card-title" style="margin: 0; font-size: 18px; font-weight: 700; color: #0f172a;">Pesan Masuk (Hubungi Kami)</h2>
+                                <p style="margin: 2px 0 0 0; font-size: 12.5px; color: #64748b;">Daftar pesan dan pertanyaan yang dikirimkan pengunjung melalui formulir kontak.</p>
+                            </div>
+                        </div>
+                        <div>
+                            <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: #f1f5f9; border-radius: 9999px; font-size: 12px; font-weight: 600; color: #475569;">
+                                Total: <strong style="color: #0284c7;">{{ isset($contacts) ? $contacts->count() : 0 }} Pesan</strong>
+                            </span>
+                        </div>
+                    </div>
+
+                    @if(!isset($contacts) || $contacts->isEmpty())
+                    <div style="text-align: center; padding: 48px 20px; color: #94a3b8;">
+                        <div style="width: 64px; height: 64px; border-radius: 50%; background: #f8fafc; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 24px; color: #cbd5e1;">
+                            <i class="fa-regular fa-envelope-open"></i>
+                        </div>
+                        <h3 style="font-size: 16px; font-weight: 600; color: #475569; margin-bottom: 6px;">Belum Ada Pesan Masuk</h3>
+                        <p style="font-size: 13px; margin: 0;">Pesan yang dikirim pengunjung melalui form Hubungi Kami di beranda akan muncul di sini.</p>
+                    </div>
+                    @else
+                    <div class="table-responsive" style="overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 12px;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                            <thead>
+                                <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0; text-align: left; color: #475569;">
+                                    <th style="padding: 12px 16px; font-weight: 600;">Waktu</th>
+                                    <th style="padding: 12px 16px; font-weight: 600;">Pengirim</th>
+                                    <th style="padding: 12px 16px; font-weight: 600;">Kontak</th>
+                                    <th style="padding: 12px 16px; font-weight: 600;">Isi Pesan</th>
+                                    <th style="padding: 12px 16px; font-weight: 600; text-align: right;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($contacts as $c)
+                                <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.2s ease;">
+                                    <td style="padding: 12px 16px; color: #64748b; white-space: nowrap; vertical-align: top;">
+                                        <i class="fa-regular fa-calendar" style="margin-right: 4px;"></i>
+                                        {{ $c->created_at ? $c->created_at->format('d M Y, H:i') : '-' }}
+                                    </td>
+                                    <td style="padding: 12px 16px; font-weight: 600; color: #0f172a; vertical-align: top;">
+                                        {{ $c->name ?: ($c->nama_lengkap ?: 'Pengirim') }}
+                                    </td>
+                                    <td style="padding: 12px 16px; vertical-align: top;">
+                                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                                            <a href="mailto:{{ $c->email }}" style="color: #0284c7; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                                                <i class="fa-regular fa-envelope"></i> {{ $c->email }}
+                                            </a>
+                                            @php
+                                                $rawPhone = $c->phone ?: $c->nomor_telepon;
+                                                $waNumber = preg_replace('/[^0-9]/', '', $rawPhone);
+                                                if (str_starts_with($waNumber, '0')) {
+                                                    $waNumber = '62' . substr($waNumber, 1);
+                                                }
+                                            @endphp
+                                            @if($rawPhone)
+                                            <a href="https://wa.me/{{ $waNumber }}" target="_blank" style="color: #16a34a; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;">
+                                                <i class="fa-brands fa-whatsapp"></i> {{ $rawPhone }}
+                                            </a>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td style="padding: 12px 16px; color: #334155; line-height: 1.5; vertical-align: top; max-width: 380px;">
+                                        {{ $c->message ?: $c->pesan }}
+                                    </td>
+                                    <td style="padding: 12px 16px; text-align: right; vertical-align: top; white-space: nowrap;">
+                                        @if($rawPhone)
+                                        <a href="https://wa.me/{{ $waNumber }}?text=Halo%20{{ urlencode($c->name ?: $c->nama_lengkap) }},%20terima%20kasih%20sudah%20menghubungi%20Go%20Travel." target="_blank" style="background: #22c55e; color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; text-decoration: none; margin-right: 6px; display: inline-flex; align-items: center; gap: 4px;" title="Balas via WhatsApp">
+                                            <i class="fa-brands fa-whatsapp"></i> Balas
+                                        </a>
+                                        @endif
+                                        <form action="{{ route('admin.contacts.destroy', $c->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Hapus pesan ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" style="background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; padding: 6px 10px; border-radius: 8px; font-size: 12px; cursor: pointer;" title="Hapus pesan">
+                                                <i class="fa-regular fa-trash-can"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    @endif
+                </div>
+            </div>
+
             <!-- ---------------------------------------------------- -->
             <!-- TAB: WISHLIST SAYA                                  -->
             <!-- ---------------------------------------------------- -->
@@ -1917,6 +2025,8 @@ let currentViewingOrderKey = Object.keys(orderDatabase)[0] || '';
         const tabParam = urlParams.get('tab');
         if (tabParam === 'users' || tabParam === 'tab-kelola-pengguna') {
             activateTab('tab-kelola-pengguna');
+        } else if (tabParam === 'pesan-masuk' || tabParam === 'tab-pesan-masuk') {
+            activateTab('tab-pesan-masuk');
         } else if (tabParam && document.getElementById(tabParam)) {
             activateTab(tabParam);
         }

@@ -310,6 +310,9 @@ Route::middleware('admin')->group(function () {
 
     // Orders Status Management
     Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+
+    // Contact Messages Management
+    Route::delete('/admin/contacts/{id}', [AdminController::class, 'destroyContact'])->name('admin.contacts.destroy');
 });
 
 // ---- Route: /dashboard (alias /profile) ----

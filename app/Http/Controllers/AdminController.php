@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Package;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\Contact;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
@@ -30,6 +31,7 @@ class AdminController extends Controller
         })->values();
 
         $users = User::all();
+        $contacts = Contact::latest()->get();
 
         $totalOrders = $orders->count();
         $completedOrders = $orders->whereIn('status', ['Selesai', 'selesai', 'disetujui', 'Disetujui'])->count();
@@ -52,6 +54,7 @@ class AdminController extends Controller
             'packages', 
             'orders', 
             'users', 
+            'contacts',
             'totalOrders', 
             'completedOrders', 
             'pendingOrders', 
@@ -231,5 +234,18 @@ class AdminController extends Controller
         $package->delete();
 
         return redirect()->back()->with('success', 'Paket wisata berhasil dihapus!');
+    }
+
+    /**
+     * Hapus Pesan Kontak
+     */
+    public function destroyContact($id)
+    {
+        $contact = Contact::findOrFail($id);
+        $senderName = $contact->name ?: ($contact->nama_lengkap ?: 'Pengirim');
+        $contact->delete();
+
+        return redirect()->route('admin', ['tab' => 'pesan-masuk'])
+            ->with('success', 'Pesan dari ' . $senderName . ' berhasil dihapus!');
     }
 }
