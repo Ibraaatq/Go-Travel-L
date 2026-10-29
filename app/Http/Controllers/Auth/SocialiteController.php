@@ -29,7 +29,7 @@ class SocialiteController extends Controller
         }
 
         try {
-            $redirectUrl = url('/auth/google/callback');
+            $redirectUrl = config('services.google.redirect') ?: url('/auth/google/callback');
             return Socialite::driver('google')
                 ->redirectUrl($redirectUrl)
                 ->redirect();
@@ -54,7 +54,7 @@ class SocialiteController extends Controller
         }
 
         try {
-            $redirectUrl = url('/auth/google/callback');
+            $redirectUrl = config('services.google.redirect') ?: url('/auth/google/callback');
             /** @var SocialiteUser $googleUser */
             $googleUser = Socialite::driver('google')
                 ->redirectUrl($redirectUrl)
